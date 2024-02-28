@@ -6,14 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,7 +26,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:layout_weight="1"
                 android:gravity="center"
                 android:text="Calculadora KaiFit"
                 android:textSize="25dp"
@@ -33,77 +33,211 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="18dp"
-                android:layout_constraintTop_toBottomOf="@+id/tituloCalculadora"
-                android:layout_weight="1" />
+                android:layout_height="29dp" />
 
-            <TextView
-                android:id="@+id/textoEdad"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="395dp"
+                android:layout_height="53dp"
+                android:layout_marginLeft="15dp">
+
+                <TextView
+                    android:id="@+id/textoEdad"
+                    android:layout_width="55dp"
+                    android:layout_height="21dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="21dp"
+                    android:gravity="start"
+                    android:text="Edad"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/editTextEdad"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <SeekBar
+                    android:id="@+id/editTextEdad"
+                    android:layout_width="265dp"
+                    android:layout_height="33dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="39dp"
+                    android:max="99"
+                    android:min="16"
+                    android:progress="25"
+                    android:progressTint="#8AEF73"
+                    android:thumbTint="#13ED8F"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:text="Edad"
-                android:textSize="17dp"
-                android:textStyle="bold" />
+                android:layout_height="83dp"
+                android:layout_marginLeft="15dp">
 
-            <EditText
-                android:id="@+id/editTextEdad"
-                android:layout_width="391dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/edittext_borders"
-                android:digits="2"
-                android:hint="25"
-                android:inputType="number"
-                android:padding="13dp"
-                android:textColor="#000000"
-                android:textSize="17sp"
-                android:textStyle="bold" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="16dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/textoGenero"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:text="Género"
-                android:textSize="17dp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/textoGenero"
+                    android:layout_width="75dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="13dp"
+                    android:gravity="start"
+                    android:text="Género"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/radioButtonHombre"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
-                    android:id="@+id/button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="7dp"
-                    android:layout_weight="1"
+                    android:id="@+id/radioButtonHombre"
+                    android:layout_width="107dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="104dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/edittext_borders"
+                    android:backgroundTint="#8AEF73"
                     android:text="Hombre"
-                    android:textSize="16sp" /> <!-- Ajusta el tamaño del texto según sea necesario -->
+                    android:textSize="17dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
-                    android:id="@+id/button2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="7dp"
-                    android:layout_weight="1"
+                    android:id="@+id/radioButtonMujer"
+                    android:layout_width="107dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="48dp"
+                    android:background="@drawable/edittext_borders"
+                    android:backgroundTint="#8AEF73"
                     android:text="Mujer"
-                    android:textSize="16sp" /> <!-- Ajusta el tamaño del texto según sea necesario -->
-            </LinearLayout>
+                    android:textSize="17dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="425dp"
+                android:layout_height="303dp">
+
+
+                <TextView
+                    android:id="@+id/textAltura"
+                    android:layout_width="63dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="start"
+                    android:text="Altura"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/editTextAltura"
+                    android:layout_width="130dp"
+                    android:layout_height="49dp"
+                    android:layout_marginEnd="40dp"
+                    android:background="@drawable/edittext_borders"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="11dp"
+                    android:text="...cm"
+                    android:textColor="#8D555555"
+                    app:layout_constraintEnd_toStartOf="@+id/editTextPeso"
+                    app:layout_constraintTop_toBottomOf="@+id/textAltura" />
+
+                <TextView
+                    android:id="@+id/textPeso"
+                    android:layout_width="63dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="228dp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="start"
+                    android:text="Peso"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/editTextPeso"
+                    android:layout_width="130dp"
+                    android:layout_height="49dp"
+                    android:layout_marginEnd="79dp"
+                    android:background="@drawable/edittext_borders"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="11dp"
+                    android:text="...Kg"
+                    android:textColor="#8D555555"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textPeso" />
+
+
+                <TextView
+                    android:id="@+id/textCintura"
+                    android:layout_width="63dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginTop="88dp"
+                    android:gravity="start"
+                    android:text="Cintura"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/editTextCintura"
+                    android:layout_width="130dp"
+                    android:layout_height="49dp"
+                    android:layout_marginEnd="40dp"
+                    android:background="@drawable/edittext_borders"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="11dp"
+                    android:text="...cm"
+                    android:textColor="#8D555555"
+                    app:layout_constraintEnd_toStartOf="@+id/editTextCuello"
+                    app:layout_constraintTop_toBottomOf="@+id/textCintura" />
+
+                <TextView
+                    android:id="@+id/textCuello"
+                    android:layout_width="63dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="228dp"
+                    android:layout_marginTop="88dp"
+                    android:gravity="start"
+                    android:text="Cuello"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/editTextCuello"
+                    android:layout_width="130dp"
+                    android:layout_height="49dp"
+                    android:layout_marginEnd="79dp"
+                    android:background="@drawable/edittext_borders"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="11dp"
+                    android:text="...cm"
+                    android:textColor="#8D555555"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textCuello" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
     </ScrollView>

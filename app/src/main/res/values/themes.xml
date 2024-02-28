@@ -1,9 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <!-- Base application theme. -->
-    <style name="Base.Theme.KaiFitPal" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.KaiFitPal" parent="Theme.Design.Light.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/verde_claro</item>
+        <item name="colorPrimaryDark">@color/verde_claro_dark</item>
+        <item name="colorAccent">@color/accent_naranja</item>
     </style>
 
     <style name="Theme.KaiFitPal" parent="Base.Theme.KaiFitPal" />
+
+    <!-- Define your custom colors -->
+    <color name="verde_claro">#70C75C</color>
+    <color name="verde_claro_dark">#5A9E47
+    </color> <!-- Darker shade of verde claro for primary dark -->
+    <color name="accent_naranja">#FFA500</color>
+
 </resources>
