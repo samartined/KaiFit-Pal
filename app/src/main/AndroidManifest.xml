@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KaiFitPal"
         tools:targetApi="31">
-        <activity
+        <activitys
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -20,7 +20,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activitys>
     </application>
 
 </manifest>
