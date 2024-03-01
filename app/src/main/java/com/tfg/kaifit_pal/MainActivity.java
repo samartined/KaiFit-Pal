@@ -6,8 +6,10 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -118,16 +120,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Inicializar botón de calcular
         Button buttonCalcular = findViewById(R.id.buttonCalcular);
 
-        GradientDrawable gradientDrawable = new GradientDrawable(
 
-                GradientDrawable.Orientation.LEFT_RIGHT,
-                new int[]{
-                        Color.parseColor("#87CEFA"),
-                        Color.parseColor("#32CD32")
-                });
-        gradientDrawable.setCornerRadius(200);
-        buttonCalcular.setBackground(gradientDrawable);
+//
+        // Configurar el botón de calcular
+//        GradientDrawable gradientDrawable = new GradientDrawable(
+//
+//                GradientDrawable.Orientation.LEFT_RIGHT,
+//                new int[]{
+//                        Color.parseColor("#87CEFA"),
+//                        Color.parseColor("#32CD32")
+//                });
+//        gradientDrawable.setCornerRadius(50);
+//        buttonCalcular.setBackground(gradientDrawable);
     }
 }

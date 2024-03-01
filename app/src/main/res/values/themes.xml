@@ -1,11 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="Base.Theme.KaiFitPal" parent="Theme.Design.Light.NoActionBar">
+    <style name="Base.Theme.KaiFitPal" parent="Theme.Design.Light">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/verde_claro</item>
         <item name="colorPrimaryDark">@color/verde_claro_dark</item>
-        <item name="colorAccent">@color/accent_naranja</item>
+        <item name="colorAccent">@color/black</item>
     </style>
 
     <style name="Theme.KaiFitPal" parent="Base.Theme.KaiFitPal" />

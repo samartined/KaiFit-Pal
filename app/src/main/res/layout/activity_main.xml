@@ -66,11 +66,13 @@
                     android:padding="8dp"
                     android:text="-"
                     android:textSize="24dp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.346"
+                    app:layout_constraintHorizontal_bias="0.321"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <TextView
                     android:id="@+id/textView"
@@ -85,8 +87,10 @@
                     android:textSize="24sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/btnMas"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/btnMenos"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
 
                 <Button
                     android:id="@+id/btnMas"
@@ -101,9 +105,10 @@
                     android:textSize="24dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.673"
+                    app:layout_constraintHorizontal_bias="0.617"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -134,8 +139,9 @@
                 <Button
                     android:id="@+id/ButtonHombre"
                     android:layout_width="92dp"
-                    android:layout_height="56dp"
+                    android:layout_height="51dp"
                     android:layout_gravity="center"
+                    android:layout_marginStart="27dp"
                     android:layout_marginTop="13dp"
                     android:layout_marginEnd="192dp"
                     android:layout_marginBottom="14dp"
@@ -144,27 +150,32 @@
                     android:textSize="17dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textoGenero"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="1.0" />
 
                 <Button
                     android:id="@+id/ButtonMujer"
                     android:layout_width="94dp"
-                    android:layout_height="57dp"
+                    android:layout_height="52dp"
                     android:layout_gravity="center"
+                    android:layout_marginStart="33dp"
+                    android:layout_marginTop="18dp"
                     android:layout_marginEnd="64dp"
+                    android:layout_marginBottom="13dp"
                     android:background="@drawable/rect_button_notpressed"
                     android:text="Mujer"
                     android:textSize="17dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/ButtonHombre"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="539dp">
+                android:layout_height="470dp">
 
                 <TextView
                     android:id="@+id/textAltura"
@@ -342,18 +353,21 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="56dp"
                     android:layout_marginTop="20dp"
+                    android:layout_marginEnd="206dp"
                     android:gravity="center"
                     android:text="Factor de Actividad"
                     android:textColor="#838383"
                     android:textSize="17dp"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/spinnerFactorActividad"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/editTextCadera" />
 
                 <Spinner
                     android:id="@+id/spinnerFactorActividad"
-                    android:layout_width="311dp"
-                    android:layout_height="48dp"
+                    android:layout_width="285dp"
+                    android:layout_height="51dp"
                     android:layout_marginStart="48dp"
                     android:layout_marginEnd="48dp"
                     android:background="@drawable/edittext_borders"
@@ -366,14 +380,16 @@
                 <Button
                     android:id="@+id/buttonCalcular"
                     android:layout_width="188dp"
-                    android:layout_height="99dp"
+                    android:layout_height="51dp"
                     android:layout_marginStart="118dp"
                     android:layout_marginTop="44dp"
                     android:layout_marginEnd="139dp"
+                    android:layout_marginBottom="110dp"
                     android:background="@drawable/rect_button_notpressed"
                     android:text="Calcular"
-                    android:textSize="22dp"
+                    android:textSize="17dp"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.289"
                     app:layout_constraintStart_toStartOf="parent"
