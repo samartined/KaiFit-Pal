@@ -29,6 +29,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    buildFeatures {
+        viewBinding =
+            true // Se activa el viewBinding, que permite acceder a los elementos de la vista de manera más sencilla
+    }
 }
 
 dependencies {
