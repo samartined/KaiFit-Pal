@@ -2,21 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/calculator_menu_option"
-        android:icon="@drawable/calculator_icon"
-        android:title="Calculator" />
-    <item
         android:id="@+id/user_profile_menu_option"
         android:icon="@drawable/user_profile_icon"
-        android:title="Profile" />
+        android:title="Perfil" />
     <item
-        android:id="@+id/settings_menu_option"
-        android:icon="@drawable/settings_icon"
-        android:title="Settings" />
+        android:id="@+id/calculator_menu_option"
+        android:icon="@drawable/calculator_icon"
+        android:title="Calculadora" />
+
+    <item
+        android:id="@+id/assistant_menu_option"
+        android:icon="@drawable/chat_ia"
+        android:title="Kai-Go" />
+
     <item
         android:id="@+id/help_info_menu_option"
         android:icon="@drawable/help_info_icon"
-        android:title="Help" />
+        android:title="Ayuda" />
 
+    <item
+        android:id="@+id/settings_menu_option"
+        android:icon="@drawable/settings_icon"
+        android:title="Ajustes" />
 
 </menu>
