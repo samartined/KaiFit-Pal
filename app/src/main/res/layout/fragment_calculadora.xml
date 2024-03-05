@@ -18,6 +18,7 @@
             android:layout_marginTop="15dp"
             android:gravity="center"
             android:text="Calculadora KaiFit"
+            android:textColor="#68AF63"
             android:textSize="25dp"
             android:textStyle="bold" />
 
@@ -32,24 +33,19 @@
                 android:id="@+id/textoEdad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="23dp"
-                android:layout_marginBottom="22dp"
+                android:layout_marginStart="37dp"
+                android:layout_marginBottom="23dp"
                 android:text="Edad"
                 android:textColor="#838383"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.147"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
+                app:layout_constraintStart_toStartOf="parent" />
 
             <Button
                 android:id="@+id/btnMenos"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/rounded_shape_buttons"
                 android:gravity="center"
@@ -60,16 +56,13 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.321"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14dp"
-                android:layout_marginTop="18dp"
                 android:layout_marginEnd="14dp"
                 android:layout_marginBottom="18dp"
                 android:text="16"
@@ -77,16 +70,13 @@
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btnMas"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/btnMenos"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintHorizontal_bias="0.705"
+                app:layout_constraintStart_toEndOf="@+id/btnMenos" />
 
             <Button
                 android:id="@+id/btnMas"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/rounded_shape_buttons"
                 android:gravity="center"
@@ -95,18 +85,22 @@
                 android:textSize="24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.617"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintHorizontal_bias="0.638"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+        <View
+            android:id="@+id/divider6"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="?android:attr/listDivider" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="83dp"
-            android:layout_marginLeft="15dp">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="0dp">
 
 
             <TextView
@@ -122,14 +116,14 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.113"
+                app:layout_constraintHorizontal_bias="0.107"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/ButtonHombre"
-                android:layout_width="92dp"
-                android:layout_height="51dp"
+                android:layout_width="115dp"
+                android:layout_height="49dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="27dp"
                 android:layout_marginTop="13dp"
@@ -146,8 +140,8 @@
 
             <Button
                 android:id="@+id/ButtonMujer"
-                android:layout_width="94dp"
-                android:layout_height="52dp"
+                android:layout_width="115dp"
+                android:layout_height="51dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="33dp"
                 android:layout_marginTop="18dp"
@@ -158,21 +152,29 @@
                 android:textSize="17dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/ButtonHombre"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <View
+            android:id="@+id/divider7"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="?android:attr/listDivider" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="446dp">
+            android:layout_height="490dp">
 
             <TextView
                 android:id="@+id/textAltura"
                 android:layout_width="63dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="56dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="16dp"
                 android:gravity="start"
                 android:text="Altura"
                 android:textColor="#838383"
@@ -195,12 +197,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textAltura" />
 
+
             <TextView
                 android:id="@+id/textPeso"
                 android:layout_width="63dp"
                 android:layout_height="24dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="120dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="104dp"
                 android:gravity="start"
                 android:text="Peso"
                 android:textColor="#838383"
@@ -209,12 +212,67 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/textCuello"
+                android:layout_width="63dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="104dp"
+                android:gravity="start"
+                android:text="Cuello"
+                android:textColor="#838383"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextPeso" />
+
+            <EditText
+                android:id="@+id/editTextCuello"
+                android:layout_width="130dp"
+                android:layout_height="49dp"
+                android:layout_marginEnd="48dp"
+                android:background="@drawable/edittext_borders"
+                android:ems="10"
+                android:hint="0.00 cm"
+                android:inputType="numberDecimal"
+                android:paddingStart="11dp"
+                android:textColor="#8D555555"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textCuello" />
+
+            <EditText
+                android:id="@+id/editTextFatPercent"
+                android:layout_width="130dp"
+                android:layout_height="51dp"
+                android:layout_marginEnd="48dp"
+                android:background="@drawable/edittext_borders"
+                android:ems="10"
+                android:hint="0.00"
+                android:inputType="numberDecimal"
+                android:paddingStart="11dp"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textFatPercent" />
+
+            <TextView
+                android:id="@+id/textFatPercent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="52dp"
+                android:gravity="center"
+                android:text="% Grasa Corporal"
+                android:textColor="#838383"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextCuello" />
 
             <EditText
                 android:id="@+id/editTextPeso"
                 android:layout_width="130dp"
                 android:layout_height="49dp"
-                android:layout_marginEnd="64dp"
+                android:layout_marginEnd="48dp"
                 android:background="@drawable/edittext_borders"
                 android:ems="10"
                 android:hint="0.00 kg"
@@ -253,34 +311,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/textCintura" />
 
             <TextView
-                android:id="@+id/textCuello"
-                android:layout_width="63dp"
-                android:layout_height="24dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="120dp"
-                android:gravity="start"
-                android:text="Cuello"
-                android:textColor="#838383"
-                android:textSize="17dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextPeso" />
-
-            <EditText
-                android:id="@+id/editTextCuello"
-                android:layout_width="130dp"
-                android:layout_height="49dp"
-                android:layout_marginEnd="64dp"
-                android:background="@drawable/edittext_borders"
-                android:ems="10"
-                android:hint="0.00 cm"
-                android:inputType="numberDecimal"
-                android:paddingStart="11dp"
-                android:textColor="#8D555555"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textCuello" />
-
-            <TextView
                 android:id="@+id/textCadera"
                 android:layout_width="63dp"
                 android:layout_height="24dp"
@@ -310,40 +340,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/textCadera" />
 
             <TextView
-                android:id="@+id/textFatPercent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="64dp"
-                android:gravity="center"
-                android:text="% Grasa Corporal"
-                android:textColor="#838383"
-                android:textSize="17dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextCuello" />
-
-            <EditText
-                android:id="@+id/editTextFatPercent"
-                android:layout_width="130dp"
-                android:layout_height="51dp"
-                android:layout_marginEnd="64dp"
-                android:background="@drawable/edittext_borders"
-                android:ems="10"
-                android:hint="0.00"
-                android:inputType="numberDecimal"
-                android:paddingStart="11dp"
-                android:textColor="@color/black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textFatPercent" />
-
-            <TextView
                 android:id="@+id/textFactorActividad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="56dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="206dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="183dp"
                 android:gravity="center"
                 android:text="Factor de Actividad"
                 android:textColor="#838383"
@@ -351,6 +353,7 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/spinnerFactorActividad"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTextCadera" />
 
@@ -363,7 +366,7 @@
                 android:background="@drawable/edittext_borders"
                 android:entries="@array/niveles_actividad_deportiva"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="0.366"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textFactorActividad" />
 
@@ -371,20 +374,29 @@
                 android:id="@+id/buttonCalcular"
                 android:layout_width="188dp"
                 android:layout_height="51dp"
-                android:layout_marginStart="118dp"
-                android:layout_marginTop="44dp"
-                android:layout_marginEnd="139dp"
-                android:layout_marginBottom="110dp"
+                android:layout_marginTop="26dp"
                 android:background="@drawable/rect_button_notpressed"
                 android:text="Calcular"
                 android:textSize="17dp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.301"
+                app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinnerFactorActividad"
-                app:layout_constraintVertical_bias="0.193" />
+                app:layout_constraintTop_toBottomOf="@+id/spinnerFactorActividad" />
+
+            <View
+                android:id="@+id/divider8"
+                android:layout_width="409dp"
+                android:layout_height="4dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="19dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginBottom="9dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toTopOf="@+id/textFactorActividad"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextFatPercent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

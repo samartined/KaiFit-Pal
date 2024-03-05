@@ -2,6 +2,7 @@ package com.tfg.kaifit_pal;
 
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -37,15 +38,7 @@ public class Calculadora extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.activity_main, container, false);
-
-        // Se añade gradiente del título programáticamente
-        TextView tituloCalculadora = rootView.findViewById(R.id.tituloCalculadora);
-        float width = tituloCalculadora.getPaint().measureText("Calculadora KaiFit");
-        Shader textShader = new LinearGradient(0, 0, width, tituloCalculadora.getTextSize(),
-                new int[]{Color.parseColor("#87CEFA"), Color.parseColor("#32CD32")},
-                null, Shader.TileMode.CLAMP);
-        tituloCalculadora.getPaint().setShader(textShader);
+        View rootView = inflater.inflate(R.layout.fragment_calculadora, container, false);
 
         // Comportamiento botones edad
         edadDinamica = rootView.findViewById(R.id.textView);
@@ -83,6 +76,7 @@ public class Calculadora extends Fragment {
         buttonHombre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 
                 // Marcar el botón "Hombre" y desmarcar el botón "Mujer"
                 buttonHombre.setSelected(true);
