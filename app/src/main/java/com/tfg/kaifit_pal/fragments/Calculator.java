@@ -232,7 +232,7 @@ public class Calculator extends Fragment {
         CalculatorUtils calculatorUtils = new CalculatorUtils(isMale, isFemale, valueWeight, valueHeight, valueNeck, valueWaist, valueHip);
 
         // Calculate fat percentage
-        double fatPercentage = calculatorUtils.calculateFatPercentage(isMale, isFemale, valueWeight, valueHeight, valueNeck, valueWaist, valueHip);
+        double fatPercentage = calculatorUtils.calculateFatPercentage(isMale, isFemale);
 
         // Set fat percentage to the corresponding EditText
         EditText fatPercentageEditText = view.findViewById(R.id.editTextFatPercent);
