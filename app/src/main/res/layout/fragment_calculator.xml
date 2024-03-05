@@ -49,7 +49,6 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/rounded_shape_buttons"
                 android:gravity="center"
-                android:padding="8dp"
                 android:text="-"
                 android:textSize="24dp"
                 android:textStyle="bold"
@@ -80,7 +79,6 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/rounded_shape_buttons"
                 android:gravity="center"
-                android:padding="8dp"
                 android:text="+"
                 android:textSize="24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -193,7 +191,8 @@
                 android:hint="0.00 cm"
                 android:inputType="numberDecimal"
                 android:paddingStart="11dp"
-                android:textColor="#8D555555"
+                android:textColorHint="#AD989898"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/heightText" />
 
@@ -236,8 +235,8 @@
                 android:hint="0.00 cm"
                 android:inputType="numberDecimal"
                 android:paddingStart="11dp"
-                android:textColor="#8D555555"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textColorHint="#AD989898"
+                android:textColor="@color/black"                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/neckText" />
 
             <EditText
@@ -279,8 +278,8 @@
                 android:hint="0.00 kg"
                 android:inputType="numberDecimal"
                 android:paddingStart="11dp"
-                android:textColor="#8D555555"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textColorHint="#AD989898"
+                android:textColor="@color/black"                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/weightText" />
 
             <TextView
@@ -307,8 +306,8 @@
                 android:hint="0.00 cm"
                 android:inputType="numberDecimal"
                 android:paddingStart="11dp"
-                android:textColor="#8D555555"
-                app:layout_constraintStart_toStartOf="parent"
+                android:textColorHint="#AD989898"
+                android:textColor="@color/black"                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/waistText" />
 
             <TextView
@@ -336,8 +335,8 @@
                 android:hint="0.00 cm"
                 android:inputType="numberDecimal"
                 android:paddingStart="11dp"
-                android:textColor="#8D555555"
-                app:layout_constraintStart_toStartOf="parent"
+                android:textColorHint="#AD989898"
+                android:textColor="@color/black"                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hipText" />
 
             <TextView
