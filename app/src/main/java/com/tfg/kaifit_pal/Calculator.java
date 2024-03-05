@@ -46,7 +46,7 @@ public class Calculator extends Fragment {
 
     // Initialize views and buttons
     private void initViews(View rootView) {
-        dynamicAge = rootView.findViewById(R.id.ageText);
+        dynamicAge = rootView.findViewById(R.id.ageTextView);
         ageButtonMinus = rootView.findViewById(R.id.btnMinus);
         ageButtonPlus = rootView.findViewById(R.id.btnPlus);
     }
