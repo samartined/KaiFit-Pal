@@ -10,7 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/*
  * A simple {@link Fragment} subclass.
  * Use the {@link Calculator#newInstance} factory method to
  * create an instance of this fragment.
@@ -21,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tfg.kaifit_pal.R;
 import com.tfg.kaifit_pal.calculator_logic.CalculatorUtils;
@@ -31,6 +35,8 @@ public class Calculator extends Fragment {
     private TextView dynamicAge;
     private Button ageButtonPlus, ageButtonMinus;
     private int predefinedAge = 25;
+
+    private static final Logger logger = Logger.getLogger(Calculator.class.getName()); // we create a logger object to log messages in case of error
 
 
     public Calculator() {
@@ -146,35 +152,46 @@ public class Calculator extends Fragment {
         EditText neckEditText = rootView.findViewById(R.id.editTextNeck);
         EditText waistEditText = rootView.findViewById(R.id.editTextWaist);
         EditText hipEditText = rootView.findViewById(R.id.editTextHip);
+        EditText fatPercentageEditText = rootView.findViewById(R.id.editTextFatPercent);
 
         TextWatcher textWatcher = new TextWatcher() {
+
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                setUpFatPercentage(); // Recalcular el porcentaje de grasa corporal
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Check if any of the EditText fields are empty
+                if (!weightEditText.getText().toString().isEmpty() &&
+                        !heightEditText.getText().toString().isEmpty() &&
+                        !neckEditText.getText().toString().isEmpty() &&
+                        !waistEditText.getText().toString().isEmpty() &&
+                        !hipEditText.getText().toString().isEmpty()) {
+                    // If all fields are filled, calculate the fat percentage
+                    setUpFatPercentage();
+                } else {
+                    // If any field is empty, clear the fat percentage EditText
+                    fatPercentageEditText.setText("");
+                }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable editable) {
             }
         };
-
-        try {
-
-
-            // Assing the same TextWatcher to all relevant EditTexts
+        try { // We use a try-catch block to handle exceptions
+            // Try to set up text change listeners
             weightEditText.addTextChangedListener(textWatcher);
             heightEditText.addTextChangedListener(textWatcher);
             neckEditText.addTextChangedListener(textWatcher);
             waistEditText.addTextChangedListener(textWatcher);
             hipEditText.addTextChangedListener(textWatcher);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error setting up text change listeners", e); // Log error message
         }
     }
+
 
     private void setUpFatPercentage() {
         // Get the root view
@@ -184,7 +201,6 @@ public class Calculator extends Fragment {
         }
 
         // Get references to UI elements
-        TextView inputAge = view.findViewById(R.id.ageText);
         EditText inputWeight = view.findViewById(R.id.editTextWeight);
         EditText inputHeight = view.findViewById(R.id.editTextHeight);
         EditText inputNeck = view.findViewById(R.id.editTextNeck);
@@ -193,15 +209,30 @@ public class Calculator extends Fragment {
         Button maleButton = view.findViewById(R.id.ButtonMale);
         Button femaleButton = view.findViewById(R.id.ButtonFemale);
 
+        // We parse the references to double and boolean
+        double valueWeight = Double.parseDouble(inputWeight.getText().toString());
+        double valueHeight = Double.parseDouble(inputHeight.getText().toString());
+        double valueNeck = Double.parseDouble(inputNeck.getText().toString());
+        double valueWaist = Double.parseDouble(inputWaist.getText().toString());
+        double valueHip = Double.parseDouble(inputHip.getText().toString());
+
+        // Check if the values are valid
+        if (valueWeight <= 0 || valueHeight <= 0 || valueNeck <= 0 || valueWaist <= 0 || valueHip <= 0) {
+            // Show an error message if the values are not valid
+            Toast.makeText(getContext(), "Por favor, introduce valores válidos", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
         // Check gender selection
         boolean isMale = maleButton.isSelected();
         boolean isFemale = femaleButton.isSelected();
 
         // Use CalculatorUtils class to calculate fat percentage
-        CalculatorUtils calculatorUtils = new CalculatorUtils(inputAge, inputWeight, inputHeight, inputNeck, inputWaist, inputHip, isMale, isFemale);
+        CalculatorUtils calculatorUtils = new CalculatorUtils(isMale, isFemale, valueWeight, valueHeight, valueNeck, valueWaist, valueHip);
 
         // Calculate fat percentage
-        double fatPercentage = calculatorUtils.calculateFatPercentage(true, false, inputWeight, inputHeight, inputNeck, inputWaist, inputHip, inputAge);
+        double fatPercentage = calculatorUtils.calculateFatPercentage(isMale, isFemale, valueWeight, valueHeight, valueNeck, valueWaist, valueHip);
 
         // Set fat percentage to the corresponding EditText
         EditText fatPercentageEditText = view.findViewById(R.id.editTextFatPercent);

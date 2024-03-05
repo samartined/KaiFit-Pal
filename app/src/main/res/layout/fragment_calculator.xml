@@ -247,6 +247,7 @@
                 android:layout_marginEnd="48dp"
                 android:background="@drawable/edittext_borders"
                 android:ems="10"
+                android:enabled="false"
                 android:hint="0.00"
                 android:inputType="numberDecimal"
                 android:paddingStart="11dp"
