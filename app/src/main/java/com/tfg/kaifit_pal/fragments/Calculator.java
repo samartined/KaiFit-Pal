@@ -161,18 +161,7 @@ public class Calculator extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                // Check if any of the EditText fields are empty
-                if (!weightEditText.getText().toString().isEmpty() &&
-                        !heightEditText.getText().toString().isEmpty() &&
-                        !neckEditText.getText().toString().isEmpty() &&
-                        !waistEditText.getText().toString().isEmpty() &&
-                        !hipEditText.getText().toString().isEmpty()) {
-                    // If all fields are filled, calculate the fat percentage
-                    setUpFatPercentage();
-                } else {
-                    // If any field is empty, clear the fat percentage EditText
-                    fatPercentageEditText.setText("");
-                }
+                setUpFatPercentage();
             }
 
             @Override
@@ -191,7 +180,6 @@ public class Calculator extends Fragment {
         }
     }
 
-
     private void setUpFatPercentage() {
         // Get the root view
         View view = getView();
@@ -206,34 +194,35 @@ public class Calculator extends Fragment {
         EditText inputWaist = view.findViewById(R.id.editTextWaist);
         EditText inputHip = view.findViewById(R.id.editTextHip);
         Button maleButton = view.findViewById(R.id.ButtonMale);
-        Button femaleButton = view.findViewById(R.id.ButtonFemale);
-
-        // We parse the references to double and boolean
-        double valueWeight = Double.parseDouble(inputWeight.getText().toString());
-        double valueHeight = Double.parseDouble(inputHeight.getText().toString());
-        double valueNeck = Double.parseDouble(inputNeck.getText().toString());
-        double valueWaist = Double.parseDouble(inputWaist.getText().toString());
-        double valueHip = Double.parseDouble(inputHip.getText().toString());
-
-//        // Check if the values are valid
-//        if (valueWeight <= 0 || valueHeight <= 0 || valueNeck <= 0 || valueWaist <= 0 || valueHip <= 0) {
-//            // Show an error message if the values are not valid
-//            Toast.makeText(getContext(), "Por favor, introduce valores válidos", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-
         // Check gender selection
         boolean sex = maleButton.isSelected();
+
+        double valueWeight, valueNeck, valueWaist, valueHip;
+        int valueHeight;
+
+        String weightText = inputWeight.getText().toString().trim();
+        String heightText = inputHeight.getText().toString().trim();
+        String neckText = inputNeck.getText().toString().trim();
+        String waistText = inputWaist.getText().toString().trim();
+        String hipText = inputHip.getText().toString().trim();
+
+        // We assign the values to the variables, if the input is empty we assign 0
+        valueWeight = weightText.isEmpty() ? 0 : Double.parseDouble(weightText);
+        valueHeight = heightText.isEmpty() ? 0 : Integer.parseInt(heightText);
+        valueNeck = neckText.isEmpty() ? 0 : Double.parseDouble(neckText);
+        valueWaist = waistText.isEmpty() ? 0 : Double.parseDouble(waistText);
+        valueHip = hipText.isEmpty() ? 0 : Double.parseDouble(hipText);
 
         // Use CalculatorUtils class to calculate fat percentage
         CalculatorUtils calculatorUtils = new CalculatorUtils(sex, valueWeight, valueHeight, valueNeck, valueWaist, valueHip);
 
         // Calculate fat percentage
-        double fatPercentage = calculatorUtils.calculateFatPercentage(sex);
+        String fatPercentage = String.valueOf(calculatorUtils.getFatPercentage());
 
         // Set fat percentage to the corresponding EditText
         TextView fatPercentageEditText = view.findViewById(R.id.TextViewFatPercent);
-        fatPercentageEditText.setText(String.valueOf(fatPercentage));
+
+        fatPercentageEditText.setText(fatPercentage + " %");
     }
 
 
