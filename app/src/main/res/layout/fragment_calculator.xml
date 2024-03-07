@@ -118,6 +118,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
             <Button
                 android:id="@+id/ButtonMale"
                 android:layout_width="115dp"
@@ -191,8 +192,8 @@
                 android:hint="0.00 cm"
                 android:inputType="numberDecimal"
                 android:paddingStart="11dp"
-                android:textColorHint="#AD989898"
                 android:textColor="@color/black"
+                android:textColorHint="#AD989898"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/heightText" />
 
@@ -235,37 +236,26 @@
                 android:hint="0.00 cm"
                 android:inputType="numberDecimal"
                 android:paddingStart="11dp"
+                android:textColor="@color/black"
                 android:textColorHint="#AD989898"
-                android:textColor="@color/black"                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/neckText" />
 
-            <EditText
+            <TextView
                 android:id="@+id/editTextFatPercent"
-                android:layout_width="130dp"
-                android:layout_height="51dp"
-                android:layout_marginEnd="48dp"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="28dp"
+                android:layout_marginEnd="64dp"
                 android:background="@drawable/edittext_borders"
                 android:ems="10"
+                android:gravity="center"
                 android:hint="0.00"
                 android:inputType="numberDecimal"
-                android:paddingStart="11dp"
                 android:textColor="@color/black"
+                android:textSize="23dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fatPercentText" />
-
-            <TextView
-                android:id="@+id/fatPercentText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="36dp"
-                android:gravity="center"
-                android:text="% Grasa Corporal"
-                android:textColor="#838383"
-                android:textSize="17dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextNeck" />
+                app:layout_constraintTop_toBottomOf="@+id/divider8" />
 
             <EditText
                 android:id="@+id/editTextWeight"
@@ -277,8 +267,9 @@
                 android:hint="0.00 kg"
                 android:inputType="numberDecimal"
                 android:paddingStart="11dp"
+                android:textColor="@color/black"
                 android:textColorHint="#AD989898"
-                android:textColor="@color/black"                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/weightText" />
 
             <TextView
@@ -305,8 +296,9 @@
                 android:hint="0.00 cm"
                 android:inputType="numberDecimal"
                 android:paddingStart="11dp"
+                android:textColor="@color/black"
                 android:textColorHint="#AD989898"
-                android:textColor="@color/black"                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/waistText" />
 
             <TextView
@@ -334,52 +326,64 @@
                 android:hint="0.00 cm"
                 android:inputType="numberDecimal"
                 android:paddingStart="11dp"
+                android:textColor="@color/black"
                 android:textColorHint="#AD989898"
-                android:textColor="@color/black"                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hipText" />
 
             <TextView
                 android:id="@+id/activityFactorText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="56dp"
-                android:layout_marginEnd="177dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="37dp"
                 android:gravity="center"
-                android:text="Factor de Actividad"
+                android:text="Factor  Actividad"
                 android:textColor="#838383"
                 android:textSize="17dp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/spinnerActivityFactor"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.866"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextNeck" />
 
             <Spinner
                 android:id="@+id/spinnerActivityFactor"
-                android:layout_width="285dp"
-                android:layout_height="51dp"
-                android:layout_marginStart="48dp"
-                android:layout_marginEnd="48dp"
+                android:layout_width="130dp"
+                android:layout_height="49dp"
+                android:layout_marginEnd="47dp"
                 android:background="@drawable/edittext_borders"
                 android:entries="@array/sport_activity_levels"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.366"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/activityFactorText" />
 
             <Button
                 android:id="@+id/buttonCalculate"
                 android:layout_width="188dp"
                 android:layout_height="51dp"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="21dp"
+                android:layout_marginBottom="61dp"
                 android:background="@drawable/rect_button_notpressed"
-                android:text="Calcular"
+                android:text="Calcular Calorias"
                 android:textSize="17dp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinnerActivityFactor" />
+                app:layout_constraintTop_toBottomOf="@+id/buttonFatPercentageCalculate" />
+
+            <Button
+                android:id="@+id/buttonFatPercentageCalculate"
+                android:layout_width="124dp"
+                android:layout_height="58dp"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/rect_button_notpressed"
+                android:text="Calcular % Grasa"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.195"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider8" />
 
             <View
                 android:id="@+id/divider8"
@@ -392,8 +396,10 @@
                 android:background="?android:attr/listDivider"
                 app:layout_constraintBottom_toTopOf="@+id/activityFactorText"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextFatPercent" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextFatPercent"
+                app:layout_constraintVertical_bias="0.492" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>

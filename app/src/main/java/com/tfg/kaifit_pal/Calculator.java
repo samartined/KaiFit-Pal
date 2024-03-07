@@ -1,70 +1,71 @@
 package com.tfg.kaifit_pal;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.*;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Calculator#newInstance} factory method to
- * create an instance of this fragment.
- */
-
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
+import androidx.fragment.app.Fragment;
 
 public class Calculator extends Fragment {
 
-    // Variables related to user age declaration
     private TextView dynamicAge;
-    private Button ageButtonPlus, ageButtonMinus;
+    private Button ageButtonPlus, ageButtonMinus, calculateButton, calculateFatPercentageButton, maleButton, femaleButton;
+    private EditText femaleEditText;
     private int predefinedAge = 25;
-
-    public Calculator() {
-        // Required empty public constructor
-    }
+    private View rootView;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_calculator, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_calculator, container, false);
         initViews(rootView);
         initListeners();
-        setupGenderButtons(rootView);
-        initSpinner(rootView);
-        initCalculateButton(rootView);
         return rootView;
     }
 
-    // Initialize views and buttons
     private void initViews(View rootView) {
         dynamicAge = rootView.findViewById(R.id.ageTextView);
         ageButtonMinus = rootView.findViewById(R.id.btnMinus);
         ageButtonPlus = rootView.findViewById(R.id.btnPlus);
+        calculateButton = rootView.findViewById(R.id.buttonCalculate);
+        calculateFatPercentageButton = rootView.findViewById(R.id.buttonFatPercentageCalculate);
+        maleButton = rootView.findViewById(R.id.ButtonMale);
+        femaleButton = rootView.findViewById(R.id.ButtonFemale);
+        femaleEditText = rootView.findViewById(R.id.editTextHip);
     }
 
-    // Initialize listeners
     private void initListeners() {
+        ageButtonMinus.setOnClickListener(v -> decreaseAge());
+        ageButtonPlus.setOnClickListener(v -> increaseAge());
 
-        ageButtonMinus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                decreaseAge();
+        View.OnClickListener calculationButtonsListener = v -> {
+            if (!(maleButton.isSelected() || femaleButton.isSelected())) {
+                showToast("Selecciona tu sexo antes de calcular.");
             }
-        });
+        };
 
-        ageButtonPlus.setOnClickListener(new View.OnClickListener() {
+        calculateButton.setOnClickListener(calculationButtonsListener);
+        calculateFatPercentageButton.setOnClickListener(calculationButtonsListener);
+
+        View.OnClickListener genderButtonListener = v -> {
+            boolean isMale = v.getId() == R.id.ButtonMale;
+            selectGender(isMale, !isMale);
+        };
+
+        maleButton.setOnClickListener(genderButtonListener);
+        femaleButton.setOnClickListener(genderButtonListener);
+
+        Spinner activityFactorSpinner = rootView.findViewById(R.id.spinnerActivityFactor);
+        activityFactorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                increaseAge();
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String[] activityRatios = getResources().getStringArray(R.array.activity_factors);
+                float selectedActivityFactor = Float.parseFloat(activityRatios[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
     }
@@ -83,74 +84,18 @@ public class Calculator extends Fragment {
         }
     }
 
-    // Method to set up gender buttons
-    private void setupGenderButtons(View rootView) {
-        // Gender buttons control
-        Button maleButton = rootView.findViewById(R.id.ButtonMale);
-        Button femaleButton = rootView.findViewById(R.id.ButtonFemale);
-        final EditText femaleEditText = rootView.findViewById(R.id.editTextHip);
+    private void selectGender(boolean maleSelected, boolean femaleSelected) {
+        int maleButtonBackground = maleSelected ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed;
+        int femaleButtonBackground = femaleSelected ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed;
+        int femaleEditTextBackground = femaleSelected ? R.drawable.edittext_borders : R.drawable.edittext_disabled_background;
 
-        // Configure button behaviors
-        maleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectGender(true, false, femaleEditText);
-            }
-        });
-
-        femaleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectGender(false, true, femaleEditText);
-            }
-        });
+        maleButton.setBackgroundResource(maleButtonBackground);
+        femaleButton.setBackgroundResource(femaleButtonBackground);
+        femaleEditText.setEnabled(femaleSelected);
+        femaleEditText.setBackgroundResource(femaleEditTextBackground);
     }
 
-    // Method to select gender
-    private void selectGender(boolean maleSelected, boolean femaleSelected, EditText femaleEditText) {
-
-        View view = getView(); // Get the current view
-        if (view != null) { // Check if the view is not null
-            Button maleButton = getView().findViewById(R.id.ButtonMale);
-            Button femaleButton = getView().findViewById(R.id.ButtonFemale);
-
-            if (maleButton != null && femaleButton != null) { // Enable or disable buttons by checking they are not null
-                maleButton.setSelected(maleSelected);
-                maleButton.setBackgroundResource(maleSelected ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed);
-                femaleButton.setSelected(femaleSelected);
-                femaleButton.setBackgroundResource(femaleSelected ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed);
-            }
-
-            if (femaleEditText != null) { // Enable or disable text field by checking it's not null
-                femaleEditText.setEnabled(femaleSelected);
-                femaleEditText.setBackgroundResource(femaleSelected ? R.drawable.edittext_borders : R.drawable.edittext_disabled_background);
-            }
-        }
-    }
-
-    // Initialize sports activity spinner
-    private void initSpinner(View view) {
-
-        Spinner activityFactorSpinner = view.findViewById(R.id.spinnerActivityFactor);
-        activityFactorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Get selected string
-                String[] activityRatios = getResources().getStringArray(R.array.activity_factors);
-
-                // Convert string to float
-                float selectedActivityFactor = Float.parseFloat(activityRatios[position]);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Implement actions if nothing is selected
-            }
-        });
-    }
-
-    // Initialize calculate button
-    private void initCalculateButton(View rootView) {
-        Button calculateButton = rootView.findViewById(R.id.buttonCalculate);
+    private void showToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 }
