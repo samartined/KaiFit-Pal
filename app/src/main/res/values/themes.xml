@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="Base.Theme.KaiFitPal" parent="Theme.MaterialComponents.DayNight">
+    <style name="Base.Theme.KaiFitPal" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/verde_claro</item>
         <item name="colorPrimaryDark">@color/verde_claro_dark</item>
