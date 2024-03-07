@@ -1,403 +1,441 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragments.Calculator">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <data>
+
+        <variable
+            name="calculatorutils"
+            type="com.tfg.kaifit_pal.calculator_logic.CalculatorUtils" />
+
+    </data>
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        tools:context=".fragments.Calculator">
 
-        <TextView
-            android:id="@+id/calculatorTitle"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="67dp"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:text="KaiFit Calculator"
-            android:textColor="#68AF63"
-            android:textSize="25dp"
-            android:textStyle="bold" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="68dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/ageText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="37dp"
-                android:layout_marginBottom="23dp"
-                android:text="Edad"
-                android:textColor="#838383"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <Button
-                android:id="@+id/btnMinus"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rounded_shape_buttons"
+                android:id="@+id/calculatorTitle"
+                android:layout_width="match_parent"
+                android:layout_height="67dp"
+                android:layout_marginTop="15dp"
                 android:gravity="center"
-                android:text="-"
-                android:textSize="24dp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.321"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:text="KaiFit Calculator"
+                android:textColor="#68AF63"
+                android:textSize="25dp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/ageTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
-                android:layout_marginEnd="14dp"
-                android:layout_marginBottom="18dp"
-                android:text="25"
-                android:textColor="#87CEFA"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnPlus"
-                app:layout_constraintHorizontal_bias="0.705"
-                app:layout_constraintStart_toEndOf="@+id/btnMinus" />
-
-            <Button
-                android:id="@+id/btnPlus"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rounded_shape_buttons"
-                android:gravity="center"
-                android:text="+"
-                android:textSize="24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.638"
-                app:layout_constraintStart_toStartOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
 
-        <View
-            android:id="@+id/divider6"
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:background="?android:attr/listDivider" />
+                <TextView
+                    android:id="@+id/ageText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="37dp"
+                    android:layout_marginBottom="23dp"
+                    android:text="Edad"
+                    android:textColor="#838383"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="0dp">
+                <Button
+                    android:id="@+id/btnMinus"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/rounded_shape_buttons"
+                    android:gravity="center"
+                    android:text="-"
+                    android:textSize="24dp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.321"
+                    app:layout_constraintStart_toStartOf="parent" />
 
+                <TextView
+                    android:id="@+id/ageTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginEnd="14dp"
+                    android:layout_marginBottom="18dp"
+                    android:text="25"
+                    android:textColor="#87CEFA"
+                    android:textSize="24sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnPlus"
+                    app:layout_constraintHorizontal_bias="0.705"
+                    app:layout_constraintStart_toEndOf="@+id/btnMinus" />
 
-            <TextView
-                android:id="@+id/sexText"
-                android:layout_width="45dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
-                android:gravity="start"
-                android:text="Sexo"
-                android:textColor="#838383"
-                android:textSize="17dp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.107"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <Button
+                    android:id="@+id/btnPlus"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/rounded_shape_buttons"
+                    android:gravity="center"
+                    android:text="+"
+                    android:textSize="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.638"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-            <Button
-                android:id="@+id/ButtonMale"
-                android:layout_width="115dp"
-                android:layout_height="49dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="27dp"
-                android:layout_marginTop="13dp"
-                android:layout_marginEnd="192dp"
-                android:layout_marginBottom="14dp"
-                android:background="@drawable/rect_button_notpressed"
-                android:text="Hombre"
-                android:textSize="17dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/sexText"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <Button
-                android:id="@+id/ButtonFemale"
-                android:layout_width="115dp"
-                android:layout_height="51dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="33dp"
-                android:layout_marginTop="18dp"
-                android:layout_marginEnd="64dp"
-                android:layout_marginBottom="13dp"
-                android:background="@drawable/rect_button_notpressed"
-                android:text="Mujer"
-                android:textSize="17dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/ButtonMale"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View
-            android:id="@+id/divider7"
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:background="?android:attr/listDivider" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="490dp">
-
-            <TextView
-                android:id="@+id/heightText"
-                android:layout_width="63dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="56dp"
-                android:layout_marginTop="16dp"
-                android:gravity="start"
-                android:text="Altura"
-                android:textColor="#838383"
-                android:textSize="17dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/editTextHeight"
-                android:layout_width="130dp"
-                android:layout_height="49dp"
-                android:layout_marginStart="46dp"
-                android:background="@drawable/edittext_borders"
-                android:ems="10"
-                android:hint="0.00 cm"
-                android:inputType="numberDecimal"
-                android:paddingStart="11dp"
-                android:textColorHint="#AD989898"
-                android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/heightText" />
-
-
-            <TextView
-                android:id="@+id/weightText"
-                android:layout_width="63dp"
-                android:layout_height="24dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="104dp"
-                android:gravity="start"
-                android:text="Peso"
-                android:textColor="#838383"
-                android:textSize="17dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/neckText"
-                android:layout_width="63dp"
-                android:layout_height="24dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="104dp"
-                android:gravity="start"
-                android:text="Cuello"
-                android:textColor="#838383"
-                android:textSize="17dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextWeight" />
-
-            <EditText
-                android:id="@+id/editTextNeck"
-                android:layout_width="130dp"
-                android:layout_height="49dp"
-                android:layout_marginEnd="48dp"
-                android:background="@drawable/edittext_borders"
-                android:ems="10"
-                android:hint="0.00 cm"
-                android:inputType="numberDecimal"
-                android:paddingStart="11dp"
-                android:textColorHint="#AD989898"
-                android:textColor="@color/black"                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/neckText" />
-
-            <EditText
-                android:id="@+id/editTextFatPercent"
-                android:layout_width="130dp"
-                android:layout_height="51dp"
-                android:layout_marginEnd="48dp"
-                android:background="@drawable/edittext_borders"
-                android:ems="10"
-                android:enabled="false"
-                android:hint="0.00"
-                android:inputType="numberDecimal"
-                android:paddingStart="11dp"
-                android:textColor="@color/black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fatPercentText" />
-
-            <TextView
-                android:id="@+id/fatPercentText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="36dp"
-                android:gravity="center"
-                android:text="% Grasa Corporal"
-                android:textColor="#838383"
-                android:textSize="17dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextNeck" />
-
-            <EditText
-                android:id="@+id/editTextWeight"
-                android:layout_width="130dp"
-                android:layout_height="49dp"
-                android:layout_marginEnd="48dp"
-                android:background="@drawable/edittext_borders"
-                android:ems="10"
-                android:hint="0.00 kg"
-                android:inputType="numberDecimal"
-                android:paddingStart="11dp"
-                android:textColorHint="#AD989898"
-                android:textColor="@color/black"                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/weightText" />
-
-            <TextView
-                android:id="@+id/waistText"
-                android:layout_width="63dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="56dp"
-                android:layout_marginTop="8dp"
-                android:gravity="start"
-                android:text="Cintura"
-                android:textColor="#838383"
-                android:textSize="17dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextHeight" />
-
-            <EditText
-                android:id="@+id/editTextWaist"
-                android:layout_width="130dp"
-                android:layout_height="49dp"
-                android:layout_marginStart="46dp"
-                android:background="@drawable/edittext_borders"
-                android:ems="10"
-                android:hint="0.00 cm"
-                android:inputType="numberDecimal"
-                android:paddingStart="11dp"
-                android:textColorHint="#AD989898"
-                android:textColor="@color/black"                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/waistText" />
-
-            <TextView
-                android:id="@+id/hipText"
-                android:layout_width="63dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="56dp"
-                android:layout_marginTop="8dp"
-                android:gravity="start"
-                android:text="Cadera"
-                android:textColor="#838383"
-                android:textSize="17dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextWaist" />
-
-            <EditText
-                android:id="@+id/editTextHip"
-                android:layout_width="130dp"
-                android:layout_height="49dp"
-                android:layout_marginStart="46dp"
-                android:background="@drawable/edittext_disabled_background"
-                android:ems="10"
-                android:enabled="false"
-                android:hint="0.00 cm"
-                android:inputType="numberDecimal"
-                android:paddingStart="11dp"
-                android:textColorHint="#AD989898"
-                android:textColor="@color/black"                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hipText" />
-
-            <TextView
-                android:id="@+id/activityFactorText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="56dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="177dp"
-                android:gravity="center"
-                android:text="Factor de Actividad"
-                android:textColor="#838383"
-                android:textSize="17dp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/spinnerActivityFactor"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.866"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextHip" />
-
-            <Spinner
-                android:id="@+id/spinnerActivityFactor"
-                android:layout_width="285dp"
-                android:layout_height="51dp"
-                android:layout_marginStart="48dp"
-                android:layout_marginEnd="48dp"
-                android:background="@drawable/edittext_borders"
-                android:entries="@array/sport_activity_levels"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.366"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/activityFactorText" />
-
-            <Button
-                android:id="@+id/buttonCalculate"
-                android:layout_width="188dp"
-                android:layout_height="51dp"
-                android:layout_marginTop="26dp"
-                android:background="@drawable/rect_button_notpressed"
-                android:text="Calcular"
-                android:textSize="17dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.497"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinnerActivityFactor" />
 
             <View
-                android:id="@+id/divider8"
-                android:layout_width="409dp"
+                android:id="@+id/divider6"
+                android:layout_width="match_parent"
                 android:layout_height="4dp"
-                android:layout_marginStart="1dp"
-                android:layout_marginTop="19dp"
-                android:layout_marginEnd="1dp"
-                android:layout_marginBottom="9dp"
-                android:background="?android:attr/listDivider"
-                app:layout_constraintBottom_toTopOf="@+id/activityFactorText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextFatPercent" />
+                android:background="?android:attr/listDivider" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
-</FrameLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="0dp">
+
+
+                <TextView
+                    android:id="@+id/sexText"
+                    android:layout_width="45dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:gravity="start"
+                    android:text="Sexo"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.107"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/ButtonMale"
+                    android:layout_width="115dp"
+                    android:layout_height="49dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="27dp"
+                    android:layout_marginTop="13dp"
+                    android:layout_marginEnd="192dp"
+                    android:layout_marginBottom="14dp"
+                    android:background="@drawable/rect_button_notpressed"
+                    android:checkedButton="@{() -> calculatorutils.setSex(true)}"
+                    android:text="Hombre"
+                    android:textSize="17dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/sexText"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <Button
+                    android:id="@+id/ButtonFemale"
+                    android:layout_width="115dp"
+                    android:layout_height="51dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="33dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginEnd="64dp"
+                    android:layout_marginBottom="13dp"
+                    android:background="@drawable/rect_button_notpressed"
+                    android:checkedButton="@{() -> calculatorutils.setSex(false)}"
+                    android:text="Mujer"
+                    android:textSize="17dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/ButtonMale"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/divider7"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:background="?android:attr/listDivider" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="490dp">
+
+                <TextView
+                    android:id="@+id/heightText"
+                    android:layout_width="63dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="start"
+                    android:text="Altura"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/editTextHeight"
+                    android:layout_width="130dp"
+                    android:layout_height="49dp"
+                    android:layout_marginStart="46dp"
+                    android:background="@drawable/edittext_borders"
+                    android:ems="10"
+                    android:hint="0.00 cm"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="11dp"
+                    android:text="@={calculatorutils.heightAsString}"
+                    android:textColor="@color/black"
+                    android:textColorHint="#AD989898"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/heightText" />
+
+
+                <TextView
+                    android:id="@+id/weightText"
+                    android:layout_width="63dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="104dp"
+                    android:gravity="start"
+                    android:text="Peso"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/neckText"
+                    android:layout_width="63dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="104dp"
+                    android:gravity="start"
+                    android:text="Cuello"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextWeight" />
+
+                <EditText
+                    android:id="@+id/editTextNeck"
+                    android:layout_width="130dp"
+                    android:layout_height="49dp"
+                    android:layout_marginEnd="48dp"
+                    android:background="@drawable/edittext_borders"
+                    android:ems="10"
+                    android:hint="0.00 cm"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="11dp"
+                    android:text="@={calculatorutils.neckAsString}"
+                    android:textColor="@color/black"
+                    android:textColorHint="#AD989898"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/neckText" />
+
+                <!--                <EditText-->
+                <!--                    android:id="@+id/editTextFatPercent"-->
+                <!--                    android:layout_width="130dp"-->
+                <!--                    android:layout_height="51dp"-->
+                <!--                    android:layout_marginEnd="48dp"-->
+                <!--                    android:background="@drawable/edittext_borders"-->
+                <!--                    android:ems="10"-->
+                <!--                    android:enabled="false"-->
+                <!--                    android:hint="0.00"-->
+                <!--                    android:inputType="numberDecimal"-->
+                <!--                    android:paddingStart="11dp"-->
+                <!--                    android:textColor="@color/black"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@+id/fatPercentText" />-->
+
+
+                <TextView
+                    android:id="@+id/fatPercentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="36dp"
+                    android:gravity="center"
+                    android:text="% Grasa Corporal"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextNeck" />
+
+                <TextView
+                    android:id="@+id/fatPercentResultText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="48dp"
+                    android:layout_marginEnd="152dp"
+                    android:background="@drawable/edittext_borders"
+                    android:gravity="center"
+                    android:text="@{String.valueOf(calculatorutils.calculateFatPercentage())}"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextNeck" />
+
+                <EditText
+                    android:id="@+id/editTextWeight"
+                    android:layout_width="130dp"
+                    android:layout_height="49dp"
+                    android:layout_marginEnd="48dp"
+                    android:background="@drawable/edittext_borders"
+                    android:ems="10"
+                    android:hint="0.00 kg"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="11dp"
+                    android:text="@={calculatorutils.weightAsString}"
+                    android:textColor="@color/black"
+                    android:textColorHint="#AD989898"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/weightText" />
+
+                <TextView
+                    android:id="@+id/waistText"
+                    android:layout_width="63dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="start"
+                    android:text="Cintura"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextHeight" />
+
+                <EditText
+                    android:id="@+id/editTextWaist"
+                    android:layout_width="130dp"
+                    android:layout_height="49dp"
+                    android:layout_marginStart="46dp"
+                    android:background="@drawable/edittext_borders"
+                    android:ems="10"
+                    android:hint="0.00 cm"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="11dp"
+                    android:text="@={calculatorutils.waistAsString}"
+                    android:textColor="@color/black"
+                    android:textColorHint="#AD989898"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/waistText" />
+
+                <TextView
+                    android:id="@+id/hipText"
+                    android:layout_width="63dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="start"
+                    android:text="Cadera"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextWaist" />
+
+                <EditText
+                    android:id="@+id/editTextHip"
+                    android:layout_width="130dp"
+                    android:layout_height="49dp"
+                    android:layout_marginStart="46dp"
+                    android:background="@drawable/edittext_disabled_background"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:hint="0.00 cm"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="11dp"
+                    android:text="@={calculatorutils.weightAsString}"
+                    android:textColor="@color/black"
+                    android:textColorHint="#AD989898"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/hipText" />
+
+                <TextView
+                    android:id="@+id/activityFactorText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginEnd="177dp"
+                    android:gravity="center"
+                    android:text="Factor de Actividad"
+                    android:textColor="#838383"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/spinnerActivityFactor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.866"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextHip" />
+
+                <Spinner
+                    android:id="@+id/spinnerActivityFactor"
+                    android:layout_width="285dp"
+                    android:layout_height="51dp"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginEnd="48dp"
+                    android:background="@drawable/edittext_borders"
+                    android:entries="@array/sport_activity_levels"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.366"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/activityFactorText" />
+
+                <Button
+                    android:id="@+id/buttonCalculate"
+                    android:layout_width="188dp"
+                    android:layout_height="51dp"
+                    android:layout_marginTop="26dp"
+                    android:background="@drawable/rect_button_notpressed"
+                    android:text="Calcular"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.497"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerActivityFactor" />
+
+                <View
+                    android:id="@+id/divider8"
+                    android:layout_width="409dp"
+                    android:layout_height="4dp"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginTop="19dp"
+                    android:layout_marginEnd="1dp"
+                    android:layout_marginBottom="9dp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintBottom_toTopOf="@+id/activityFactorText"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextFatPercent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </FrameLayout>
+</layout>

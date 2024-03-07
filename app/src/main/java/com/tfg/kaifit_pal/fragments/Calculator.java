@@ -111,20 +111,20 @@ public class Calculator extends Fragment {
         maleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectGender(true, false, femaleEditText);
+                selectGender(true, femaleEditText);
             }
         });
 
         femaleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectGender(false, true, femaleEditText);
+                selectGender(false, femaleEditText);
             }
         });
     }
 
     // Method to select gender
-    private void selectGender(boolean maleSelected, boolean femaleSelected, EditText femaleEditText) {
+    private void selectGender(boolean sex, EditText femaleEditText) {
 
         View view = getView(); // Get the current view
         if (view != null) { // Check if the view is not null
@@ -132,15 +132,15 @@ public class Calculator extends Fragment {
             Button femaleButton = getView().findViewById(R.id.ButtonFemale);
 
             if (maleButton != null && femaleButton != null) { // Enable or disable buttons by checking they are not null
-                maleButton.setSelected(maleSelected);
-                maleButton.setBackgroundResource(maleSelected ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed);
-                femaleButton.setSelected(femaleSelected);
-                femaleButton.setBackgroundResource(femaleSelected ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed);
+                maleButton.setSelected(sex);
+                maleButton.setBackgroundResource(sex ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed);
+                femaleButton.setSelected(!sex);
+                femaleButton.setBackgroundResource(!sex ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed);
             }
 
             if (femaleEditText != null) { // Enable or disable text field by checking it's not null
-                femaleEditText.setEnabled(femaleSelected);
-                femaleEditText.setBackgroundResource(femaleSelected ? R.drawable.edittext_borders : R.drawable.edittext_disabled_background);
+                femaleEditText.setEnabled(!sex);
+                femaleEditText.setBackgroundResource(!sex ? R.drawable.edittext_borders : R.drawable.edittext_disabled_background);
             }
         }
     }
@@ -225,14 +225,16 @@ public class Calculator extends Fragment {
 
 
         // Check gender selection
-        boolean isMale = maleButton.isSelected();
-        boolean isFemale = femaleButton.isSelected();
+//        boolean isMale = maleButton.isSelected();
+//        boolean isFemale = femaleButton.isSelected();
+
+        boolean sex = maleButton.isSelected();
 
         // Use CalculatorUtils class to calculate fat percentage
-        CalculatorUtils calculatorUtils = new CalculatorUtils(isMale, isFemale, valueWeight, valueHeight, valueNeck, valueWaist, valueHip);
+        CalculatorUtils calculatorUtils = new CalculatorUtils(sex, valueWeight, valueHeight, valueNeck, valueWaist, valueHip);
 
         // Calculate fat percentage
-        double fatPercentage = calculatorUtils.calculateFatPercentage(isMale, isFemale);
+        double fatPercentage = calculatorUtils.calculateFatPercentage(sex);
 
         // Set fat percentage to the corresponding EditText
         EditText fatPercentageEditText = view.findViewById(R.id.editTextFatPercent);
