@@ -3,12 +3,15 @@ package com.tfg.kaifit_pal.calculator_logic;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
+import java.text.DecimalFormat;
+
 public class CalculatorUtils {
 
     private int age;
     private double weight, height, waist, hip, neck;
     private double fatPercentage;
     private boolean sex;
+
 
     public CalculatorUtils() {
     }
