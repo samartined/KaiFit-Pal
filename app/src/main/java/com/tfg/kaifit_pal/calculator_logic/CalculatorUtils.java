@@ -3,21 +3,20 @@ package com.tfg.kaifit_pal.calculator_logic;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
-public class CalculatorUtils extends BaseObservable {
+public class CalculatorUtils {
 
-    int age;
-    double weight, height, waist, hip, neck;
-    double fatPercentage;
-    boolean male, female;
+    private int age;
+    private double weight, height, waist, hip, neck;
+    private double fatPercentage;
+    private boolean sex;
 
     public CalculatorUtils() {
     }
 
     // Constructor for the class with all the UI elements
-    public CalculatorUtils(boolean isMale, boolean isFemale, int age, double weight, double height, double neck, double waist, double hip) {
+    public CalculatorUtils(boolean sex, int age, double weight, double height, double neck, double waist, double hip) {
 
-        this.male = isMale;
-        this.female = isFemale;
+        this.sex = sex;
         this.age = age;
         this.weight = weight;
         this.height = height;
@@ -28,10 +27,9 @@ public class CalculatorUtils extends BaseObservable {
     }
 
     // Constructor for the class without the age UI element, used only for % fat calculation
-    public CalculatorUtils(boolean isMale, boolean isFemale, double weight, double height, double neck, double waist, double hip) {
+    public CalculatorUtils(boolean sex, double weight, double height, double neck, double waist, double hip) {
 
-        this.male = isMale;
-        this.female = isFemale;
+        this.sex = sex;
         this.weight = weight;
         this.height = height;
         this.neck = neck;
@@ -40,7 +38,6 @@ public class CalculatorUtils extends BaseObservable {
 
     }
 
-    @Bindable
     public int getAge() {
         return age;
     }
@@ -49,7 +46,6 @@ public class CalculatorUtils extends BaseObservable {
         this.age = age;
     }
 
-    @Bindable
     public double getWeight() {
         return weight;
     }
@@ -58,7 +54,6 @@ public class CalculatorUtils extends BaseObservable {
         this.weight = weight;
     }
 
-    @Bindable
     public double getHeight() {
         return height;
     }
@@ -67,7 +62,6 @@ public class CalculatorUtils extends BaseObservable {
         this.height = height;
     }
 
-    @Bindable
     public double getWaist() {
         return waist;
     }
@@ -76,7 +70,6 @@ public class CalculatorUtils extends BaseObservable {
         this.waist = waist;
     }
 
-    @Bindable
     public double getHip() {
         return hip;
     }
@@ -85,7 +78,6 @@ public class CalculatorUtils extends BaseObservable {
         this.hip = hip;
     }
 
-    @Bindable
     public double getNeck() {
         return neck;
     }
@@ -94,7 +86,14 @@ public class CalculatorUtils extends BaseObservable {
         this.neck = neck;
     }
 
-    @Bindable
+    public boolean isSex() {
+        return sex;
+    }
+
+    public void setSex(boolean sex) {
+        this.sex = sex;
+    }
+
     public double getFatPercentage() {
         return fatPercentage;
     }
@@ -104,14 +103,14 @@ public class CalculatorUtils extends BaseObservable {
     }
 
 
-    public double calculateFatPercentage(boolean isMale, boolean isFemale) {
+    public double calculateFatPercentage(boolean sex) {
         // Calculate fat percentage
         double fatPercentage = 0;
 
-        if (isMale) {
+        if (sex) {
             // Formula for masculine people
             fatPercentage = 86.010 * Math.log10(waist - neck) - 70.041 * Math.log10(height) + 36.76;
-        } else if (isFemale) {
+        } else {
             // Formula for female people
             fatPercentage = 163.205 * Math.log10(waist + hip - neck) - 97.684 * Math.log10(height) - 78.387;
         }
