@@ -32,7 +32,10 @@ android {
 
     buildFeatures {
         viewBinding =
-            true // Se activa el viewBinding, que permite acceder a los elementos de la vista de manera más sencilla
+            true // Activates view binding in the module. This is a replacement for findViewById, and is used to bind views to data sources.
+
+        dataBinding =
+            true; // This allows you to bind UI components in your layouts to data sources in your app using a declarative format rather than programmatically.
     }
 }
 

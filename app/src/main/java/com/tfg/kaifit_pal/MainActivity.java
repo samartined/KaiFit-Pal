@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.tfg.kaifit_pal.fragments.Calculator;
 
 public class MainActivity extends AppCompatActivity {
 

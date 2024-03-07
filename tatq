@@ -1,0 +1,19 @@
+* [33mc85eb7f[m[33m ([m[1;31morigin/feature/calculator-gui[m[33m, [m[1;32mfeature/calculator-gui[m[33m)[m Style problems in minor components fixed
+[31m|[m *   [33m38620dd[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/calculator-logic[m[33m, [m[1;31morigin/feature/calculator-logic[m[33m)[m Merge branch 'feature/calculator-gui' into feature/calculator-logic
+[31m|[m [32m|[m[31m\[m  
+[31m|[m [32m|[m[31m/[m  
+[31m|[m[31m/[m[32m|[m   
+* [32m|[m [33mb35ac0c[m Error with age control-buttons fixed
+[33m|[m * [33m0962d35[m Logic class CalculatorUtils has been changed to operate with independency of the UI. Also, TextWatcher have been introduced. Although, the UI keep crashing with this changes
+[33m|[m * [33m342dffb[m A CalculatorUtils class has been created to manage the logic at the backgraound of the UI's app. The clase parse the Edittext objects which it recieves into double variables to operate with them. The class implements a method with initial formules to calculate the fat percentage. Nevertheless, the simultanious implementation of this class with the UI components is crashing the app in this state of code.
+[33m|[m[33m/[m  
+* [33m941a285[m[33m ([m[1;31morigin/feature/menu-inferior[m[33m, [m[1;31morigin/dev[m[33m, [m[1;32mfeature/menu-inferior[m[33m, [m[1;32mdev[m[33m)[m Variables and comments have been refactor and reformulate in english pursuing better repository standardization.
+* [33md07c0bc[m Modularization of components in MainActivity class and the first fragment of the Calculator UI have been improved and added to the project structure.
+* [33m1be9c17[m UI structure has been modified to convert the main content into a fragment, showing in the main activity common elements (as a bottom bar nav, at this moment), Problems with styles overriding the colors settings in components have been fixed
+* [33mcedd6d8[m Changed the focus of the interface to assigning views to fragments instead of activities, keeping as main view an empty view (for now) with a bottom navigation bar.
+* [33m5676566[m The gradle is modified to prepare dynamic interaction of views. Vectors are created to insert in the menu and we start working on the menu template.
+* [33m6b85fe6[m Added consistency improvements to colors and added values to colors.xml
+* [33m48f6bf9[m A basic and initial outline of the ui of the first view has been made.
+* [33medf3bbc[m More edittext components have been created to take user measurements. It remains to enter the hip measurement and configure it so that the button is only usable if the female gender is checked. Several container layouts have been changed to facilitate the placement of the buttons.
+* [33mee1101f[m The first components have been created. An edit text has been generated so that the user can enter his age, and the buttons for the gender field are being created. It remains to build the rest of the components and figure out how to change the default ui theme that appears in purple.
+* [33m858ff6a[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m First commit. Empty View Template created
