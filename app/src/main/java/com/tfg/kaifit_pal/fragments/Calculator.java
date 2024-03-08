@@ -1,4 +1,4 @@
-package com.tfg.kaifit_pal;
+package com.tfg.kaifit_pal.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.*;
 
 import androidx.fragment.app.Fragment;
+
+import com.tfg.kaifit_pal.R;
 
 public class Calculator extends Fragment {
 
@@ -39,15 +41,6 @@ public class Calculator extends Fragment {
         ageButtonMinus.setOnClickListener(v -> decreaseAge());
         ageButtonPlus.setOnClickListener(v -> increaseAge());
 
-        View.OnClickListener calculationButtonsListener = v -> {
-            if (!(maleButton.isSelected() || femaleButton.isSelected())) {
-                showToast("Selecciona tu sexo antes de calcular.");
-            }
-        };
-
-        calculateButton.setOnClickListener(calculationButtonsListener);
-        calculateFatPercentageButton.setOnClickListener(calculationButtonsListener);
-
         View.OnClickListener genderButtonListener = v -> {
             boolean isMale = v.getId() == R.id.ButtonMale;
             selectGender(isMale, !isMale);
@@ -55,6 +48,15 @@ public class Calculator extends Fragment {
 
         maleButton.setOnClickListener(genderButtonListener);
         femaleButton.setOnClickListener(genderButtonListener);
+
+        View.OnClickListener calculationButtonsListener = v -> {
+            if (!femaleButton.isSelected() && !maleButton.isSelected()) {
+                showToast("Selecciona tu sexo antes de calcular.");
+            }
+        };
+
+        calculateButton.setOnClickListener(calculationButtonsListener);
+        calculateFatPercentageButton.setOnClickListener(calculationButtonsListener);
 
         Spinner activityFactorSpinner = rootView.findViewById(R.id.spinnerActivityFactor);
         activityFactorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -85,6 +87,10 @@ public class Calculator extends Fragment {
     }
 
     private void selectGender(boolean maleSelected, boolean femaleSelected) {
+
+        maleButton.setSelected(maleSelected);
+        femaleButton.setSelected(femaleSelected);
+
         int maleButtonBackground = maleSelected ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed;
         int femaleButtonBackground = femaleSelected ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed;
         int femaleEditTextBackground = femaleSelected ? R.drawable.edittext_borders : R.drawable.edittext_disabled_background;
