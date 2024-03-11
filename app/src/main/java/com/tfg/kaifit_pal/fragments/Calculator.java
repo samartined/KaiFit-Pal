@@ -93,17 +93,17 @@ public class Calculator extends Fragment {
             }
 
             private double parseDouble(String str) {
-                if (str.matches("\\d+(\\.\\d+)?")) {
+                try {
                     return Double.parseDouble(str);
-                } else {
+                } catch (NumberFormatException e) {
                     return 0;
                 }
             }
 
             private int parseInt(String str) {
-                if (str.matches("\\d+")) {
+                try {
                     return Integer.parseInt(str);
-                } else {
+                } catch (NumberFormatException e) {
                     return 0;
                 }
             }
