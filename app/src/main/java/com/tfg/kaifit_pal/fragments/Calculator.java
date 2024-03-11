@@ -85,17 +85,27 @@ public class Calculator extends Fragment {
                     fatPercentageEditText.setText("Calculando...");
                 } else if (fatPercentage == 0) {
                     fatPercentageEditText.setText("Ingrese datos.");
+                } else if (fatPercentage > 100) {
+                    fatPercentageEditText.setText("Datos incorrectos.");
                 } else {
                     fatPercentageEditText.setText(String.format("%.2f%%", fatPercentage));
                 }
             }
 
             private double parseDouble(String str) {
-                return str.isEmpty() ? 0 : Double.parseDouble(str);
+                if (str.matches("\\d+(\\.\\d+)?")) {
+                    return Double.parseDouble(str);
+                } else {
+                    return 0;
+                }
             }
 
             private int parseInt(String str) {
-                return str.isEmpty() ? 0 : Integer.parseInt(str);
+                if (str.matches("\\d+")) {
+                    return Integer.parseInt(str);
+                } else {
+                    return 0;
+                }
             }
 
             @Override
