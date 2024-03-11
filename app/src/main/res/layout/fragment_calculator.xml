@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.Calculator">
+    tools:context="com.tfg.kaifit_pal.fragments.Calculator">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -65,10 +65,10 @@
                 android:layout_marginTop="21dp"
                 android:layout_marginEnd="14dp"
                 android:layout_marginBottom="24dp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
                 android:text="25"
+                android:textColor="@color/black"
                 android:textSize="24sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btnPlus"
                 app:layout_constraintHorizontal_bias="0.705"
@@ -110,8 +110,8 @@
                 android:id="@+id/sexText"
                 android:layout_width="45dp"
                 android:layout_height="25dp"
-                android:layout_marginTop="41dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginTop="38dp"
+                android:layout_marginEnd="25dp"
                 android:layout_marginBottom="36dp"
                 android:gravity="start"
                 android:text="Sexo"
@@ -130,33 +130,25 @@
                 android:layout_width="115dp"
                 android:layout_height="49dp"
                 android:layout_gravity="center"
-                android:layout_marginStart="19dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="11dp"
+                android:layout_marginEnd="28dp"
+                android:layout_marginBottom="27dp"
                 android:background="@drawable/rect_button_notpressed"
                 android:text="Hombre"
                 android:textSize="17dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ButtonFemale"
-                app:layout_constraintStart_toEndOf="@+id/sexText"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toStartOf="@+id/ButtonFemale" />
 
             <Button
                 android:id="@+id/ButtonFemale"
                 android:layout_width="115dp"
-                android:layout_height="51dp"
+                android:layout_height="49dp"
                 android:layout_gravity="center"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="45dp"
-                android:layout_marginBottom="9dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginEnd="39dp"
                 android:background="@drawable/rect_button_notpressed"
                 android:text="Mujer"
                 android:textSize="17dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ButtonMale"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -442,6 +434,7 @@
                 android:hint="0.00 %"
                 android:inputType="numberDecimal"
                 android:paddingStart="11dp"
+                android:paddingEnd="11dp"
                 android:textColor="@color/black"
                 android:textSize="17dp"
                 app:layout_constraintBottom_toTopOf="@+id/divider8"
