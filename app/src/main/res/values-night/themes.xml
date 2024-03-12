@@ -1,7 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.KaiFitPal" parent="Theme.Design.Light.NoActionBar">
+    <style name="Base.Theme.KaiFitPal" parent="Theme.AppCompat.Light">
         <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item>s -->
+        <item name="colorPrimary">@color/verde_claro</item>
+        <item name="colorPrimaryDark">@color/verde_claro_dark</item>
+        <item name="toolbarStyle">@color/black</item>
     </style>
 </resources>
