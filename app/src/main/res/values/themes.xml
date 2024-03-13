@@ -13,7 +13,8 @@
 
     <!-- Define your custom colors -->
     <color name="verde_claro">#70C75C</color>
-    <color name="verde_claro_dark">#5A9E47</color> <!-- Darker shade of verde claro for primary dark -->
+    <color name="verde_claro_dark">#5A9E47
+    </color> <!-- Darker shade of verde claro for primary dark -->
     <color name="accent_naranja">#FFA500</color>
 
 </resources>

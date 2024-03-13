@@ -2,6 +2,7 @@ package com.tfg.kaifit_pal;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,22 +15,31 @@ import com.tfg.kaifit_pal.fragments.Profile;
 import com.tfg.kaifit_pal.fragments.Settings;
 import com.tfg.kaifit_pal.fragments.TDEE_Macros;
 
+import java.util.Stack;
+
 public class MainActivity extends AppCompatActivity implements Calculator.OnCalculateClickListener {
 
+    // FragmentManager to manage fragments
+    private FragmentManager fragmentManager;
+
     @Override
-    // onCreate method
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize the fragmentManager
+        fragmentManager = getSupportFragmentManager();
+
+        // Add the default fragment
         addDefaultFragment(savedInstanceState);
+
+        // Setup bottom navigation view
         setupBottomNavigationView();
     }
 
-    // Method to setup bottom navigation view
     private void setupBottomNavigationView() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
-            // First, we equal the selectedFragment to null to avoid any possible errors
             Fragment selectedFragment = null;
             int itemId = item.getItemId();
             if (itemId == R.id.user_profile_menu_option) {
@@ -43,22 +53,22 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
             } else if (itemId == R.id.settings_menu_option) {
                 selectedFragment = new Settings();
             } else {
-                // If the itemId is not valid, we log an error and return false
                 Log.e("MainActivity", "Invalid itemId: " + itemId);
                 return false;
             }
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_view, selectedFragment).commit();
+
+            // Replace the current fragment with the selected one
+            fragmentManager.beginTransaction().replace(R.id.fragment_container_view, selectedFragment).commit();
             return true;
         });
     }
 
-    // Method to add default fragment, in this case it will be the calculator
     private void addDefaultFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-
-            // Replaces the fragment_container_view with the Calculator fragment
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_view, new Calculator()).commit();
-
+            Fragment defaultFragment = new Calculator();
+            fragmentManager.beginTransaction().add(R.id.fragment_container_view, defaultFragment).commit();
+            
+            // Set the selected item in the bottom navigation view to Calculator
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
             bottomNavigationView.setSelectedItemId(R.id.calculator_menu_option);
         }
@@ -66,8 +76,16 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
 
     @Override
     public void onCalculateClick() {
-        // We check if the current fragment is the Calculator, if so, we replace it with the TDEE_Macros fragment, and vice versa
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_view,
-                getSupportFragmentManager().findFragmentById(R.id.fragment_container_view) instanceof Calculator ? new TDEE_Macros() : new Calculator()).commit();
+        Fragment newFragment = fragmentManager.findFragmentById(R.id.fragment_container_view) instanceof Calculator ? new TDEE_Macros() : new Calculator();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container_view, newFragment).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
