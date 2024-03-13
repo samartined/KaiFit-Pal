@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
             return true;
         });
     }
-        bottomNavigationView.setSelectedItemId(R.id.calculator_menu_option);
 
     // Method to add default fragment, in this case it will be the calculator
     private void addDefaultFragment(Bundle savedInstanceState) {
