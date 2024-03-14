@@ -1,11 +1,13 @@
 package com.tfg.kaifit_pal;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tfg.kaifit_pal.fragments.Calculator;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
 
         // Setup bottom navigation view
         setupBottomNavigationView();
+
     }
 
     private void setupBottomNavigationView() {
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         if (savedInstanceState == null) {
             Fragment defaultFragment = new Calculator();
             fragmentManager.beginTransaction().add(R.id.fragment_container_view, defaultFragment).commit();
-            
+
             // Set the selected item in the bottom navigation view to Calculator
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
             bottomNavigationView.setSelectedItemId(R.id.calculator_menu_option);
@@ -75,9 +78,12 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
     }
 
     @Override
-    public void onCalculateClick() {
-        Fragment newFragment = fragmentManager.findFragmentById(R.id.fragment_container_view) instanceof Calculator ? new TDEE_Macros() : new Calculator();
-        fragmentManager.beginTransaction().replace(R.id.fragment_container_view, newFragment).addToBackStack(null).commit();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -87,5 +93,11 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onCalculateClick() {
+        Fragment newFragment = fragmentManager.findFragmentById(R.id.fragment_container_view) instanceof Calculator ? new TDEE_Macros() : new Calculator();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container_view, newFragment).addToBackStack(null).commit();
     }
 }

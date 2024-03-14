@@ -1,0 +1,76 @@
+* [33m4840f38[m[33m ([m[1;31morigin/feature/tdee_results[m[33m, [m[1;31morigin/feature/fragments_lifecycle[m[33m, [m[1;32mfeature/tdee_results[m[33m, [m[1;32mfeature/fragments_lifecycle[m[33m)[m Created a FragmentManager field in main class activity to control the fragment's pile and prepare the menu back
+[31m|[m * [33m323e61f[m[33m ([m[1;35mrefs/stash[m[33m)[m WIP on feature/appbar_configuration: f2a7dc7 Style misconfigurations of sex-buttons fixed.
+[31m|[m[31m/[m[33m|[m 
+[31m|[m * [33m7cb2193[m index on feature/appbar_configuration: f2a7dc7 Style misconfigurations of sex-buttons fixed.
+[31m|[m[31m/[m  
+* [33mf2a7dc7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/appbar_configuration[m[33m)[m Style misconfigurations of sex-buttons fixed.
+*   [33mddcf0a7[m Merge branch 'feature/templates_views' into feature/tdee_results
+[34m|[m[35m\[m  
+[34m|[m * [33mfeb7340[m[33m ([m[1;31morigin/feature/templates_views[m[33m, [m[1;32mfeature/templates_views[m[33m)[m Layout templates of the different views of the app have been created. Furthermore, the buttomNavBar icons have been provided of dynamic behaviour to switch among them.
+* [35m|[m [33m7362582[m Fragments of new view of calculator results' created. Adjusting the fragments transactions. An interface has been created on Calculator class to capture the transaction from this GUI. It remains to continue with the transactions to come back and also set up the actions of the items in the bottom bar nav. Besides, code has been simplified.
+[35m|[m[35m/[m  
+* [33mcfb4769[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m .gitignore modified.
+* [33mfb35e7f[m[33m ([m[1;31morigin/feature/calculator-logic-textwatchers[m[33m)[m Simplifying treatment-exceptions code in edittextviews.
+* [33m0ad5857[m Input bugs from edittext components had been controlled and treated.
+*   [33md4df71f[m Merge branch 'feature/calculator-gui' into feature/calculator-logic-textwatchers
+[36m|[m[1;31m\[m  
+* [1;31m\[m   [33mec4edee[m Merge branch 'feature/calculator-gui' into feature/calculator-logic-textwatchers
+[1;32m|[m[1;33m\[m [1;31m\[m  
+* [1;33m|[m [1;31m|[m [33m9527286[m Calculator performance works perfectly. Fixed problems with logic. Also, Calculator class code has been modularized and simplified.
+* [1;33m|[m [1;31m|[m [33m79274f7[m Latest point of branch. No solution reached for this structure.
+* [1;33m|[m [1;31m|[m [33m786dc2e[m I've achieved to mantain stability in the textwatchers. Fixed the problem of the setUpFatPercetage receiving null values. Now problem is the methods outputting always 0.0
+* [1;33m|[m [1;31m|[m   [33m3cac03f[m Merging#
+[1;34m|[m[1;35m\[m [1;33m\[m [1;31m\[m  
+* [1;35m|[m [1;33m|[m [1;31m|[m [33m377b2f6[m All style errors fixed and changing the edtitext fatpercent per a textview
+* [1;35m|[m [1;33m|[m [1;31m|[m   [33m579a371[m Merge branch 'feature/calculator-gui' into feature/calculator-logic-textwatchers
+[1;36m|[m[31m\[m [1;35m\[m [1;33m\[m [1;31m\[m  
+* [31m|[m [1;35m|[m [1;33m|[m [1;31m|[m [33mc783ac1[m Deleting databinding settings
+[31m|[m [31m|[m [1;35m|[m [1;33m|[m [1;31m|[m *   [33mcc277a7[m[33m ([m[1;31morigin/feature/calculator-gui[m[33m, [m[1;32mfeature/calculator-gui[m[33m)[m Merge remote-tracking branch 'origin/feature/calculator-gui' into feature/calculator-gui
+[31m|[m [31m|[m [1;35m|[m [1;33m|[m [1;31m|[m [32m|[m[1;31m\[m  
+[31m|[m [31m|[m [1;35m|[m [1;33m|[m [1;31m|[m [32m|[m[1;31m/[m  
+[31m|[m [31m|[m [1;35m|[m [1;33m|[m [1;31m|[m[1;31m/[m[32m|[m   
+[31m|[m [31m|[m [1;35m|[m [1;33m|[m * [32m|[m [33m1971aa0[m Adjustment of padding end at fatpercentage textview.
+[31m|[m [31m|[m [1;35m|[m [1;33m|[m[1;33m/[m [32m/[m  
+[31m|[m [31m|[m [1;35m|[m [1;33m|[m * [33m0cbf83a[m Adjustment of padding end at fatpercentage textview.
+[31m|[m [31m|[m [1;35m|[m [1;33m|[m[1;33m/[m  
+[31m|[m [31m|[m [1;35m|[m * [33mf3fbf65[m GUI calculator modified without title, exploiting the standar title bar in top application. Constraints and margins had been adjusted,
+[31m|[m [31m|[m [1;35m|[m[1;35m/[m  
+[31m|[m [31m|[m [1;35m|[m *   [33m67a6fee[m[33m ([m[1;31morigin/feature/calculator-gui-alternative[m[33m)[m Merge branch 'feature/calculator-logic' into feature/calculator-gui-alternative
+[31m|[m [31m|[m [1;35m|[m [34m|[m[35m\[m  
+[31m|[m [31m|[m [1;35m|[m [34m|[m * [33mcfdbcc5[m[33m ([m[1;31morigin/feature/calculator-logic[m[33m)[m We delete bindable and relative elements to having a pure logic template in the app
+[31m|[m [31m|[m[31m_[m[1;35m|[m[31m_[m[34m|[m[31m/[m  
+[31m|[m[31m/[m[31m|[m [1;35m|[m [34m|[m   
+[31m|[m [31m|[m [1;35m|[m * [33mc4ad11d[m Toast Problem Fixed
+[31m|[m [31m|[m [1;35m|[m * [33mf928d22[m Simple logic had been added to start testing calculations implementations
+[31m|[m [31m|[m [1;35m|[m *   [33m28a1636[m Merging
+[31m|[m [31m|[m [1;35m|[m [36m|[m[31m\[m  
+[31m|[m [31m|[m[31m_[m[1;35m|[m[31m_[m[36m|[m[31m/[m  
+[31m|[m[31m/[m[31m|[m [1;35m|[m [36m|[m   
+[31m|[m [31m|[m [1;35m|[m * [33m3ba1d6e[m Building differente interface to avoid problems with textwatchers to show a dynamic fatpercentage. By now the simple components have been created, also a toast message to advise users to click on gender buttons, but the message shows itsels always calculations buttons are clicked. The structure of code has been improved too
+[31m|[m [31m|[m [1;35m|[m[1;35m/[m  
+[31m|[m [31m|[m * [33mb4804d8[m Themes file changed because it blocks the buttons appareance configuration. Better use only AppCompat themes
+[31m|[m [31m|[m[31m/[m  
+[31m|[m * [33m329f07d[m Dividers size decreased and corrected minnor errors in style components
+[31m|[m [1;31m|[m * [33mcff4f0d[m[33m ([m[1;31morigin/feature/calculator-logic-databinding[m[33m)[m Modularization improved and incorporaed the implementation of bidirecctional communication between datamodelview and the views. Existing error in this version with some handling of the Data Binding class of Android
+[31m|[m [1;31m|[m[31m/[m  
+[31m|[m[31m/[m[1;31m|[m   
+* [1;31m|[m [33m16ada6e[m Merge branch 'feature/calculator-gui' into feature/calculator-logic
+[1;33m|[m[1;31m\[m[1;31m|[m 
+[1;33m|[m * [33mc85eb7f[m Style problems in minor components fixed
+* [1;34m|[m [33m2e0e8f4[m Proceeding to test the use of Data Bilding. CalculadoraUtils' getters and setters created, incorporating the use of @Bindable
+* [1;34m|[m [33m38620dd[m Merge branch 'feature/calculator-gui' into feature/calculator-logic
+[1;35m|[m[1;34m\[m[1;34m|[m 
+[1;35m|[m * [33mb35ac0c[m Error with age control-buttons fixed
+* [1;36m|[m [33m0962d35[m Logic class CalculatorUtils has been changed to operate with independency of the UI. Also, TextWatcher have been introduced. Although, the UI keep crashing with this changes
+* [1;36m|[m [33m342dffb[m A CalculatorUtils class has been created to manage the logic at the backgraound of the UI's app. The clase parse the Edittext objects which it recieves into double variables to operate with them. The class implements a method with initial formules to calculate the fat percentage. Nevertheless, the simultanious implementation of this class with the UI components is crashing the app in this state of code.
+[1;36m|[m[1;36m/[m  
+* [33m941a285[m[33m ([m[1;31morigin/feature/menu-inferior[m[33m)[m Variables and comments have been refactor and reformulate in english pursuing better repository standardization.
+* [33md07c0bc[m Modularization of components in MainActivity class and the first fragment of the Calculator UI have been improved and added to the project structure.
+* [33m1be9c17[m UI structure has been modified to convert the main content into a fragment, showing in the main activity common elements (as a bottom bar nav, at this moment), Problems with styles overriding the colors settings in components have been fixed
+* [33mcedd6d8[m Changed the focus of the interface to assigning views to fragments instead of activities, keeping as main view an empty view (for now) with a bottom navigation bar.
+* [33m5676566[m The gradle is modified to prepare dynamic interaction of views. Vectors are created to insert in the menu and we start working on the menu template.
+* [33m6b85fe6[m Added consistency improvements to colors and added values to colors.xml
+* [33m48f6bf9[m A basic and initial outline of the ui of the first view has been made.
+* [33medf3bbc[m More edittext components have been created to take user measurements. It remains to enter the hip measurement and configure it so that the button is only usable if the female gender is checked. Several container layouts have been changed to facilitate the placement of the buttons.
+* [33mee1101f[m The first components have been created. An edit text has been generated so that the user can enter his age, and the buttons for the gender field are being created. It remains to build the rest of the components and figure out how to change the default ui theme that appears in purple.
+* [33m858ff6a[m First commit. Empty View Template created
