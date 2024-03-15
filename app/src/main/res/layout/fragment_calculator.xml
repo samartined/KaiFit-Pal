@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.Calculator">
+    tools:context="com.tfg.kaifit_pal.fragments.Calculator">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
 
         <Space
             android:layout_width="match_parent"
@@ -21,7 +20,6 @@
             android:layout_height="77dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
-
 
             <TextView
                 android:id="@+id/ageText"
@@ -93,7 +91,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         <View
             android:id="@+id/divider6"
             android:layout_width="match_parent"
@@ -105,13 +102,12 @@
             android:layout_height="102dp"
             android:layout_marginLeft="0dp">
 
-
             <TextView
                 android:id="@+id/sexText"
                 android:layout_width="45dp"
                 android:layout_height="25dp"
-                android:layout_marginTop="41dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginTop="38dp"
+                android:layout_marginEnd="25dp"
                 android:layout_marginBottom="36dp"
                 android:gravity="start"
                 android:text="Sexo"
@@ -199,7 +195,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/heightText" />
 
-
             <TextView
                 android:id="@+id/weightText"
                 android:layout_width="63dp"
@@ -248,21 +243,6 @@
                 app:layout_constraintBottom_toTopOf="@+id/fatPercentText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/neckText" />
-
-            <!--            <EditText-->
-            <!--                android:id="@+id/editTextFatPercent"-->
-            <!--                android:layout_width="130dp"-->
-            <!--                android:layout_height="51dp"-->
-            <!--                android:layout_marginEnd="48dp"-->
-            <!--                android:background="@drawable/edittext_borders"-->
-            <!--                android:ems="10"-->
-            <!--                android:enabled="false"-->
-            <!--                android:hint="0.00"-->
-            <!--                android:inputType="numberDecimal"-->
-            <!--                android:paddingStart="11dp"-->
-            <!--                android:textColor="@color/black"-->
-            <!--                app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                app:layout_constraintTop_toBottomOf="@+id/fatPercentText" />-->
 
             <TextView
                 android:id="@+id/fatPercentText"
@@ -426,7 +406,7 @@
             <TextView
                 android:id="@+id/TextViewFatPercent"
                 android:layout_width="132dp"
-                android:layout_height="49dp"
+                android:layout_height="53dp"
                 android:layout_marginEnd="46dp"
                 android:layout_marginBottom="25dp"
                 android:background="@drawable/edittext_borders"
