@@ -16,4 +16,8 @@
     </color> <!-- Darker shade of verde claro for primary dark -->
     <color name="accent_naranja">#FFA500</color>
 
+    <!-- Customizing toolbar -->
+    <style name="Theme.KaiFitPal.Toolbar" parent="Theme.KaiFitPal">
+        <item name="colorControlNormal">@color/white</item>
+    </style>
 </resources>

@@ -5,4 +5,9 @@
         <item name="colorPrimary">@color/verde_claro</item>
         <item name="colorPrimaryDark">@color/verde_claro_dark</item>
     </style>
+
+    <!-- Customizing toolbar -->
+    <style name="Theme.KaiFitPal.Toolbar" parent="Theme.KaiFitPal">
+        <item name="colorControlNormal">@color/white</item>
+    </style>
 </resources>

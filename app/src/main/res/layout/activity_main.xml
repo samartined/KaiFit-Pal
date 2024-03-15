@@ -13,6 +13,7 @@
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
+        app:theme="@style/Theme.KaiFitPal.Toolbar"
         app:title="KaiFit-Pal"
         app:titleTextColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/fragment_container_view"
