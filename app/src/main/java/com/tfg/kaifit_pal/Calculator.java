@@ -44,6 +44,18 @@ public class Calculator extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // Set the male button as selected after the view is created
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                selectGender(true, false, view.findViewById(R.id.editTextHip));
+            }
+        });
+    }
+
     // Initialize views and buttons
     private void initViews(View rootView) {
         dynamicAge = rootView.findViewById(R.id.ageTextView);
