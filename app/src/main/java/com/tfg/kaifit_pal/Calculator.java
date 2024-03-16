@@ -134,6 +134,7 @@ public class Calculator extends Fragment {
             }
 
             if (femaleEditText != null) { // Enable or disable text field by checking it's not null
+                femaleEditText.setText("");
                 femaleEditText.setEnabled(femaleSelected);
                 femaleEditText.setBackgroundResource(femaleSelected ? R.drawable.edittext_borders : R.drawable.edittext_disabled_background);
             }

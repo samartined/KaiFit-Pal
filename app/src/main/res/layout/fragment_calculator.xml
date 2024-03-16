@@ -165,14 +165,12 @@
                 android:layout_height="24dp"
                 android:layout_marginStart="56dp"
                 android:layout_marginTop="17dp"
-                android:layout_marginEnd="115dp"
                 android:gravity="start"
                 android:text="Altura"
                 android:textColor="#838383"
                 android:textSize="17dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/editTextHeight"
-                app:layout_constraintEnd_toStartOf="@+id/editTextWeight"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -185,7 +183,7 @@
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/edittext_borders"
                 android:ems="10"
-                android:hint="0.00 cm"
+                android:hint="0 cm"
                 android:inputType="numberDecimal"
                 android:paddingStart="11dp"
                 android:textColor="@color/black"
@@ -199,9 +197,8 @@
                 android:id="@+id/weightText"
                 android:layout_width="63dp"
                 android:layout_height="24dp"
-                android:layout_marginStart="126dp"
                 android:layout_marginTop="17dp"
-                android:layout_marginEnd="104dp"
+                android:layout_marginEnd="103dp"
                 android:gravity="start"
                 android:text="Peso"
                 android:textColor="#838383"
@@ -209,8 +206,6 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/editTextWeight"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/heightText"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -295,7 +290,6 @@
                 android:layout_height="49dp"
                 android:layout_marginStart="46dp"
                 android:layout_marginEnd="58dp"
-                android:layout_marginBottom="9dp"
                 android:background="@drawable/edittext_borders"
                 android:ems="10"
                 android:hint="0.00 cm"
@@ -327,8 +321,7 @@
                 android:layout_width="130dp"
                 android:layout_height="49dp"
                 android:layout_marginStart="46dp"
-                android:layout_marginEnd="57dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginEnd="58dp"
                 android:background="@drawable/edittext_disabled_background"
                 android:ems="10"
                 android:enabled="false"
@@ -337,7 +330,6 @@
                 android:paddingStart="11dp"
                 android:textColor="@color/black"
                 android:textColorHint="#AD989898"
-                app:layout_constraintBottom_toTopOf="@+id/divider8"
                 app:layout_constraintEnd_toStartOf="@+id/TextViewFatPercent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hipText" />
@@ -405,10 +397,10 @@
 
             <TextView
                 android:id="@+id/TextViewFatPercent"
-                android:layout_width="132dp"
-                android:layout_height="53dp"
+                android:layout_width="130dp"
+                android:layout_height="49dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginEnd="46dp"
-                android:layout_marginBottom="25dp"
                 android:background="@drawable/edittext_borders"
                 android:gravity="center_vertical"
                 android:hint="0.00 %"
@@ -417,7 +409,6 @@
                 android:paddingEnd="11dp"
                 android:textColor="@color/black"
                 android:textSize="17dp"
-                app:layout_constraintBottom_toTopOf="@+id/divider8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fatPercentText" />
 
