@@ -18,9 +18,7 @@ public class Calculator extends Fragment {
 
     private TextView dynamicAge;
     private int predefinedAge = 25;
-
-    OnCalculateClickListener callback;
-
+    OnCalculateClickListener callback; // The callback will allow us to communicate with the activity and get the data from the user
 
     @Override
     public void onAttach(Context context) {
@@ -41,19 +39,18 @@ public class Calculator extends Fragment {
         return rootView;
     }
 
-    private void setupButtons(View rootView) {
-        Button ageButtonMinus = rootView.findViewById(R.id.btnMinus);
-        Button ageButtonPlus = rootView.findViewById(R.id.btnPlus);
-        Button maleButton = rootView.findViewById(R.id.ButtonMale);
-        Button femaleButton = rootView.findViewById(R.id.ButtonFemale);
-        EditText femaleEditText = rootView.findViewById(R.id.editTextHip);
-        Button calculateButton = rootView.findViewById(R.id.buttonCalculate);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.post(() -> selectGender(true, view));
+    }
 
-        ageButtonMinus.setOnClickListener(v -> updateAge(-1));
-        ageButtonPlus.setOnClickListener(v -> updateAge(1));
-        maleButton.setOnClickListener(v -> selectGender(true, femaleEditText, maleButton, femaleButton));
-        femaleButton.setOnClickListener(v -> selectGender(false, femaleEditText, maleButton, femaleButton));
-        calculateButton.setOnClickListener(v -> callback.onCalculateClick());
+    private void setupButtons(View rootView) {
+        rootView.findViewById(R.id.btnMinus).setOnClickListener(v -> updateAge(-1));
+        rootView.findViewById(R.id.btnPlus).setOnClickListener(v -> updateAge(1));
+        rootView.findViewById(R.id.ButtonMale).setOnClickListener(v -> selectGender(true, rootView));
+        rootView.findViewById(R.id.ButtonFemale).setOnClickListener(v -> selectGender(false, rootView));
+        rootView.findViewById(R.id.buttonCalculate).setOnClickListener(v -> callback.onCalculateClick());
     }
 
     private void updateAge(int change) {
@@ -61,7 +58,11 @@ public class Calculator extends Fragment {
         dynamicAge.setText(String.valueOf(predefinedAge));
     }
 
-    private void selectGender(boolean sex, EditText femaleEditText, Button maleButton, Button femaleButton) {
+    private void selectGender(boolean sex, View rootView) {
+        Button maleButton = rootView.findViewById(R.id.ButtonMale);
+        Button femaleButton = rootView.findViewById(R.id.ButtonFemale);
+        EditText femaleEditText = rootView.findViewById(R.id.editTextHip);
+
         maleButton.setSelected(sex);
         maleButton.setBackgroundResource(sex ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed);
         femaleButton.setSelected(!sex);
@@ -135,7 +136,6 @@ public class Calculator extends Fragment {
         hipEditText.addTextChangedListener(textWatcher);
     }
 
-    // Container Activity must implement this interface
     public interface OnCalculateClickListener {
         void onCalculateClick();
     }
