@@ -128,13 +128,13 @@ public class Calculator extends Fragment {
 
             if (maleButton != null && femaleButton != null) { // Enable or disable buttons by checking they are not null
                 maleButton.setSelected(maleSelected);
+                femaleEditText.setText("");
                 maleButton.setBackgroundResource(maleSelected ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed);
                 femaleButton.setSelected(femaleSelected);
                 femaleButton.setBackgroundResource(femaleSelected ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed);
             }
 
             if (femaleEditText != null) { // Enable or disable text field by checking it's not null
-                femaleEditText.setText("");
                 femaleEditText.setEnabled(femaleSelected);
                 femaleEditText.setBackgroundResource(femaleSelected ? R.drawable.edittext_borders : R.drawable.edittext_disabled_background);
             }
