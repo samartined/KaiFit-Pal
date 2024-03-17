@@ -26,7 +26,7 @@ public class Calculator extends Fragment {
         try {
             callback = (OnCalculateClickListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " debe implementar OnCalcularClickListener");
+            throw new ClassCastException(context.toString() + " debe implementar OnCalculateClickListener");
         }
     }
 
@@ -64,6 +64,7 @@ public class Calculator extends Fragment {
         EditText femaleEditText = rootView.findViewById(R.id.editTextHip);
 
         maleButton.setSelected(sex);
+        femaleEditText.setText("");
         maleButton.setBackgroundResource(sex ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed);
         femaleButton.setSelected(!sex);
         femaleButton.setBackgroundResource(!sex ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed);
@@ -90,14 +91,20 @@ public class Calculator extends Fragment {
                 double valueWaist = parseDouble(waistEditText.getText().toString().trim());
                 double valueHip = parseDouble(hipEditText.getText().toString().trim());
 
+
                 CalculatorUtils calculatorUtils = new CalculatorUtils(sex, valueHeight, valueWeight, valueNeck, valueWaist, valueHip);
                 double fatPercentage = calculatorUtils.calculateFatPercentage();
 
-                if (fatPercentage < 0) {
+                if (valueHeight == 0 && valueWeight == 0 && valueNeck == 0 && valueWaist == 0 && valueHip == 0) {
+                    fatPercentageEditText.setText("");
+                } else if
+                (valueWeight == 0 || valueHeight == 0 || valueNeck == 0 || valueWaist == 0 || valueHip == 0) {
                     fatPercentageEditText.setText("Calculando...");
                 } else if (fatPercentage == 0) {
                     fatPercentageEditText.setText("Ingrese datos.");
-                } else if (fatPercentage > 100) {
+                } else if (fatPercentage > 100 || fatPercentage < 0) {
+                    fatPercentageEditText.setText("Datos incorrectos.");
+                } else if (Double.isNaN(fatPercentage) || Double.isInfinite(fatPercentage)) {
                     fatPercentageEditText.setText("Datos incorrectos.");
                 } else {
                     fatPercentageEditText.setText(String.format("%.2f%%", fatPercentage));

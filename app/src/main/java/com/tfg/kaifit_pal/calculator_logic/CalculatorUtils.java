@@ -54,9 +54,9 @@ public class CalculatorUtils {
         double fatPercentage = 0;
 
         if (!sex) {
-            return 86.010 * Math.log10(this.waist - this.neck) - 70.041 * Math.log10(this.height) + 36.76;
+            return 86.010 * Math.log10(this.waist - this.neck) - 70.041 * Math.log10(this.height) + 36.76; // Male
         } else {
-            return 163.205 * Math.log10(this.waist + this.hip - this.neck) - 97.684 * Math.log10(this.height) - 78.387;
+            return 163.205 * Math.log10(this.waist + this.hip - this.neck) - 97.684 * Math.log10(this.height) - 78.387; // Female
         }
     }
 
