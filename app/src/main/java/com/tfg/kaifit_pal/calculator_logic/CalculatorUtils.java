@@ -9,7 +9,7 @@ public class CalculatorUtils {
 
     private int age;
     private double weight, waist, hip, neck, height;
-    private double fatPercentage;
+    private double fatPercentage, activityFactor;
     private boolean sex;
 
 
@@ -17,8 +17,7 @@ public class CalculatorUtils {
     }
 
     // Constructor for the class with all the UI elements
-    public CalculatorUtils(boolean sex, int age, double height, double weight, double neck, double waist, double hip) {
-
+    public CalculatorUtils(boolean sex, int age, double height, double weight, double neck, double waist, double hip, double fatPercentage, double activityFactor) {
         this.sex = sex;
         this.age = age;
         this.weight = weight;
@@ -26,19 +25,19 @@ public class CalculatorUtils {
         this.neck = neck;
         this.waist = waist;
         this.hip = hip;
-
+        this.fatPercentage = calculateFatPercentage();
+        this.activityFactor = activityFactor;
     }
 
-    // Constructor for the class without the age UI element, used only for % fat calculation
+    // Constructor for the class without the age UI element, used only for % fat calculation.
     public CalculatorUtils(boolean sex, int height, double weight, double neck, double waist, double hip) {
-
         this.sex = sex;
         this.weight = weight;
         this.height = height;
         this.neck = neck;
         this.waist = waist;
         this.hip = hip;
-
+        this.fatPercentage = calculateFatPercentage();
     }
 
     public double calculateFatPercentage() {
@@ -58,6 +57,15 @@ public class CalculatorUtils {
         } else {
             return 163.205 * Math.log10(this.waist + this.hip - this.neck) - 97.684 * Math.log10(this.height) - 78.387; // Female
         }
+    }
+
+    public int calculateTDEE() {
+
+        // We'll use the Katch-McArdle formula to calculate the BMR.
+        double BMR = 370 + (21.6 * this.weight * (1 - this.fatPercentage / 100));
+
+        // Now, we calculate the TDEE using the BMR and the activity factor
+        return (int) (BMR * this.activityFactor);
     }
 
     public int getAge() {

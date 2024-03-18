@@ -4,11 +4,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.tfg.kaifit_pal.R;
@@ -21,7 +23,7 @@ public class Calculator extends Fragment {
     OnCalculateClickListener callback; // The callback will allow us to communicate with the activity and get the data from the user
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
             callback = (OnCalculateClickListener) context;
@@ -141,6 +143,36 @@ public class Calculator extends Fragment {
         neckEditText.addTextChangedListener(textWatcher);
         waistEditText.addTextChangedListener(textWatcher);
         hipEditText.addTextChangedListener(textWatcher);
+    }
+
+    // We'll get the activity factor from the spinner
+    private double getActivityFactor() {
+        View view = getView();
+        if (view == null) {
+            Log.e("Calculator", "getView() returned null");
+            return 1.2; // Default value
+        }
+
+        Spinner spinner = view.findViewById(R.id.spinnerActivityFactor);
+
+        // Now we use the activity factor values defined in activity_factor_values.xml
+        int selectedFactorIndex = spinner.getSelectedItemPosition();
+
+        String[] activityFactorValues = getResources().getStringArray(R.array.activity_factors);
+
+        if (selectedFactorIndex >= 0 && selectedFactorIndex < activityFactorValues.length) { // This condition check is necessary to avoid ArrayIndexOutOfBoundsException. If the selectedFactorIndex is out of bounds, it will return the Log.e message and the default value
+
+            // We capture eventual NumberFormatExceptions
+            try {
+                return Double.parseDouble(activityFactorValues[selectedFactorIndex]);
+            } catch (NumberFormatException e) {
+                Log.e("Calculator", "Invalid actity factor: " + activityFactorValues[selectedFactorIndex]);
+            }
+
+        } else {
+            Log.e("Calculator", "Invalid selectedFactorIndex: " + selectedFactorIndex);
+        }
+        return 1.2; // Default value
     }
 
     public interface OnCalculateClickListener {
