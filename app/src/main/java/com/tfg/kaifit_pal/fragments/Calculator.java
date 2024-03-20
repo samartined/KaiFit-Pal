@@ -18,6 +18,8 @@ import com.tfg.kaifit_pal.calculator_logic.CalculatorUtils;
 
 public class Calculator extends Fragment {
 
+    // We declare some global variables for a communication between fragments and activities
+
     private int tdeeResult;
 
     private double fatPercentage;
@@ -28,10 +30,10 @@ public class Calculator extends Fragment {
 
     private Button femaleButton;
 
-    private Spinner activityFactorSpinner;
     private OnCalculateClickListener callback; // The callback will allow us to communicate with the activity and get the data from the user
     private CalculatorUtils calculatorUtils;
 
+    // We declare an onClickListener to communicate with the activity using the callback
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -48,6 +50,9 @@ public class Calculator extends Fragment {
         dynamicAge = rootView.findViewById(R.id.ageTextView);
         setupButtons(rootView);
         setupTextChangeListeners(rootView);
+
+
+        // We need to separate this listener from the others to avoid being called when the calculator is not parameterized
         rootView.findViewById(R.id.buttonCalculate).setOnClickListener(v -> {
             tdeeResult = calculatorUtils.calculateTDEE();
             callback.onCalculateClick(tdeeResult);
@@ -55,6 +60,7 @@ public class Calculator extends Fragment {
         return rootView;
     }
 
+    // The main purpose of this method is to set the default appearance of the sex buttons
     @Override
     public void onViewCreated(@NonNull View rootView, Bundle savedInstanceState) {
         super.onViewCreated(rootView, savedInstanceState);
@@ -116,14 +122,9 @@ public class Calculator extends Fragment {
 
                 if (valueHeight == 0 && valueWeight == 0 && valueNeck == 0 && valueWaist == 0 && valueHip == 0) {
                     fatPercentageEditText.setText("");
-                } else if
-                (valueWeight == 0 || valueHeight == 0 || valueNeck == 0 || valueWaist == 0 || valueHip == 0) {
+                } else if (valueHeight == 0 || valueWeight == 0 || valueNeck == 0 || valueWaist == 0 || (sex && valueHip == 0)) {
                     fatPercentageEditText.setText("Calculando...");
-                } else if (fatPercentage == 0) {
-                    fatPercentageEditText.setText("Ingrese datos.");
-                } else if (fatPercentage > 100 || fatPercentage < 0) {
-                    fatPercentageEditText.setText("Datos incorrectos.");
-                } else if (Double.isNaN(fatPercentage) || Double.isInfinite(fatPercentage)) {
+                } else if (Double.isNaN(fatPercentage) || Double.isInfinite(fatPercentage) || fatPercentage < 0 || fatPercentage > 100) {
                     fatPercentageEditText.setText("Datos incorrectos.");
                 } else {
                     fatPercentageEditText.setText(String.format("%.2f%%", fatPercentage));
@@ -164,7 +165,7 @@ public class Calculator extends Fragment {
 
     // We'll get the activity factor from the spinner
     private double getActivityFactor(@NonNull View rootView) {
-        activityFactorSpinner = rootView.findViewById(R.id.spinnerActivityFactor);
+        Spinner activityFactorSpinner = rootView.findViewById(R.id.spinnerActivityFactor);
 
         // Now we use the activity factor values defined in activity_factor_values.xml
         int selectedFactorIndex = activityFactorSpinner.getSelectedItemPosition();
