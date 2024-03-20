@@ -31,21 +31,6 @@ public class CalculatorUtils implements Serializable {
         return instance;
     }
 
-    // Constructor for the class without the age UI element, used only for % fat calculation.
-//    @NonNull
-//    public static CalculatorUtils createInstance(boolean sex, int height, double weight, double neck, double waist, double hip) {
-//        CalculatorUtils instance = new CalculatorUtils();
-//        instance.sex = sex;
-//        instance.weight = weight;
-//        instance.height = height;
-//        instance.neck = neck;
-//        instance.waist = waist;
-//        instance.hip = hip;
-//        instance.fatPercentage = calculateFatPercentage(sex, height, waist, neck, hip);
-//        return instance;
-//    }
-
-
     public static double calculateFatPercentage(boolean sex, double height, double waist, double neck, double hip) {
 
         // We convert the values from cm to inches

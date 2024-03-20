@@ -18,14 +18,19 @@ import com.tfg.kaifit_pal.calculator_logic.CalculatorUtils;
 
 public class Calculator extends Fragment {
 
-    private int TDEEResult;
+    private int tdeeResult;
+
+    private double fatPercentage;
 
     private TextView dynamicAge, fatPercentageEditText;
 
     private EditText weightEditText, heightEditText, neckEditText, waistEditText, hipEditText;
-    OnCalculateClickListener callback; // The callback will allow us to communicate with the activity and get the data from the user
 
-    CalculatorUtils calculatorUtils;
+    private Button femaleButton;
+
+    private Spinner activityFactorSpinner;
+    private OnCalculateClickListener callback; // The callback will allow us to communicate with the activity and get the data from the user
+    private CalculatorUtils calculatorUtils;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -43,13 +48,17 @@ public class Calculator extends Fragment {
         dynamicAge = rootView.findViewById(R.id.ageTextView);
         setupButtons(rootView);
         setupTextChangeListeners(rootView);
+        rootView.findViewById(R.id.buttonCalculate).setOnClickListener(v -> {
+            tdeeResult = calculatorUtils.calculateTDEE();
+            callback.onCalculateClick(tdeeResult);
+        });
         return rootView;
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        view.post(() -> selectGender(true, view));
+    public void onViewCreated(@NonNull View rootView, Bundle savedInstanceState) {
+        super.onViewCreated(rootView, savedInstanceState);
+        rootView.post(() -> selectGender(true, rootView));
     }
 
     private void setupButtons(@NonNull View rootView) {
@@ -57,7 +66,6 @@ public class Calculator extends Fragment {
         rootView.findViewById(R.id.btnPlus).setOnClickListener(v -> updateAge(1));
         rootView.findViewById(R.id.ButtonMale).setOnClickListener(v -> selectGender(true, rootView));
         rootView.findViewById(R.id.ButtonFemale).setOnClickListener(v -> selectGender(false, rootView));
-        rootView.findViewById(R.id.buttonCalculate).setOnClickListener(v -> callback.onCalculateClick());
     }
 
     private void updateAge(int change) {
@@ -68,7 +76,7 @@ public class Calculator extends Fragment {
 
     private void selectGender(boolean sex, @NonNull View rootView) {
         Button maleButton = rootView.findViewById(R.id.ButtonMale);
-        Button femaleButton = rootView.findViewById(R.id.ButtonFemale);
+        femaleButton = rootView.findViewById(R.id.ButtonFemale);
         EditText femaleEditText = rootView.findViewById(R.id.editTextHip);
 
         maleButton.setSelected(sex);
@@ -81,13 +89,13 @@ public class Calculator extends Fragment {
     }
 
     private void setupTextChangeListeners(@NonNull View rootView) {
-        EditText weightEditText = rootView.findViewById(R.id.editTextWeight);
-        EditText heightEditText = rootView.findViewById(R.id.editTextHeight);
-        EditText neckEditText = rootView.findViewById(R.id.editTextNeck);
-        EditText waistEditText = rootView.findViewById(R.id.editTextWaist);
-        EditText hipEditText = rootView.findViewById(R.id.editTextHip);
-        TextView fatPercentageEditText = rootView.findViewById(R.id.TextViewFatPercent);
-        Button femaleButton = rootView.findViewById(R.id.ButtonFemale);
+        weightEditText = rootView.findViewById(R.id.editTextWeight);
+        heightEditText = rootView.findViewById(R.id.editTextHeight);
+        neckEditText = rootView.findViewById(R.id.editTextNeck);
+        waistEditText = rootView.findViewById(R.id.editTextWaist);
+        hipEditText = rootView.findViewById(R.id.editTextHip);
+        fatPercentageEditText = rootView.findViewById(R.id.TextViewFatPercent);
+        femaleButton = rootView.findViewById(R.id.ButtonFemale);
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -99,12 +107,12 @@ public class Calculator extends Fragment {
                 double valueNeck = parseDouble(neckEditText.getText().toString().trim());
                 double valueWaist = parseDouble(waistEditText.getText().toString().trim());
                 double valueHip = parseDouble(hipEditText.getText().toString().trim());
-                double activityFactor = getActivityFactor();
+                double activityFactor = getActivityFactor(rootView);
 
 
                 // We instance the CalculatorUtils class with the data from the UI
                 calculatorUtils = CalculatorUtils.createInstance(sex, age, valueHeight, valueWeight, valueNeck, valueWaist, valueHip, activityFactor);
-                double fatPercentage = calculatorUtils.getFatPercentage();
+                fatPercentage = calculatorUtils.getFatPercentage();
 
                 if (valueHeight == 0 && valueWeight == 0 && valueNeck == 0 && valueWaist == 0 && valueHip == 0) {
                     fatPercentageEditText.setText("");
@@ -155,17 +163,11 @@ public class Calculator extends Fragment {
     }
 
     // We'll get the activity factor from the spinner
-    private double getActivityFactor() {
-        View view = getView();
-        if (view == null) {
-            Log.e("Calculator", "getView() returned null");
-            return 1.2; // Default value
-        }
-
-        Spinner spinner = view.findViewById(R.id.spinnerActivityFactor);
+    private double getActivityFactor(@NonNull View rootView) {
+        activityFactorSpinner = rootView.findViewById(R.id.spinnerActivityFactor);
 
         // Now we use the activity factor values defined in activity_factor_values.xml
-        int selectedFactorIndex = spinner.getSelectedItemPosition();
+        int selectedFactorIndex = activityFactorSpinner.getSelectedItemPosition();
 
         String[] activityFactorValues = getResources().getStringArray(R.array.activity_factors);
 
@@ -185,6 +187,6 @@ public class Calculator extends Fragment {
     }
 
     public interface OnCalculateClickListener {
-        void onCalculateClick();
+        void onCalculateClick(int tdeeResult);
     }
 }

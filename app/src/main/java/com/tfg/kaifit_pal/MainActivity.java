@@ -96,8 +96,14 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
     }
 
     @Override
-    public void onCalculateClick() {
+    public void onCalculateClick(int tdeeResult) {
         Fragment newFragment = fragmentManager.findFragmentById(R.id.fragment_container_view) instanceof Calculator ? new TDEE_Macros() : new Calculator();
+
+        // We create a bundle to pass the data to the new fragment
+        Bundle bundle = new Bundle();
+        bundle.putInt("tdeeResult", tdeeResult);
+        newFragment.setArguments(bundle);
+
         fragmentManager.beginTransaction().replace(R.id.fragment_container_view, newFragment).addToBackStack(null).commit();
     }
 }
