@@ -46,32 +46,32 @@ public class Calculator extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_calculator, container, false);
-        dynamicAge = rootView.findViewById(R.id.ageTextView);
-        setupButtons(rootView);
-        setupTextChangeListeners(rootView);
+        View view = inflater.inflate(R.layout.fragment_calculator, container, false);
+        dynamicAge = view.findViewById(R.id.ageTextView);
+        setupButtons(view);
+        setupTextChangeListeners(view);
 
 
         // We need to separate this listener from the others to avoid being called when the calculator is not parameterized
-        rootView.findViewById(R.id.buttonCalculate).setOnClickListener(v -> {
+        view.findViewById(R.id.buttonCalculate).setOnClickListener(v -> {
             tdeeResult = calculatorUtils.calculateTDEE();
             callback.onCalculateClick(tdeeResult);
         });
-        return rootView;
+        return view;
     }
 
     // The main purpose of this method is to set the default appearance of the sex buttons
     @Override
-    public void onViewCreated(@NonNull View rootView, Bundle savedInstanceState) {
-        super.onViewCreated(rootView, savedInstanceState);
-        rootView.post(() -> selectGender(true, rootView));
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.post(() -> selectGender(true, view));
     }
 
-    private void setupButtons(@NonNull View rootView) {
-        rootView.findViewById(R.id.btnMinus).setOnClickListener(v -> updateAge(-1));
-        rootView.findViewById(R.id.btnPlus).setOnClickListener(v -> updateAge(1));
-        rootView.findViewById(R.id.ButtonMale).setOnClickListener(v -> selectGender(true, rootView));
-        rootView.findViewById(R.id.ButtonFemale).setOnClickListener(v -> selectGender(false, rootView));
+    private void setupButtons(@NonNull View view) {
+        view.findViewById(R.id.btnMinus).setOnClickListener(v -> updateAge(-1));
+        view.findViewById(R.id.btnPlus).setOnClickListener(v -> updateAge(1));
+        view.findViewById(R.id.ButtonMale).setOnClickListener(v -> selectGender(true, view));
+        view.findViewById(R.id.ButtonFemale).setOnClickListener(v -> selectGender(false, view));
     }
 
     private void updateAge(int change) {
@@ -80,10 +80,10 @@ public class Calculator extends Fragment {
         dynamicAge.setText(String.valueOf(predefinedAge));
     }
 
-    private void selectGender(boolean sex, @NonNull View rootView) {
-        Button maleButton = rootView.findViewById(R.id.ButtonMale);
-        femaleButton = rootView.findViewById(R.id.ButtonFemale);
-        EditText femaleEditText = rootView.findViewById(R.id.editTextHip);
+    private void selectGender(boolean sex, @NonNull View view) {
+        Button maleButton = view.findViewById(R.id.ButtonMale);
+        femaleButton = view.findViewById(R.id.ButtonFemale);
+        EditText femaleEditText = view.findViewById(R.id.editTextHip);
 
         maleButton.setSelected(sex);
         femaleEditText.setText("");
@@ -94,14 +94,14 @@ public class Calculator extends Fragment {
         femaleEditText.setBackgroundResource(!sex ? R.drawable.edittext_borders : R.drawable.edittext_disabled_background);
     }
 
-    private void setupTextChangeListeners(@NonNull View rootView) {
-        weightEditText = rootView.findViewById(R.id.editTextWeight);
-        heightEditText = rootView.findViewById(R.id.editTextHeight);
-        neckEditText = rootView.findViewById(R.id.editTextNeck);
-        waistEditText = rootView.findViewById(R.id.editTextWaist);
-        hipEditText = rootView.findViewById(R.id.editTextHip);
-        fatPercentageEditText = rootView.findViewById(R.id.TextViewFatPercent);
-        femaleButton = rootView.findViewById(R.id.ButtonFemale);
+    private void setupTextChangeListeners(@NonNull View view) {
+        weightEditText = view.findViewById(R.id.editTextWeight);
+        heightEditText = view.findViewById(R.id.editTextHeight);
+        neckEditText = view.findViewById(R.id.editTextNeck);
+        waistEditText = view.findViewById(R.id.editTextWaist);
+        hipEditText = view.findViewById(R.id.editTextHip);
+        fatPercentageEditText = view.findViewById(R.id.TextViewFatPercent);
+        femaleButton = view.findViewById(R.id.ButtonFemale);
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -113,7 +113,7 @@ public class Calculator extends Fragment {
                 double valueNeck = parseDouble(neckEditText.getText().toString().trim());
                 double valueWaist = parseDouble(waistEditText.getText().toString().trim());
                 double valueHip = parseDouble(hipEditText.getText().toString().trim());
-                double activityFactor = getActivityFactor(rootView);
+                double activityFactor = getActivityFactor(view);
 
 
                 // We instance the CalculatorUtils class with the data from the UI
@@ -164,8 +164,8 @@ public class Calculator extends Fragment {
     }
 
     // We'll get the activity factor from the spinner
-    private double getActivityFactor(@NonNull View rootView) {
-        Spinner activityFactorSpinner = rootView.findViewById(R.id.spinnerActivityFactor);
+    private double getActivityFactor(@NonNull View view) {
+        Spinner activityFactorSpinner = view.findViewById(R.id.spinnerActivityFactor);
 
         // Now we use the activity factor values defined in activity_factor_values.xml
         int selectedFactorIndex = activityFactorSpinner.getSelectedItemPosition();
@@ -178,7 +178,7 @@ public class Calculator extends Fragment {
             try {
                 return Double.parseDouble(activityFactorValues[selectedFactorIndex]);
             } catch (NumberFormatException e) {
-                Log.e("Calculator", "Invalid actity factor: " + activityFactorValues[selectedFactorIndex]);
+                Log.e("Calculator", "Invalid activity factor: " + activityFactorValues[selectedFactorIndex]);
             }
 
         } else {

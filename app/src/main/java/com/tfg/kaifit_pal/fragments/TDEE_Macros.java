@@ -7,7 +7,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -19,10 +18,24 @@ import com.tfg.kaifit_pal.R;
 
 public class TDEE_Macros extends Fragment {
 
+    int tdeeresult;
+    TextView textViewTdee;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_t_d_e_e__macros, container, false);
         setupActionBar();
+
+        textViewTdee = view.findViewById(R.id.tdeeResultTextView);
+
+        // We recover data from the bundle
+        if (getArguments() != null) {
+            tdeeresult = getArguments().getInt("tdeeResult");
+            textViewTdee.setText(String.valueOf(tdeeresult));
+        }
+
+
+
         return view;
     }
 
