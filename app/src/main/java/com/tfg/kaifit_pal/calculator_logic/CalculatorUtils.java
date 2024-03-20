@@ -1,61 +1,67 @@
 package com.tfg.kaifit_pal.calculator_logic;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
+import java.io.Serializable;
+import java.security.Provider;
 import java.text.DecimalFormat;
 
-public class CalculatorUtils {
+public class CalculatorUtils implements Serializable {
 
     private int age;
     private double weight, waist, hip, neck, height;
     private double fatPercentage, activityFactor;
     private boolean sex;
 
-
-    public CalculatorUtils() {
-    }
-
-    // Constructor for the class with all the UI elements
-    public CalculatorUtils(boolean sex, int age, double height, double weight, double neck, double waist, double hip, double fatPercentage, double activityFactor) {
-        this.sex = sex;
-        this.age = age;
-        this.weight = weight;
-        this.height = height;
-        this.neck = neck;
-        this.waist = waist;
-        this.hip = hip;
-        this.fatPercentage = calculateFatPercentage();
-        this.activityFactor = activityFactor;
+    // Static factory method
+    @NonNull
+    public static CalculatorUtils createInstance(boolean sex, int age, double height, double weight, double neck, double waist, double hip, double activityFactor) {
+        CalculatorUtils instance = new CalculatorUtils();
+        instance.sex = sex;
+        instance.age = age;
+        instance.weight = weight;
+        instance.height = height;
+        instance.neck = neck;
+        instance.waist = waist;
+        instance.hip = hip;
+        instance.fatPercentage = calculateFatPercentage(sex, height, waist, neck, hip);
+        instance.activityFactor = activityFactor;
+        return instance;
     }
 
     // Constructor for the class without the age UI element, used only for % fat calculation.
-    public CalculatorUtils(boolean sex, int height, double weight, double neck, double waist, double hip) {
-        this.sex = sex;
-        this.weight = weight;
-        this.height = height;
-        this.neck = neck;
-        this.waist = waist;
-        this.hip = hip;
-        this.fatPercentage = calculateFatPercentage();
-    }
+//    @NonNull
+//    public static CalculatorUtils createInstance(boolean sex, int height, double weight, double neck, double waist, double hip) {
+//        CalculatorUtils instance = new CalculatorUtils();
+//        instance.sex = sex;
+//        instance.weight = weight;
+//        instance.height = height;
+//        instance.neck = neck;
+//        instance.waist = waist;
+//        instance.hip = hip;
+//        instance.fatPercentage = calculateFatPercentage(sex, height, waist, neck, hip);
+//        return instance;
+//    }
 
-    public double calculateFatPercentage() {
+
+    public static double calculateFatPercentage(boolean sex, double height, double waist, double neck, double hip) {
 
         // We convert the values from cm to inches
-        this.height = this.height / 2.54;
-        this.neck = this.neck / 2.54;
-        this.waist = this.waist / 2.54;
-        this.hip = this.hip / 2.54;
+        height /= 2.54;
+        neck /= 2.54;
+        waist /= 2.54;
+        hip /= 2.54;
 
 
         // Calculate fat percentage
         double fatPercentage = 0;
 
         if (!sex) {
-            return 86.010 * Math.log10(this.waist - this.neck) - 70.041 * Math.log10(this.height) + 36.76; // Male
+            return 86.010 * Math.log10(waist - neck) - 70.041 * Math.log10(height) + 36.76; // Male
         } else {
-            return 163.205 * Math.log10(this.waist + this.hip - this.neck) - 97.684 * Math.log10(this.height) - 78.387; // Female
+            return 163.205 * Math.log10(waist + hip - neck) - 97.684 * Math.log10(height) - 78.387; // Female
         }
     }
 
@@ -124,11 +130,15 @@ public class CalculatorUtils {
         this.sex = sex;
     }
 
-    public double getFatPercentage() {
-        return fatPercentage;
+    public double getActivityFactor() {
+        return activityFactor;
     }
 
-    public void setFatPercentage(double fatPercentage) {
-        this.fatPercentage = fatPercentage;
+    public void setActivityFactor(double activityFactor) {
+        this.activityFactor = activityFactor;
+    }
+
+    public double getFatPercentage() {
+        return fatPercentage;
     }
 }

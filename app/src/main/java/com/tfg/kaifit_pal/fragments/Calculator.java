@@ -18,9 +18,14 @@ import com.tfg.kaifit_pal.calculator_logic.CalculatorUtils;
 
 public class Calculator extends Fragment {
 
-    private TextView dynamicAge;
-    private int predefinedAge = 25;
+    private int TDEEResult;
+
+    private TextView dynamicAge, fatPercentageEditText;
+
+    private EditText weightEditText, heightEditText, neckEditText, waistEditText, hipEditText;
     OnCalculateClickListener callback; // The callback will allow us to communicate with the activity and get the data from the user
+
+    CalculatorUtils calculatorUtils;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -33,7 +38,7 @@ public class Calculator extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_calculator, container, false);
         dynamicAge = rootView.findViewById(R.id.ageTextView);
         setupButtons(rootView);
@@ -47,7 +52,7 @@ public class Calculator extends Fragment {
         view.post(() -> selectGender(true, view));
     }
 
-    private void setupButtons(View rootView) {
+    private void setupButtons(@NonNull View rootView) {
         rootView.findViewById(R.id.btnMinus).setOnClickListener(v -> updateAge(-1));
         rootView.findViewById(R.id.btnPlus).setOnClickListener(v -> updateAge(1));
         rootView.findViewById(R.id.ButtonMale).setOnClickListener(v -> selectGender(true, rootView));
@@ -56,11 +61,12 @@ public class Calculator extends Fragment {
     }
 
     private void updateAge(int change) {
+        int predefinedAge = Integer.parseInt(dynamicAge.getText().toString());
         predefinedAge = Math.max(18, Math.min(90, predefinedAge + change));
         dynamicAge.setText(String.valueOf(predefinedAge));
     }
 
-    private void selectGender(boolean sex, View rootView) {
+    private void selectGender(boolean sex, @NonNull View rootView) {
         Button maleButton = rootView.findViewById(R.id.ButtonMale);
         Button femaleButton = rootView.findViewById(R.id.ButtonFemale);
         EditText femaleEditText = rootView.findViewById(R.id.editTextHip);
@@ -74,7 +80,7 @@ public class Calculator extends Fragment {
         femaleEditText.setBackgroundResource(!sex ? R.drawable.edittext_borders : R.drawable.edittext_disabled_background);
     }
 
-    private void setupTextChangeListeners(View rootView) {
+    private void setupTextChangeListeners(@NonNull View rootView) {
         EditText weightEditText = rootView.findViewById(R.id.editTextWeight);
         EditText heightEditText = rootView.findViewById(R.id.editTextHeight);
         EditText neckEditText = rootView.findViewById(R.id.editTextNeck);
@@ -86,16 +92,19 @@ public class Calculator extends Fragment {
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
+                int age = Integer.parseInt(dynamicAge.getText().toString());
                 boolean sex = femaleButton.isSelected();
                 double valueWeight = parseDouble(weightEditText.getText().toString().trim());
                 int valueHeight = parseInt(heightEditText.getText().toString().trim());
                 double valueNeck = parseDouble(neckEditText.getText().toString().trim());
                 double valueWaist = parseDouble(waistEditText.getText().toString().trim());
                 double valueHip = parseDouble(hipEditText.getText().toString().trim());
+                double activityFactor = getActivityFactor();
 
 
-                CalculatorUtils calculatorUtils = new CalculatorUtils(sex, valueHeight, valueWeight, valueNeck, valueWaist, valueHip);
-                double fatPercentage = calculatorUtils.calculateFatPercentage();
+                // We instance the CalculatorUtils class with the data from the UI
+                calculatorUtils = CalculatorUtils.createInstance(sex, age, valueHeight, valueWeight, valueNeck, valueWaist, valueHip, activityFactor);
+                double fatPercentage = calculatorUtils.getFatPercentage();
 
                 if (valueHeight == 0 && valueWeight == 0 && valueNeck == 0 && valueWaist == 0 && valueHip == 0) {
                     fatPercentageEditText.setText("");
