@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!-- shape_botones_redondos.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape android:shape="oval">
@@ -8,7 +8,7 @@
     </item>
     <item>
         <shape android:shape="oval">
-            <solid android:color="#84DD7E" />
+            <solid android:color="#B2EDB0" />
             <size android:width="50dp" android:height="50dp" />
         </shape>
     </item>
