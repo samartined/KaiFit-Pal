@@ -3,20 +3,17 @@
     <!-- Estado cuando el botón está presionado -->
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <solid android:color="#84DD7E" /> <!-- Cambia el color de fondo cuando se presiona -->
+            <solid android:color="#84DD7E" /> <!-- Change the color when it's pressed -->
             <stroke
                 android:width="2dp"
                 android:color="#8AEF73" />
             <corners android:radius="13dp" />
         </shape>
     </item>
-    <!-- Estado predeterminado (cuando el botón no está presionado) -->
+    <!-- Button default color state indicating it's not pressed -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#8AEF73" />
-            <stroke
-                android:width="2dp"
-                android:color="#8AEF73" />
+            <solid android:color="#ACAFAB" />
             <corners android:radius="13dp" />
         </shape>
     </item>
