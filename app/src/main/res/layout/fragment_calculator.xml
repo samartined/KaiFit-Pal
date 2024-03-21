@@ -372,7 +372,7 @@
                 android:layout_height="51dp"
                 android:layout_marginTop="9dp"
                 android:layout_marginBottom="31dp"
-                android:background="@drawable/rect_button_notpressed"
+                android:background="@drawable/rect_button_pressed"
                 android:text="Calcular"
                 android:textSize="17dp"
                 android:textStyle="bold"
