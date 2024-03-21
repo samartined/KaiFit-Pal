@@ -35,7 +35,6 @@ public class TDEE_Macros extends Fragment {
         }
 
 
-
         return view;
     }
 
@@ -51,6 +50,7 @@ public class TDEE_Macros extends Fragment {
             actionBar.setTitle("TDEE & Macros");
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_back_arrow_black); // We set the back arrow icon
         }
         setHasOptionsMenu(true);
     }
