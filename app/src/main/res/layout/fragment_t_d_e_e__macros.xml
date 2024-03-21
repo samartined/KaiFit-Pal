@@ -49,6 +49,20 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.6" />
 
+        <TextView
+            android:id="@+id/caloriesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="calorías"
+            android:textColor="@color/black"
+            android:textSize="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tdeeResultTextView"
+            app:layout_constraintVertical_bias="0.187" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -84,10 +98,9 @@
             android:gravity="center"
             android:text="-"
             android:textSize="24dp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.293"
+            app:layout_constraintHorizontal_bias="0.321"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.176" />
@@ -99,12 +112,13 @@
             android:layout_marginTop="11dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/rounded_shape_buttons"
+            android:elevation="0dp"
             android:gravity="center"
             android:text="+"
             android:textSize="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.701"
+            app:layout_constraintHorizontal_bias="0.675"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.176" />
@@ -129,20 +143,20 @@
         <LinearLayout
             android:layout_width="350dp"
             android:layout_height="150dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="-30dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/caloriesPercentageTextView">
+            app:layout_constraintTop_toBottomOf="@+id/caloriesPercentageTextView">
 
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="Macronutrientes Diarios"
                 android:textSize="17dp"
-                android:layout_marginBottom="8dp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -157,12 +171,14 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    app:cardCornerRadius="8dp">
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/relativeLayout"
+                        android:id="@+id/proteinConstraintLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:background="#E6E6E6">
 
 
                         <TextView
@@ -180,10 +196,12 @@
                             app:layout_constraintVertical_bias="0.226" />
 
                         <TextView
-                            android:id="@+id/textView9"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/proteinsTitleTextView"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:background="@color/white_green"
+                            android:gravity="center"
                             android:padding="8dp"
                             android:text="Proteínas"
                             android:textColor="@android:color/black"
@@ -205,16 +223,49 @@
                     android:layout_weight="1"
                     android:background="@color/cardview_light_background"
                     android:elevation="4dp"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="Grasas"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
 
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/fatsConstraintLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#E6E6E6">
+
+
+                        <TextView
+                            android:id="@+id/totalFats"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="0"
+                            android:textColor="@android:color/black"
+                            android:textSize="30dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.226" />
+
+                        <TextView
+                            android:id="@+id/fatsTitleTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@color/white_green"
+                            android:gravity="center"
+                            android:padding="8dp"
+                            android:text="Grasas"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.cardview.widget.CardView>
 
@@ -226,15 +277,49 @@
                     android:layout_weight="1"
                     android:background="@color/cardview_light_background"
                     android:elevation="4dp"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="Carbohidratos"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/carbsConstraintLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#E6E6E6">
+
+
+                        <TextView
+                            android:id="@+id/totalCarbs"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="0"
+                            android:textColor="@android:color/black"
+                            android:textSize="30dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.226" />
+
+                        <TextView
+                            android:id="@+id/carbsTitleTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@color/white_green"
+                            android:gravity="center"
+                            android:padding="8dp"
+                            android:text="Carbs"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
         </LinearLayout>

@@ -3,18 +3,12 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.KaiFitPal" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your light theme here. -->
-        <item name="colorPrimary">@color/verde_claro</item>
-        <item name="colorPrimaryDark">@color/verde_claro_dark</item>
+        <item name="colorPrimary">@color/white_green</item>
+        <item name="colorSecondary">@color/dark_green</item>
     </style>
 
     <!-- Theme.KaiFitPal inherits from Base.Theme.KaiFitPal -->
     <style name="Theme.KaiFitPal" parent="Base.Theme.KaiFitPal" />
-
-    <!-- Define your custom colors -->
-    <color name="verde_claro">#70C75C</color>
-    <color name="verde_claro_dark">#5A9E47
-    </color> <!-- Darker shade of verde claro for primary dark -->
-    <color name="accent_naranja">#FFA500</color>
 
     <!-- Customizing toolbar -->
     <style name="Theme.KaiFitPal.Toolbar" parent="Theme.KaiFitPal">
