@@ -30,6 +30,8 @@ public class Calculator extends Fragment {
 
     private Button femaleButton;
 
+    Spinner activityFactorSpinner;
+
     private OnCalculateClickListener callback; // The callback will allow us to communicate with the activity and get the data from the user
     private CalculatorUtils calculatorUtils;
 
@@ -49,14 +51,20 @@ public class Calculator extends Fragment {
         View view = inflater.inflate(R.layout.fragment_calculator, container, false);
         dynamicAge = view.findViewById(R.id.ageTextView);
         setupButtons(view);
-        setupTextChangeListeners(view);
-
 
         // We need to separate this listener from the others to avoid being called when the calculator is not parameterized
         view.findViewById(R.id.buttonCalculate).setOnClickListener(v -> {
+            double activityFactor = getActivityFactor(view);
+
+            // We need to create here the instance of the CalculatorUtils class to pass the activityFactor updated
+            calculatorUtils = CalculatorUtils.createInstance(femaleButton.isSelected(), parseInt(dynamicAge.getText().toString()), parseInt(heightEditText.getText().toString().trim()), parseDouble(weightEditText.getText().toString().trim()), parseDouble(neckEditText.getText().toString().trim()), parseDouble(waistEditText.getText().toString().trim()), parseDouble(hipEditText.getText().toString().trim()));
+            calculatorUtils.setActivityFactor(activityFactor);
+
             tdeeResult = calculatorUtils.calculateTDEE();
             callback.onCalculateClick(tdeeResult);
         });
+        setupTextChangeListeners(view);
+
         return view;
     }
 
@@ -113,11 +121,9 @@ public class Calculator extends Fragment {
                 double valueNeck = parseDouble(neckEditText.getText().toString().trim());
                 double valueWaist = parseDouble(waistEditText.getText().toString().trim());
                 double valueHip = parseDouble(hipEditText.getText().toString().trim());
-                double activityFactor = getActivityFactor(view);
-
 
                 // We instance the CalculatorUtils class with the data from the UI
-                calculatorUtils = CalculatorUtils.createInstance(sex, age, valueHeight, valueWeight, valueNeck, valueWaist, valueHip, activityFactor);
+                calculatorUtils = CalculatorUtils.createInstance(sex, age, valueHeight, valueWeight, valueNeck, valueWaist, valueHip);
                 fatPercentage = calculatorUtils.getFatPercentage();
 
                 if (valueHeight == 0 && valueWeight == 0 && valueNeck == 0 && valueWaist == 0 && valueHip == 0) {
@@ -128,22 +134,6 @@ public class Calculator extends Fragment {
                     fatPercentageEditText.setText("Datos incorrectos.");
                 } else {
                     fatPercentageEditText.setText(String.format("%.2f%%", fatPercentage));
-                }
-            }
-
-            private double parseDouble(String str) {
-                try {
-                    return Double.parseDouble(str);
-                } catch (NumberFormatException e) {
-                    return 0;
-                }
-            }
-
-            private int parseInt(String str) {
-                try {
-                    return Integer.parseInt(str);
-                } catch (NumberFormatException e) {
-                    return 0;
                 }
             }
 
@@ -165,7 +155,7 @@ public class Calculator extends Fragment {
 
     // We'll get the activity factor from the spinner
     private double getActivityFactor(@NonNull View view) {
-        Spinner activityFactorSpinner = view.findViewById(R.id.spinnerActivityFactor);
+        activityFactorSpinner = view.findViewById(R.id.spinnerActivityFactor);
 
         // Now we use the activity factor values defined in activity_factor_values.xml
         int selectedFactorIndex = activityFactorSpinner.getSelectedItemPosition();
@@ -187,6 +177,23 @@ public class Calculator extends Fragment {
         return 1.2; // Default value
     }
 
+    private double parseDouble(String str) {
+        try {
+            return Double.parseDouble(str);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private int parseInt(String str) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    // Interface to communicate with the activity and get the data from the user
     public interface OnCalculateClickListener {
         void onCalculateClick(int tdeeResult);
     }

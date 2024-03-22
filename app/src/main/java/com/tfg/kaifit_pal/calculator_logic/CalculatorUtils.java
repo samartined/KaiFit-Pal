@@ -17,7 +17,7 @@ public class CalculatorUtils implements Serializable {
 
     // Static factory method
     @NonNull
-    public static CalculatorUtils createInstance(boolean sex, int age, double height, double weight, double neck, double waist, double hip, double activityFactor) {
+    public static CalculatorUtils createInstance(boolean sex, int age, double height, double weight, double neck, double waist, double hip) {
         CalculatorUtils instance = new CalculatorUtils();
         instance.sex = sex;
         instance.age = age;
@@ -27,7 +27,6 @@ public class CalculatorUtils implements Serializable {
         instance.waist = waist;
         instance.hip = hip;
         instance.fatPercentage = calculateFatPercentage(sex, height, waist, neck, hip);
-        instance.activityFactor = activityFactor;
         return instance;
     }
 
