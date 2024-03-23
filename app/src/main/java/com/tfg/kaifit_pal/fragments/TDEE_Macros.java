@@ -34,7 +34,7 @@ public class TDEE_Macros extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_t_d_e_e__macros, container, false);
-        setupActionBar(view);
+        setupActionBar();
 
         textViewTdee = view.findViewById(R.id.tdeeResultTextView);
         modifierTdeeTextView = view.findViewById(R.id.modifierTDEEtextView);
@@ -55,7 +55,7 @@ public class TDEE_Macros extends Fragment {
     }
 
     // This method sets up the action bar to show the back arrow and the title of the fragment
-    private void setupActionBar(@NonNull View view) {
+    private void setupActionBar() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         assert activity != null; // We use assert to avoid a null pointer exception
         Toolbar toolbar = activity.findViewById(R.id.toolbar);
