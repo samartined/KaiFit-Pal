@@ -42,7 +42,7 @@ public class Calculator extends Fragment {
         try {
             callback = (OnCalculateClickListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " debe implementar OnCalculateClickListener");
+            throw new ClassCastException(context + " debe implementar OnCalculateClickListener");
         }
     }
 
