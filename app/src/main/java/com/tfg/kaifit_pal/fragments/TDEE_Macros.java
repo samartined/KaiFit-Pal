@@ -12,27 +12,39 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.tfg.kaifit_pal.R;
 
+import java.util.Locale;
+
 public class TDEE_Macros extends Fragment {
 
-    int tdeeresult;
-    TextView textViewTdee;
+    int tdeeResult;
+
+    double newTdee;
+    double modifierPercentage = 0;
+
+    TextView textViewTdee, modifierTDEEtextView, proteinTextView, fatTextView, carbsTextView, caloriesTextView;
+    Button buttonMinusCalories, buttonPlusCalories;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_t_d_e_e__macros, container, false);
         setupActionBar();
 
         textViewTdee = view.findViewById(R.id.tdeeResultTextView);
+        modifierTDEEtextView = view.findViewById(R.id.modifierTDEEtextView);
+        modifierTDEEtextView.setText(String.format(Locale.getDefault(), "%.0f%%", modifierPercentage * 100));
 
         // We recover data from the bundle
         if (getArguments() != null) {
-            tdeeresult = getArguments().getInt("tdeeResult");
-            textViewTdee.setText(String.valueOf(tdeeresult));
+            tdeeResult = getArguments().getInt("tdeeResult");
+            textViewTdee.setText(String.valueOf(tdeeResult));
         }
+
+        setupButtons(view);
 
 
         return view;
@@ -63,6 +75,30 @@ public class TDEE_Macros extends Fragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setupButtons(@NonNull View view) {
+        buttonMinusCalories = view.findViewById(R.id.btnMinusCalories);
+        buttonPlusCalories = view.findViewById(R.id.btnPlusCalories);
+
+        buttonMinusCalories.setOnClickListener(v -> modifyTDEE(-0.05));
+        buttonPlusCalories.setOnClickListener(v -> modifyTDEE(0.05));
+    }
+
+    private void modifyTDEE(double modifier) {
+        // Calcula el nuevo porcentaje modificador
+        double newModifierPercentage = modifierPercentage + modifier;
+
+        // Comprueba si el nuevo porcentaje está dentro del rango permitido (-30% a +30%)
+        if (newModifierPercentage >= -0.30 && newModifierPercentage <= 0.30) {
+            // Actualiza el porcentaje modificador y el TDEE actual
+            modifierPercentage = newModifierPercentage;
+            newTdee = tdeeResult * (1 + modifierPercentage);
+
+            // Actualiza las vistas
+            textViewTdee.setText(String.valueOf((int) newTdee));
+            modifierTDEEtextView.setText(String.format(Locale.getDefault(), "%.0f%%", modifierPercentage * 100));
+        }
     }
 
     @Override
