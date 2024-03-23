@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.tfg.kaifit_pal.R;
 
 import java.util.Locale;
+import java.util.TreeMap;
 
 public class TDEE_Macros extends Fragment {
 
@@ -26,7 +27,7 @@ public class TDEE_Macros extends Fragment {
     double newTdee;
     double modifierPercentage = 0;
 
-    TextView textViewTdee, modifierTDEEtextView, proteinTextView, fatTextView, carbsTextView, caloriesTextView;
+    TextView textViewTdee, modifierTdeeTextView, intensityModifierTextVier, proteinTextView, fatTextView, carbsTextView, caloriesTextView;
     Button buttonMinusCalories, buttonPlusCalories;
 
     @Override
@@ -35,8 +36,10 @@ public class TDEE_Macros extends Fragment {
         setupActionBar();
 
         textViewTdee = view.findViewById(R.id.tdeeResultTextView);
-        modifierTDEEtextView = view.findViewById(R.id.modifierTDEEtextView);
-        modifierTDEEtextView.setText(String.format(Locale.getDefault(), "%.0f%%", modifierPercentage * 100));
+        modifierTdeeTextView = view.findViewById(R.id.modifierTDEEtextView);
+        modifierTdeeTextView.setText(String.format(Locale.getDefault(), "%.0f%%", modifierPercentage * 100));
+        intensityModifierTextVier = view.findViewById(R.id.intensityModifierTextView);
+        intensityModifierTextVier.setText("Mantenimiento");
 
         // We recover data from the bundle
         if (getArguments() != null) {
@@ -86,18 +89,36 @@ public class TDEE_Macros extends Fragment {
     }
 
     private void modifyTDEE(double modifier) {
-        // Calcula el nuevo porcentaje modificador
+        // Calculate the new TDEE
         double newModifierPercentage = modifierPercentage + modifier;
 
-        // Comprueba si el nuevo porcentaje está dentro del rango permitido (-30% a +30%)
+        // Check if the new modifier percentage is between -30% and 30%
         if (newModifierPercentage >= -0.30 && newModifierPercentage <= 0.30) {
-            // Actualiza el porcentaje modificador y el TDEE actual
+            // Update the modifier percentage and the new TDEE
             modifierPercentage = newModifierPercentage;
             newTdee = tdeeResult * (1 + modifierPercentage);
 
-            // Actualiza las vistas
+            // Update the text views
             textViewTdee.setText(String.valueOf((int) newTdee));
-            modifierTDEEtextView.setText(String.format(Locale.getDefault(), "%.0f%%", modifierPercentage * 100));
+            modifierTdeeTextView.setText(String.format(Locale.getDefault(), "%.0f%%", modifierPercentage * 100));
+
+            TreeMap<Double, String> intensityModifiers = new TreeMap<>();
+            intensityModifiers.put(-0.30, "Pérdida extrema de peso");
+            intensityModifiers.put(-0.25, "Déficit extremo");
+            intensityModifiers.put(-0.20, "Déficit intenso");
+            intensityModifiers.put(-0.15, "Déficit moderado-intenso");
+            intensityModifiers.put(-0.10, "Definición moderada");
+            intensityModifiers.put(-0.05, "Definición ligera");
+            intensityModifiers.put(0.00, "Mantenimiento");
+            intensityModifiers.put(0.05, "Volumen ligero");
+            intensityModifiers.put(0.10, "Volumen moderado");
+            intensityModifiers.put(0.15, "Volumen moderado-intenso");
+            intensityModifiers.put(0.20, "Volumen intenso");
+            intensityModifiers.put(0.25, "Volumen extremo");
+            intensityModifiers.put(0.30, "Ganancia extrema de peso");
+
+            String intensityModifierText = intensityModifiers.floorEntry(modifierPercentage).getValue();
+            intensityModifierTextVier.setText(intensityModifierText);
         }
     }
 

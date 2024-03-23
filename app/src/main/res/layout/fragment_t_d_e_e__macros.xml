@@ -89,23 +89,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/btnMinusCalories"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/rounded_shape_buttons"
-            android:gravity="center"
-            android:text="-"
-            android:textSize="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.321"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.176" />
-
-        <Button
             android:id="@+id/btnPlusCalories"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -121,7 +104,24 @@
             app:layout_constraintHorizontal_bias="0.675"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.176" />
+            app:layout_constraintVertical_bias="0.15" />
+
+        <Button
+            android:id="@+id/btnMinusCalories"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="11dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_shape_buttons"
+            android:gravity="center"
+            android:text="-"
+            android:textSize="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.321"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.15" />
 
         <TextView
             android:id="@+id/modifierTDEEtextView"
@@ -129,20 +129,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="21dp"
             android:layout_marginBottom="24dp"
+            android:text="0 %"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.176" />
+            app:layout_constraintVertical_bias="0.15" />
 
         <LinearLayout
             android:layout_width="350dp"
             android:layout_height="150dp"
-            android:layout_marginTop="-30dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -288,10 +288,11 @@
                         android:background="#E6E6E6">
 
 
-                        <TextView
+                        <EditText
                             android:id="@+id/totalCarbs"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="108dp"
+                            android:layout_height="61dp"
+                            android:background="@null"
                             android:gravity="center"
                             android:text="0"
                             android:textColor="@android:color/black"
@@ -322,5 +323,17 @@
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/intensityModifierTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="TextView"
+            android:textColor="@color/black"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/modifierTDEEtextView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
