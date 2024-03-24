@@ -1,5 +1,7 @@
 package com.tfg.kaifit_pal.fragments;
 
+import static java.lang.Integer.parseInt;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,7 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.tfg.kaifit_pal.R;
-import com.tfg.kaifit_pal.calculator_logic.CalculatorUtils;
+import com.tfg.kaifit_pal.logic.CalculatorLogic;
+import com.tfg.kaifit_pal.utilities.DataParser;
 
 public class Calculator extends Fragment {
 
@@ -33,7 +36,7 @@ public class Calculator extends Fragment {
     Spinner activityFactorSpinner;
 
     private OnCalculateClickListener callback; // The callback will allow us to communicate with the activity and get the data from the user
-    private CalculatorUtils calculatorUtils;
+    private CalculatorLogic calculatorInstance;
 
     // We declare an onClickListener to communicate with the activity using the callback
     @Override
@@ -56,11 +59,11 @@ public class Calculator extends Fragment {
         view.findViewById(R.id.buttonCalculate).setOnClickListener(v -> {
             double activityFactor = getActivityFactor(view);
 
-            // We need to create here the instance of the CalculatorUtils class to pass the activityFactor updated
-            calculatorUtils = CalculatorUtils.createInstance(femaleButton.isSelected(), parseInt(dynamicAge.getText().toString()), parseInt(heightEditText.getText().toString().trim()), parseDouble(weightEditText.getText().toString().trim()), parseDouble(neckEditText.getText().toString().trim()), parseDouble(waistEditText.getText().toString().trim()), parseDouble(hipEditText.getText().toString().trim()));
-            calculatorUtils.setActivityFactor(activityFactor);
+            // We need to create here the instance of the CalculatorLogic class to pass the activityFactor updated
+            calculatorInstance = CalculatorLogic.createInstance(femaleButton.isSelected(), DataParser.parseIntUtility(dynamicAge.getText().toString()), DataParser.parseIntUtility(heightEditText.getText().toString().trim()), DataParser.parseDoubleUtility(weightEditText.getText().toString().trim()), DataParser.parseDoubleUtility(neckEditText.getText().toString().trim()), DataParser.parseDoubleUtility(waistEditText.getText().toString().trim()), DataParser.parseDoubleUtility(hipEditText.getText().toString().trim()));
+            calculatorInstance.setActivityFactor(activityFactor);
 
-            tdeeResult = calculatorUtils.calculateTDEE();
+            tdeeResult = calculatorInstance.calculateTDEE();
             callback.onCalculateClick(tdeeResult);
         });
         setupTextChangeListeners(view);
@@ -83,7 +86,7 @@ public class Calculator extends Fragment {
     }
 
     private void updateAge(int change) {
-        int predefinedAge = Integer.parseInt(dynamicAge.getText().toString());
+        int predefinedAge = parseInt(dynamicAge.getText().toString());
         predefinedAge = Math.max(18, Math.min(90, predefinedAge + change));
         dynamicAge.setText(String.valueOf(predefinedAge));
     }
@@ -114,17 +117,17 @@ public class Calculator extends Fragment {
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
-                int age = Integer.parseInt(dynamicAge.getText().toString());
+                int age = parseInt(dynamicAge.getText().toString());
                 boolean sex = femaleButton.isSelected();
-                double valueWeight = parseDouble(weightEditText.getText().toString().trim());
-                int valueHeight = parseInt(heightEditText.getText().toString().trim());
-                double valueNeck = parseDouble(neckEditText.getText().toString().trim());
-                double valueWaist = parseDouble(waistEditText.getText().toString().trim());
-                double valueHip = parseDouble(hipEditText.getText().toString().trim());
+                double valueWeight = DataParser.parseDoubleUtility(weightEditText.getText().toString().trim());
+                int valueHeight = DataParser.parseIntUtility(heightEditText.getText().toString().trim());
+                double valueNeck = DataParser.parseDoubleUtility(neckEditText.getText().toString().trim());
+                double valueWaist = DataParser.parseDoubleUtility(waistEditText.getText().toString().trim());
+                double valueHip = DataParser.parseDoubleUtility(hipEditText.getText().toString().trim());
 
-                // We instance the CalculatorUtils class with the data from the UI
-                calculatorUtils = CalculatorUtils.createInstance(sex, age, valueHeight, valueWeight, valueNeck, valueWaist, valueHip);
-                fatPercentage = calculatorUtils.getFatPercentage();
+                // We instance the CalculatorLogic class with the data from the UI
+                calculatorInstance = CalculatorLogic.createInstance(sex, age, valueHeight, valueWeight, valueNeck, valueWaist, valueHip);
+                fatPercentage = calculatorInstance.getFatPercentage();
 
                 if (valueHeight == 0 && valueWeight == 0 && valueNeck == 0 && valueWaist == 0 && valueHip == 0) {
                     fatPercentageEditText.setText("");
@@ -177,21 +180,6 @@ public class Calculator extends Fragment {
         return 1.2; // Default value
     }
 
-    private double parseDouble(String str) {
-        try {
-            return Double.parseDouble(str);
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
-
-    private int parseInt(String str) {
-        try {
-            return Integer.parseInt(str);
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
 
     // Interface to communicate with the activity and get the data from the user
     public interface OnCalculateClickListener {

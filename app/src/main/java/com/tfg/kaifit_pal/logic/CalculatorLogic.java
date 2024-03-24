@@ -1,24 +1,23 @@
-package com.tfg.kaifit_pal.calculator_logic;
+package com.tfg.kaifit_pal.logic;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.BaseObservable;
-import androidx.databinding.Bindable;
 
 import java.io.Serializable;
-import java.security.Provider;
-import java.text.DecimalFormat;
 
-public class CalculatorUtils implements Serializable {
+public class CalculatorLogic  {
 
     private int age;
     private double weight, waist, hip, neck, height;
     private double fatPercentage, activityFactor;
     private boolean sex;
 
+    private CalculatorLogic() {
+    }
+
     // Static factory method
     @NonNull
-    public static CalculatorUtils createInstance(boolean sex, int age, double height, double weight, double neck, double waist, double hip) {
-        CalculatorUtils instance = new CalculatorUtils();
+    public static CalculatorLogic createInstance(boolean sex, int age, double height, double weight, double neck, double waist, double hip) {
+        CalculatorLogic instance = new CalculatorLogic();
         instance.sex = sex;
         instance.age = age;
         instance.weight = weight;

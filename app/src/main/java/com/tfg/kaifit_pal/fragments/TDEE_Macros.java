@@ -95,7 +95,7 @@ public class TDEE_Macros extends Fragment {
         double newModifierPercentage = modifierPercentage + modifier;
 
         // Check if the new modifier percentage is between -30% and 30%
-        if (newModifierPercentage >= -0.30 && newModifierPercentage <= 0.30) {
+        if (newModifierPercentage >= -0.20 && newModifierPercentage <= 0.20) {
             // Update the modifier percentage and the new TDEE
             modifierPercentage = newModifierPercentage;
             newTdee = tdeeResult * (1 + modifierPercentage);
@@ -116,19 +116,15 @@ public class TDEE_Macros extends Fragment {
     @NonNull
     private static TreeMap<Double, String> getDoubleStringLabelModifiersTreeMap() {
         TreeMap<Double, String> intensityModifiers = new TreeMap<>();
-        intensityModifiers.put(-0.30, "Pérdida extrema de peso");
-        intensityModifiers.put(-0.25, "Déficit extremo");
         intensityModifiers.put(-0.20, "Déficit intenso");
         intensityModifiers.put(-0.15, "Déficit moderado-intenso");
-        intensityModifiers.put(-0.10, "Definición moderada");
-        intensityModifiers.put(-0.05, "Definición ligera");
+        intensityModifiers.put(-0.10, "Déficit moderado");
+        intensityModifiers.put(-0.05, "Déficit ligero");
         intensityModifiers.put(0.00, "Mantenimiento");
         intensityModifiers.put(0.05, "Volumen ligero");
         intensityModifiers.put(0.10, "Volumen moderado");
         intensityModifiers.put(0.15, "Volumen moderado-intenso");
         intensityModifiers.put(0.20, "Volumen intenso");
-        intensityModifiers.put(0.25, "Volumen extremo");
-        intensityModifiers.put(0.30, "Ganancia extrema de peso");
         return intensityModifiers;
     }
 
