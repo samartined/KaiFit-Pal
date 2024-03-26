@@ -191,7 +191,7 @@
                                 android:text="TextView" />
 
                             <TextView
-                                android:id="@+id/totalProteinsTextView"
+                                android:id="@+id/proteinsPercentageTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="60dp"
@@ -230,7 +230,7 @@
                                 android:text="TextView" />
 
                             <TextView
-                                android:id="@+id/totalFatsTextView"
+                                android:id="@+id/fatsPercentageTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="60dp"
@@ -269,7 +269,7 @@
                                 android:text="TextView" />
 
                             <TextView
-                                android:id="@+id/totalCarbsTextView"
+                                android:id="@+id/carbsPercentageTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="60dp"

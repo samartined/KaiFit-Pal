@@ -21,7 +21,6 @@ import com.tfg.kaifit_pal.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -42,11 +41,11 @@ public class TdeeMacros extends Fragment {
     private double modifierPercentage = 0;
 
     // Flags to track user interactions
-    private boolean isManualChange = false;
-    private boolean userChangedPickers = false;
+    private boolean isManualChange = false; // Flag to check if the change in TDEE is manual
+    private boolean userChangedPickers = false; // Flag to check if the user changed the NumberPickers
 
     // UI components
-    TextView textViewTdee, modifierTdeeTextView, intensityModifierTextVier, totalProteinsTextView, totalFatTextView, totalCarbsTextView;
+    TextView textViewTdee, modifierTdeeTextView, intensityModifierTextView, proteinsPercentageTextView, fatsPercentageTextView, carbsPercentageTextView;
     Button buttonMinusCalories, buttonPlusCalories;
     NumberPicker proteinsNumberPicker, fatNumberPicker, carbsNumberPicker;
     ArrayList<NumberPicker> numberPickers;
@@ -74,57 +73,8 @@ public class TdeeMacros extends Fragment {
         // Setup buttons
         setupButtons(view);
 
+
         return view;
-    }
-
-    /**
-     * Initialize the UI components.
-     *
-     * @param view The current view.
-     */
-    private void initializeComponents(@NonNull View view) {
-        // Initialize UI components
-        textViewTdee = view.findViewById(R.id.tdeeResultTextView);
-        modifierTdeeTextView = view.findViewById(R.id.modifierTDEEtextView);
-        modifierTdeeTextView.setText(String.format(Locale.getDefault(), "%.0f%%", modifierPercentage * 100));
-        intensityModifierTextVier = view.findViewById(R.id.intensityModifierTextView);
-        intensityModifierTextVier.setText("Mantenimiento");
-
-        // Get TDEE result from arguments
-        if (getArguments() != null) {
-            tdeeResult = getArguments().getInt("tdeeResult");
-            originalTDEE = tdeeResult;
-            textViewTdee.setText(String.valueOf(tdeeResult));
-        }
-
-        // Setup buttons
-        setupButtons(view);
-
-        // Initialize macronutrient TextViews
-        totalProteinsTextView = view.findViewById(R.id.totalProteinsTextView);
-        totalFatTextView = view.findViewById(R.id.totalFatsTextView);
-        totalCarbsTextView = view.findViewById(R.id.totalCarbsTextView);
-
-        // Initialize NumberPickers
-        proteinsNumberPicker = view.findViewById(R.id.proteinsNumberPicker);
-        fatNumberPicker = view.findViewById(R.id.fatsNumberPicker);
-        carbsNumberPicker = view.findViewById(R.id.carbsNumberPicker);
-
-        // Add NumberPickers to ArrayList
-        numberPickers = new ArrayList<>(Arrays.asList(proteinsNumberPicker, fatNumberPicker, carbsNumberPicker));
-
-        // Setup NumberPickers
-        for (NumberPicker numberPicker : numberPickers) {
-            numberPicker.setMinValue(0);
-            numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
-            numberPicker.setDescendantFocusability(NumberPicker.FOCUS_AFTER_DESCENDANTS);
-            numberPicker.setValue((int) (tdeeResult * (numberPicker == proteinsNumberPicker ? defaultProteinPercentage : (numberPicker == fatNumberPicker ? defaultFatPercentage : defaultCarbPercentage)) / (numberPicker == fatNumberPicker ? 9 : 4)));
-            numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-                userChangedPickers = true;
-                isManualChange = true;
-                updateNumberPickers(oldVal, newVal);
-            });
-        }
     }
 
     /**
@@ -148,18 +98,57 @@ public class TdeeMacros extends Fragment {
     }
 
     /**
-     * Handle options item selections.
+     * Initialize the UI components.
      *
-     * @param item The selected menu item.
-     * @return Return false to allow normal menu processing to proceed, true to consume it here.
+     * @param view The current view.
      */
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            requireActivity().onBackPressed();
-            return true;
+    private void initializeComponents(@NonNull View view) {
+        // Initialize UI components
+        textViewTdee = view.findViewById(R.id.tdeeResultTextView);
+        modifierTdeeTextView = view.findViewById(R.id.modifierTDEEtextView);
+        modifierTdeeTextView.setText(String.format(Locale.getDefault(), "%.0f%%", modifierPercentage * 100));
+        intensityModifierTextView = view.findViewById(R.id.intensityModifierTextView);
+        intensityModifierTextView.setText("Mantenimiento");
+
+        // Get TDEE result from arguments
+        if (getArguments() != null) {
+            tdeeResult = getArguments().getInt("tdeeResult");
+            originalTDEE = tdeeResult;
+            textViewTdee.setText(String.valueOf(tdeeResult));
         }
-        return super.onOptionsItemSelected(item);
+
+        // Setup buttons
+        setupButtons(view);
+
+        // Initialize macronutrient TextViews
+        proteinsPercentageTextView = view.findViewById(R.id.proteinsPercentageTextView);
+        fatsPercentageTextView = view.findViewById(R.id.fatsPercentageTextView);
+        carbsPercentageTextView = view.findViewById(R.id.carbsPercentageTextView);
+
+        // Initialize NumberPickers
+        proteinsNumberPicker = view.findViewById(R.id.proteinsNumberPicker);
+        fatNumberPicker = view.findViewById(R.id.fatsNumberPicker);
+        carbsNumberPicker = view.findViewById(R.id.carbsNumberPicker);
+
+        // Add NumberPickers to ArrayList
+        numberPickers = new ArrayList<>(Arrays.asList(proteinsNumberPicker, fatNumberPicker, carbsNumberPicker));
+
+        // Setup NumberPickers
+        for (NumberPicker numberPicker : numberPickers) {
+            numberPicker.setMinValue(0);
+            numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
+            numberPicker.setDescendantFocusability(NumberPicker.FOCUS_AFTER_DESCENDANTS);
+            numberPicker.setValue((int) (tdeeResult * (numberPicker == proteinsNumberPicker ? defaultProteinPercentage : (numberPicker == fatNumberPicker ? defaultFatPercentage : defaultCarbPercentage)) / (numberPicker == fatNumberPicker ? 9 : 4)));
+            numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+                userChangedPickers = true;
+                updateNumberPickers();
+            });
+        }
+
+        // Initialize the macronutrient percentages TextViews
+        proteinsPercentageTextView.setText(String.format(Locale.getDefault(), "%.0f%%", defaultProteinPercentage * 100));
+        fatsPercentageTextView.setText(String.format(Locale.getDefault(), "%.0f%%", defaultFatPercentage * 100));
+        carbsPercentageTextView.setText(String.format(Locale.getDefault(), "%.0f%%", defaultCarbPercentage * 100));
     }
 
     /**
@@ -181,6 +170,7 @@ public class TdeeMacros extends Fragment {
      * @param modifier The percentage to modify the TDEE by.
      */
     private void modifyTDEE(double modifier) {
+
         double newModifierPercentage = modifierPercentage + modifier;
 
         if (newModifierPercentage >= -0.20 && newModifierPercentage <= 0.20) {
@@ -189,7 +179,7 @@ public class TdeeMacros extends Fragment {
 
             // We use the TreeMap to get the intensity modifier text
             TreeMap<Double, String> intensityModifiers = getDoubleStringLabelModifiersTreeMap();
-            intensityModifierTextVier.setText(Objects.requireNonNull(intensityModifiers.floorEntry(modifierPercentage)).getValue());
+            intensityModifierTextView.setText(Objects.requireNonNull(intensityModifiers.floorEntry(modifierPercentage)).getValue());
 
 
             if (!isManualChange && !userChangedPickers) {
@@ -213,15 +203,15 @@ public class TdeeMacros extends Fragment {
 
     /**
      * Update the NumberPickers when TDEE value is changed.
-     *
-     * @param oldVal The old value of the NumberPicker.
-     * @param newVal The new value of the NumberPicker.
      */
-    private void updateNumberPickers(int oldVal, int newVal) {
+    private void updateNumberPickers() {
         if (!userChangedPickers) return;
         isManualChange = true;
-        int diff = newVal - oldVal;
-        tdeeResult += diff;
+
+        tdeeResult = 0;
+        for (NumberPicker numberPicker : numberPickers) {
+            tdeeResult += numberPicker.getValue() * (numberPicker == proteinsNumberPicker ? 4 : (numberPicker == fatNumberPicker ? 9 : 4));
+        }
 
         if (modifierPercentage == 0) {
             originalTDEE = tdeeResult;
@@ -229,11 +219,7 @@ public class TdeeMacros extends Fragment {
 
         textViewTdee.setText(String.valueOf(tdeeResult));
 
-        for (NumberPicker numberPicker : numberPickers) {
-            double value = numberPicker.getValue() / (double) originalTDEE;
-            numberPicker.setValue((int) (tdeeResult * value));
-            numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
-        }
+        userChangedPickers = false;
         isManualChange = false;
     }
 
@@ -256,6 +242,21 @@ public class TdeeMacros extends Fragment {
         intensityModifiers.put(0.15, "Volumen moderado-intenso");
         intensityModifiers.put(0.20, "Volumen intenso");
         return intensityModifiers;
+    }
+
+    /**
+     * Handle options item selections.
+     *
+     * @param item The selected menu item.
+     * @return Return false to allow normal menu processing to proceed, true to consume it here.
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            requireActivity().onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
