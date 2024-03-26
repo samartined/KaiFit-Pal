@@ -1,10 +1,13 @@
 package com.tfg.kaifit_pal.logic;
 
+import android.health.connect.datatypes.ActiveCaloriesBurnedRecord;
+
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
-public class CalculatorLogic  {
+public class CalculatorLogic {
 
     private int age;
     private double weight, waist, hip, neck, height;
@@ -55,6 +58,21 @@ public class CalculatorLogic  {
 
         // Now, we calculate the TDEE using the BMR and the activity factor
         return (int) (BMR * this.activityFactor);
+    }
+
+    @NonNull
+    public static HashMap<String, Integer> calculateMacros(int tdee) {
+        HashMap<String, Integer> macros = new HashMap<>();
+        final int CALORIES_PER_GRAM_PROTEIN = 4;
+        final int CALORIES_PER_GRAM_FAT = 9;
+        final int CALORIES_PER_GRAM_CARBS = 4;
+
+        // Calculate the macros
+        macros.put("Proteins", (int) (tdee / CALORIES_PER_GRAM_PROTEIN));
+        macros.put("Fats", (int) (tdee / CALORIES_PER_GRAM_FAT));
+        macros.put("Carbs", (int) (tdee / CALORIES_PER_GRAM_CARBS));
+
+        return macros;
     }
 
     public int getAge() {

@@ -1,6 +1,5 @@
 package com.tfg.kaifit_pal;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -15,9 +14,7 @@ import com.tfg.kaifit_pal.fragments.Help;
 import com.tfg.kaifit_pal.fragments.KaiQ;
 import com.tfg.kaifit_pal.fragments.Profile;
 import com.tfg.kaifit_pal.fragments.Settings;
-import com.tfg.kaifit_pal.fragments.TDEE_Macros;
-
-import java.util.Stack;
+import com.tfg.kaifit_pal.fragments.TdeeMacros;
 
 public class MainActivity extends AppCompatActivity implements Calculator.OnCalculateClickListener {
 
@@ -97,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
 
     @Override
     public void onCalculateClick(int tdeeResult) {
-        Fragment newFragment = fragmentManager.findFragmentById(R.id.fragment_container_view) instanceof Calculator ? new TDEE_Macros() : new Calculator();
+        Fragment newFragment = fragmentManager.findFragmentById(R.id.fragment_container_view) instanceof Calculator ? new TdeeMacros() : new Calculator();
 
         // We create a bundle to pass the data to the new fragment
         Bundle bundle = new Bundle();
