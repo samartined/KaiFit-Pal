@@ -1,5 +1,6 @@
 package com.tfg.kaifit_pal.fragments;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -45,10 +46,12 @@ public class TdeeMacros extends Fragment {
     private boolean userChangedPickers = false; // Flag to check if the user changed the NumberPickers
 
     // UI components
-    TextView textViewTdee, modifierTdeeTextView, intensityModifierTextView, proteinsPercentageTextView, fatsPercentageTextView, carbsPercentageTextView;
-    Button buttonMinusCalories, buttonPlusCalories;
-    NumberPicker proteinsNumberPicker, fatNumberPicker, carbsNumberPicker;
-    ArrayList<NumberPicker> numberPickers;
+    private TextView textViewTdee;
+    private TextView modifierTdeeTextView;
+    private TextView intensityModifierTextView;
+
+    private NumberPicker proteinsNumberPicker, fatNumberPicker, carbsNumberPicker;
+    private ArrayList<NumberPicker> numberPickers;
 
     /**
      * Called to have the fragment instantiate its user interface view.
@@ -65,14 +68,12 @@ public class TdeeMacros extends Fragment {
 
         // We configure the scroll view to show the bottom of the view when the fragment is created
         ScrollView scrollView = view.findViewById(R.id.scrollView);
-        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN)); // Lambda expression to scroll to the bottom of the view
+
+        // We set scroll according if user is writing in number pickers, setting down by default and putting it up when user is writing them
+        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
 
         // Initialize UI components
-        initializeComponents(view);
-
-        // Setup buttons
-        setupButtons(view);
-
+        initializeUIComponents(view);
 
         return view;
     }
@@ -102,7 +103,7 @@ public class TdeeMacros extends Fragment {
      *
      * @param view The current view.
      */
-    private void initializeComponents(@NonNull View view) {
+    private void initializeUIComponents(@NonNull View view) {
         // Initialize UI components
         textViewTdee = view.findViewById(R.id.tdeeResultTextView);
         modifierTdeeTextView = view.findViewById(R.id.modifierTDEEtextView);
@@ -120,10 +121,31 @@ public class TdeeMacros extends Fragment {
         // Setup buttons
         setupButtons(view);
 
-        // Initialize macronutrient TextViews
-        proteinsPercentageTextView = view.findViewById(R.id.proteinsPercentageTextView);
-        fatsPercentageTextView = view.findViewById(R.id.fatsPercentageTextView);
-        carbsPercentageTextView = view.findViewById(R.id.carbsPercentageTextView);
+        // Initialize all the macros titles by initializing the TextViews at once
+        ArrayList<TextView> macroTitles = new ArrayList<>(Arrays.asList(
+                view.findViewById(R.id.proteinTitle),
+                view.findViewById(R.id.fatTitle),
+                view.findViewById(R.id.carbTitle)
+        ));
+
+        for (TextView titles : macroTitles) {
+            titles.setTextColor(getResources().getColor(R.color.black));
+            titles.setTextSize(15);
+            titles.setTypeface(titles.getTypeface(), Typeface.BOLD);
+            titles.setGravity(1);
+        }
+
+        ArrayList<TextView> macroPercentages = new ArrayList<>(Arrays.asList(
+                view.findViewById(R.id.proteinsPercentageTextView),
+                view.findViewById(R.id.fatsPercentageTextView),
+                view.findViewById(R.id.carbsPercentageTextView)
+        ));
+
+        for (TextView macroPercentage : macroPercentages) {
+            macroPercentage.setTextSize(15);
+            macroPercentage.setTypeface(macroPercentage.getTypeface(), Typeface.BOLD);
+            macroPercentage.setGravity(1);
+        }
 
         // Initialize NumberPickers
         proteinsNumberPicker = view.findViewById(R.id.proteinsNumberPicker);
@@ -135,6 +157,7 @@ public class TdeeMacros extends Fragment {
 
         // Setup NumberPickers
         for (NumberPicker numberPicker : numberPickers) {
+            numberPicker.setGravity(1);
             numberPicker.setMinValue(0);
             numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
             numberPicker.setDescendantFocusability(NumberPicker.FOCUS_AFTER_DESCENDANTS);
@@ -146,19 +169,21 @@ public class TdeeMacros extends Fragment {
         }
 
         // Initialize the macronutrient percentages TextViews
-        proteinsPercentageTextView.setText(String.format(Locale.getDefault(), "%.0f%%", defaultProteinPercentage * 100));
-        fatsPercentageTextView.setText(String.format(Locale.getDefault(), "%.0f%%", defaultFatPercentage * 100));
-        carbsPercentageTextView.setText(String.format(Locale.getDefault(), "%.0f%%", defaultCarbPercentage * 100));
+        for (TextView macroPercentage : macroPercentages) {
+            macroPercentage.setText(String.format(Locale.getDefault(), "%.0f%%", (macroPercentage == macroPercentages.get(0) ? defaultProteinPercentage : (macroPercentage == macroPercentages.get(1) ? defaultFatPercentage : defaultCarbPercentage)) * 100));
+        }
     }
 
     /**
-     * Setup the plus and minus calorie buttons.
+     * Setup the
+     * /**
+     * plus and minus calorie buttons.
      *
      * @param view The current view.
      */
     private void setupButtons(@NonNull View view) {
-        buttonMinusCalories = view.findViewById(R.id.btnMinusCalories);
-        buttonPlusCalories = view.findViewById(R.id.btnPlusCalories);
+        Button buttonMinusCalories = view.findViewById(R.id.btnMinusCalories);
+        Button buttonPlusCalories = view.findViewById(R.id.btnPlusCalories);
 
         buttonMinusCalories.setOnClickListener(v -> modifyTDEE(-0.05));
         buttonPlusCalories.setOnClickListener(v -> modifyTDEE(0.05));
