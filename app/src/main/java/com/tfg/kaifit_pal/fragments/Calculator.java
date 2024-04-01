@@ -19,36 +19,62 @@ import com.tfg.kaifit_pal.R;
 import com.tfg.kaifit_pal.logic.CalculatorLogic;
 import com.tfg.kaifit_pal.utilities.DataParser;
 
+/**
+ * This class is used to create the Calculator fragment. This fragment is used to calculate the Total Daily Energy Expenditure (TDEE) and body fat percentage of the user.
+ */
 public class Calculator extends Fragment {
 
-    // We declare some global variables for a communication between fragments and activities
+    // This class contains several private variables that are used throughout the Calculator class.
 
-    private int tdeeResult;
+    private int tdeeResult; // This variable holds the result of the Total Daily Energy Expenditure (TDEE) calculation.
+    private double fatPercentage; // This variable holds the calculated body fat percentage.
 
-    private double fatPercentage;
+    private TextView dynamicAge; // This TextView displays the age that the user inputs dynamically.
+    private TextView fatPercentageEditText; // This TextView displays the calculated body fat percentage.
 
-    private TextView dynamicAge, fatPercentageEditText;
+    // These EditText fields are used to input the user's weight, height, neck, waist, and hip measurements.
+    private EditText weightEditText;
+    private EditText heightEditText;
+    private EditText neckEditText;
+    private EditText waistEditText;
+    private EditText hipEditText;
 
-    private EditText weightEditText, heightEditText, neckEditText, waistEditText, hipEditText;
+    private Button femaleButton; // This button is used to select the female gender.
 
-    private Button femaleButton;
+    private Spinner activityFactorSpinner; // This Spinner allows the user to select their activity level.
 
-    Spinner activityFactorSpinner;
+    // This callback is used to communicate with the activity and get the data from the user.
+    private OnCalculateClickListener callback;
 
-    private OnCalculateClickListener callback; // The callback will allow us to communicate with the activity and get the data from the user
+    // This instance of the CalculatorLogic class is used to perform the TDEE and body fat percentage calculations.
     private CalculatorLogic calculatorInstance;
 
-    // We declare an onClickListener to communicate with the activity using the callback
+    /**
+     * This method is called when the fragment is first attached to its context.
+     *
+     * @param context The context to which the fragment is attached.
+     * @throws ClassCastException if the context does not implement the OnCalculateClickListener interface.
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
+            // Attempt to cast the context to an OnCalculateClickListener
             callback = (OnCalculateClickListener) context;
         } catch (ClassCastException e) {
+            // If the context does not implement OnCalculateClickListener, throw an exception
             throw new ClassCastException(context + " debe implementar OnCalculateClickListener");
         }
     }
 
+    /**
+     * This method is called when the fragment is created. It inflates the layout for the fragment and sets up the buttons and text change listeners.
+     *
+     * @param inflater           The LayoutInflater used to inflate the layout for the fragment.
+     * @param container          The ViewGroup container for the fragment.
+     * @param savedInstanceState The Bundle containing the saved instance state of the fragment.
+     * @return The View for the fragment.
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calculator, container, false);
@@ -71,40 +97,92 @@ public class Calculator extends Fragment {
         return view;
     }
 
-    // The main purpose of this method is to set the default appearance of the sex buttons
+    /**
+     * This method is called when the fragment is created and the view is created. It sets the initial values for the age, weight, height, neck, waist, and hip fields.
+     *
+     * @param view               The View for the fragment.
+     * @param savedInstanceState The Bundle containing the saved instance state of the fragment.
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.post(() -> selectGender(true, view));
     }
 
+    /**
+     * This method sets up the buttons for the Calculator fragment.
+     * It assigns onClickListeners to each button to perform their respective actions when clicked.
+     *
+     * @param view The View for the fragment.
+     */
     private void setupButtons(@NonNull View view) {
+        // The minus button decreases the age by 1 when clicked.
         view.findViewById(R.id.btnMinus).setOnClickListener(v -> updateAge(-1));
+
+        // The plus button increases the age by 1 when clicked.
         view.findViewById(R.id.btnPlus).setOnClickListener(v -> updateAge(1));
+
+        // The male button sets the gender to male when clicked.
         view.findViewById(R.id.ButtonMale).setOnClickListener(v -> selectGender(true, view));
+
+        // The female button sets the gender to female when clicked.
         view.findViewById(R.id.ButtonFemale).setOnClickListener(v -> selectGender(false, view));
     }
 
+    /**
+     * This method updates the age displayed in the dynamicAge TextView.
+     *
+     * @param change The amount by which to change the age.
+     */
     private void updateAge(int change) {
         int predefinedAge = parseInt(dynamicAge.getText().toString());
         predefinedAge = Math.max(18, Math.min(90, predefinedAge + change));
         dynamicAge.setText(String.valueOf(predefinedAge));
     }
 
+    /**
+     * This method is used to select the gender in the Calculator fragment.
+     * It updates the UI based on the selected gender.
+     *
+     * @param sex  The gender selected by the user. True for male, false for female.
+     * @param view The View for the fragment.
+     */
     private void selectGender(boolean sex, @NonNull View view) {
+        // Get the male and female buttons from the view
         Button maleButton = view.findViewById(R.id.ButtonMale);
         femaleButton = view.findViewById(R.id.ButtonFemale);
+
+        // Get the EditText for the hip measurement, which is only applicable for females
         EditText femaleEditText = view.findViewById(R.id.editTextHip);
 
+        // Set the selected state of the male button based on the selected gender
         maleButton.setSelected(sex);
+
+        // Clear the text in the female EditText
         femaleEditText.setText("");
+
+        // Update the background resource of the male button based on the selected gender
         maleButton.setBackgroundResource(sex ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed);
+
+        // Set the selected state of the female button based on the selected gender
         femaleButton.setSelected(!sex);
+
+        // Update the background resource of the female button based on the selected gender
         femaleButton.setBackgroundResource(!sex ? R.drawable.rect_button_pressed : R.drawable.rect_button_notpressed);
+
+        // Enable or disable the female EditText based on the selected gender
         femaleEditText.setEnabled(!sex);
+
+        // Update the background resource of the female EditText based on the selected gender
         femaleEditText.setBackgroundResource(!sex ? R.drawable.edittext_borders : R.drawable.edittext_disabled_background);
     }
 
+    /**
+     * This method sets up the text change listeners for the weight, height, neck, waist, and hip fields.
+     * It calculates the body fat percentage based on the user's input and updates the fatPercentageEditText accordingly.
+     *
+     * @param view The View for the fragment.
+     */
     private void setupTextChangeListeners(@NonNull View view) {
         weightEditText = view.findViewById(R.id.editTextWeight);
         heightEditText = view.findViewById(R.id.editTextHeight);
@@ -156,7 +234,12 @@ public class Calculator extends Fragment {
         hipEditText.addTextChangedListener(textWatcher);
     }
 
-    // We'll get the activity factor from the spinner
+    /**
+     * This method gets the activity factor selected by the user from the Spinner.
+     *
+     * @param view The View for the fragment.
+     * @return The activity factor selected by the user.
+     */
     private double getActivityFactor(@NonNull View view) {
         activityFactorSpinner = view.findViewById(R.id.spinnerActivityFactor);
 
@@ -180,8 +263,9 @@ public class Calculator extends Fragment {
         return 1.2; // Default value
     }
 
-
-    // Interface to communicate with the activity and get the data from the user
+    /**
+     * This interface is used to communicate with the activity and get the data from the user.
+     */
     public interface OnCalculateClickListener {
         void onCalculateClick(int tdeeResult);
     }

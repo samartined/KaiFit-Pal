@@ -1,32 +1,32 @@
 package com.tfg.kaifit_pal.logic;
 
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-
 import java.util.HashMap;
 
+/**
+ * Class to manage macronutrient percentages for different modifiers.
+ */
 public class MacrosManager {
 
+    /**
+     * HashMap to store the macronutrient percentages for different modifiers.
+     * The key is the modifier name and the value is an array of Double values representing the percentages for Proteins, Fats, and Carbs respectively.
+     */
+    private static final HashMap<String, Double[]> modifierMacrosPercentages = new HashMap<>();
 
-    // Default macronutrient percentages
-    private final double defaultCarbPercentage = 0.55;
-    private final double defaultProteinPercentage = 0.25;
-    private final double defaultFatPercentage = 0.20;
-
-    // Macronutrient percentages for different modifiers
-    private final HashMap<String, Double[]> modifierMacrosPercentages = new HashMap<>();
-
-    // Constructor
-    public MacrosManager(Context context) {
-        // Initialize modifier macros percentages
-        modifierMacrosPercentages.put("Mantenimiento", new Double[]{0.55, 0.25, 0.20});
-        modifierMacrosPercentages.put("Definición", new Double[]{0.40, 0.40, 0.20});
-        modifierMacrosPercentages.put("Volumen", new Double[]{0.60, 0.20, 0.20});
+    static {
+        // Initialize modifier macros percentages, in this order: Proteins, Fats, Carbs. The key is modifier name - value.
+        modifierMacrosPercentages.put("Mantenimiento", new Double[]{0.25, 0.25, 0.50});
+        modifierMacrosPercentages.put("Definición", new Double[]{0.30, 0.25, 0.45});
+        modifierMacrosPercentages.put("Volumen", new Double[]{0.35, 0.25, 0.40});
     }
 
-    // Method to get macronutrient percentages for a given modifier
-    public Double[] getMacrosPercentagesForModifier(String modifier) {
+    /**
+     * Method to get the macronutrient percentages for a given modifier.
+     *
+     * @param modifier The modifier for which to get the macronutrient percentages.
+     * @return An array of Double values representing the percentages for Proteins, Fats, and Carbs respectively.
+     */
+    public static Double[] getMacrosPercentagesForModifier(String modifier) {
         return modifierMacrosPercentages.get(modifier);
     }
 }

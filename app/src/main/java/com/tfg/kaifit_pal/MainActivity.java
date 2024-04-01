@@ -16,11 +16,21 @@ import com.tfg.kaifit_pal.fragments.Profile;
 import com.tfg.kaifit_pal.fragments.Settings;
 import com.tfg.kaifit_pal.fragments.TdeeMacros;
 
+/**
+ * Main activity class that holds all the fragments.
+ */
 public class MainActivity extends AppCompatActivity implements Calculator.OnCalculateClickListener {
 
-    // FragmentManager to manage fragments
+    /**
+     * FragmentManager to manage fragments
+     */
     private FragmentManager fragmentManager;
 
+    /**
+     * Called when the activity is starting.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
 
     }
 
+    /**
+     * Sets up the bottom navigation view and its item selection listener.
+     */
     private void setupBottomNavigationView() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -63,6 +76,11 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         });
     }
 
+    /**
+     * Adds the default fragment to the activity.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     */
     private void addDefaultFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             Fragment defaultFragment = new Calculator();
@@ -74,6 +92,12 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         }
     }
 
+    /**
+     * This hook is called whenever an item in your options menu is selected.
+     *
+     * @param item The menu item that was selected.
+     * @return boolean Return false to allow normal menu processing to proceed, true to consume it here.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -83,6 +107,9 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Called when the activity has detected the user's press of the back key.
+     */
     @Override
     public void onBackPressed() {
         if (fragmentManager.getBackStackEntryCount() > 0) {
@@ -92,6 +119,11 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         }
     }
 
+    /**
+     * Callback for the result from calculating TDEE.
+     *
+     * @param tdeeResult The result of the TDEE calculation.
+     */
     @Override
     public void onCalculateClick(int tdeeResult) {
         Fragment newFragment = fragmentManager.findFragmentById(R.id.fragment_container_view) instanceof Calculator ? new TdeeMacros() : new Calculator();

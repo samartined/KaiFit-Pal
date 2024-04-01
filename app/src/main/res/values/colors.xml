@@ -2,6 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="beige">#F5F5EE</color>
+    <!-- New Buttons and interface color-->
+    <color name="light_blue">#D3F26A</color>
     <color name="light_green">#B2EDB0</color>
     <color name="white_green">#B5E1B2</color>
     <color name="dark_green">#5A9E47</color>

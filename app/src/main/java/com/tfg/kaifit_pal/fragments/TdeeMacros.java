@@ -1,7 +1,16 @@
 package com.tfg.kaifit_pal.fragments;
 
+import static com.tfg.kaifit_pal.logic.MacrosManager.getMacrosPercentagesForModifier;
+
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.NumberPicker;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -9,16 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
 import com.tfg.kaifit_pal.R;
+import com.tfg.kaifit_pal.logic.MacrosManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,59 +28,53 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 /**
- * TdeeMacros is a Fragment that handles the Total Daily Energy Expenditure (TDEE) and macronutrient calculations.
- * It allows the user to adjust their TDEE and macronutrient ratios and see the results in real-time.
+ * TdeeMacros is a Fragment class that handles the Total Daily Energy Expenditure (TDEE) and macronutrient calculations.
+ * It provides an interface for the user to adjust their TDEE and macronutrient ratios.
  */
 public class TdeeMacros extends Fragment {
 
-    // Default macronutrient percentages
-    private final double defaultCarbPercentage = 0.55;
-    private final double defaultProteinPercentage = 0.25;
-    private final double defaultFatPercentage = 0.20;
-
-    // TDEE and modifier variables
+    // Variables to store the TDEE result and the original TDEE
     private int tdeeResult, originalTDEE;
+    // Variable to store the modifier percentage
     private double modifierPercentage = 0;
+    // Flag to check if the user has changed the pickers
+    private boolean userChangedPickers = false;
 
-    // Flags to track user interactions
-    private boolean isManualChange = false; // Flag to check if the change in TDEE is manual
-    private boolean userChangedPickers = false; // Flag to check if the user changed the NumberPickers
-
-    // UI components
+    // TextViews to display the TDEE, modifier TDEE and intensity modifier
     private TextView textViewTdee;
     private TextView modifierTdeeTextView;
     private TextView intensityModifierTextView;
 
+    // NumberPickers for proteins, fats and carbs
     private NumberPicker proteinsNumberPicker, fatNumberPicker, carbsNumberPicker;
+    // ArrayList to store the macro percentages
+    ArrayList<TextView> macroPercentages = new ArrayList<>();
+    // ArrayList to store the NumberPickers
     private ArrayList<NumberPicker> numberPickers;
 
+    // MacrosManager object to handle the macros proportion
+    private MacrosManager macrosProportion;
+
     /**
-     * Called to have the fragment instantiate its user interface view.
+     * Method to create the view of the Fragment
      *
-     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
-     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
-     * @return Return the View for the fragment's UI, or null.
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment
+     * @param container          The parent view that the fragment's UI should be attached to
+     * @param savedInstanceState A Bundle object containing the activity's previously saved state
+     * @return The view of the Fragment
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_t_d_e_e__macros, container, false);
         setupActionBar();
-
-        // We configure the scroll view to show the bottom of the view when the fragment is created
         ScrollView scrollView = view.findViewById(R.id.scrollView);
-
-        // We set scroll according if user is writing in number pickers, setting down by default and putting it up when user is writing them
         scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
-
-        // Initialize UI components
         initializeUIComponents(view);
-
         return view;
     }
 
     /**
-     * Setup the ActionBar with the appropriate title and back button.
+     * Method to set up the ActionBar
      */
     private void setupActionBar() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -99,29 +94,25 @@ public class TdeeMacros extends Fragment {
     }
 
     /**
-     * Initialize the UI components.
+     * Method to initialize the UI components
      *
-     * @param view The current view.
+     * @param view The view where the components are located
      */
     private void initializeUIComponents(@NonNull View view) {
-        // Initialize UI components
         textViewTdee = view.findViewById(R.id.tdeeResultTextView);
         modifierTdeeTextView = view.findViewById(R.id.modifierTDEEtextView);
         modifierTdeeTextView.setText(String.format(Locale.getDefault(), "%.0f%%", modifierPercentage * 100));
         intensityModifierTextView = view.findViewById(R.id.intensityModifierTextView);
         intensityModifierTextView.setText("Mantenimiento");
 
-        // Get TDEE result from arguments
         if (getArguments() != null) {
             tdeeResult = getArguments().getInt("tdeeResult");
             originalTDEE = tdeeResult;
             textViewTdee.setText(String.valueOf(tdeeResult));
         }
 
-        // Setup buttons
         setupButtons(view);
 
-        // Initialize all the macros titles by initializing the TextViews at once
         ArrayList<TextView> macroTitles = new ArrayList<>(Arrays.asList(
                 view.findViewById(R.id.proteinTitle),
                 view.findViewById(R.id.fatTitle),
@@ -135,7 +126,7 @@ public class TdeeMacros extends Fragment {
             titles.setGravity(1);
         }
 
-        ArrayList<TextView> macroPercentages = new ArrayList<>(Arrays.asList(
+        macroPercentages = new ArrayList<>(Arrays.asList(
                 view.findViewById(R.id.proteinsPercentageTextView),
                 view.findViewById(R.id.fatsPercentageTextView),
                 view.findViewById(R.id.carbsPercentageTextView)
@@ -147,91 +138,102 @@ public class TdeeMacros extends Fragment {
             macroPercentage.setGravity(1);
         }
 
-        // Initialize NumberPickers
         proteinsNumberPicker = view.findViewById(R.id.proteinsNumberPicker);
         fatNumberPicker = view.findViewById(R.id.fatsNumberPicker);
         carbsNumberPicker = view.findViewById(R.id.carbsNumberPicker);
 
-        // Add NumberPickers to ArrayList
         numberPickers = new ArrayList<>(Arrays.asList(proteinsNumberPicker, fatNumberPicker, carbsNumberPicker));
 
-        // Setup NumberPickers
+        Double[] defaultMacrosPercentages = getMacrosPercentagesForModifier("Mantenimiento");
+
         for (NumberPicker numberPicker : numberPickers) {
             numberPicker.setGravity(1);
             numberPicker.setMinValue(0);
             numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
             numberPicker.setDescendantFocusability(NumberPicker.FOCUS_AFTER_DESCENDANTS);
-            numberPicker.setValue((int) (tdeeResult * (numberPicker == proteinsNumberPicker ? defaultProteinPercentage : (numberPicker == fatNumberPicker ? defaultFatPercentage : defaultCarbPercentage)) / (numberPicker == fatNumberPicker ? 9 : 4)));
+
+            numberPicker.setValue((int) (tdeeResult * (numberPicker == proteinsNumberPicker ? defaultMacrosPercentages[0] : (numberPicker == fatNumberPicker ? defaultMacrosPercentages[1] : defaultMacrosPercentages[2])) / (numberPicker == fatNumberPicker ? 9 : 4)));
             numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
                 userChangedPickers = true;
                 updateNumberPickers();
+                updateMacroPercentages();
             });
         }
 
-        // Initialize the macronutrient percentages TextViews
         for (TextView macroPercentage : macroPercentages) {
-            macroPercentage.setText(String.format(Locale.getDefault(), "%.0f%%", (macroPercentage == macroPercentages.get(0) ? defaultProteinPercentage : (macroPercentage == macroPercentages.get(1) ? defaultFatPercentage : defaultCarbPercentage)) * 100));
+            macroPercentage.setText(String.format(Locale.getDefault(), "%.0f%%", (macroPercentage == macroPercentages.get(0) ? defaultMacrosPercentages[0] : (macroPercentage == macroPercentages.get(1) ? defaultMacrosPercentages[1] : defaultMacrosPercentages[2])) * 100));
         }
     }
 
     /**
-     * Setup the
-     * /**
-     * plus and minus calorie buttons.
+     * Method to set up the buttons
      *
-     * @param view The current view.
+     * @param view The view where the buttons are located
      */
     private void setupButtons(@NonNull View view) {
-        Button buttonMinusCalories = view.findViewById(R.id.btnMinusCalories);
-        Button buttonPlusCalories = view.findViewById(R.id.btnPlusCalories);
-
-        buttonMinusCalories.setOnClickListener(v -> modifyTDEE(-0.05));
-        buttonPlusCalories.setOnClickListener(v -> modifyTDEE(0.05));
+        view.findViewById(R.id.btnMinusCalories).setOnClickListener(v -> modifyTDEE(-0.05));
+        view.findViewById(R.id.btnPlusCalories).setOnClickListener(v -> modifyTDEE(0.05));
     }
 
     /**
-     * Modify the TDEE by a certain percentage.
+     * Method to modify the TDEE
      *
-     * @param modifier The percentage to modify the TDEE by.
+     * @param modifier The modifier to apply to the TDEE
      */
     private void modifyTDEE(double modifier) {
-
         double newModifierPercentage = modifierPercentage + modifier;
 
         if (newModifierPercentage >= -0.20 && newModifierPercentage <= 0.20) {
             modifierPercentage = newModifierPercentage;
             tdeeResult = (int) (originalTDEE * (1 + modifierPercentage));
 
-            // We use the TreeMap to get the intensity modifier text
             TreeMap<Double, String> intensityModifiers = getDoubleStringLabelModifiersTreeMap();
             intensityModifierTextView.setText(Objects.requireNonNull(intensityModifiers.floorEntry(modifierPercentage)).getValue());
 
-
-            if (!isManualChange && !userChangedPickers) {
-                for (NumberPicker numberPicker : numberPickers) {
-                    numberPicker.setValue((int) (tdeeResult * (numberPicker == proteinsNumberPicker ? defaultProteinPercentage : (numberPicker == fatNumberPicker ? defaultFatPercentage : defaultCarbPercentage)) / (numberPicker == fatNumberPicker ? 9 : 4)));
-                }
-            } else {
-                for (NumberPicker numberPicker : numberPickers) {
-                    double value = numberPicker.getValue() / (double) originalTDEE;
-                    numberPicker.setValue((int) (tdeeResult * value));
-                    numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
-                }
+            for (NumberPicker numberPicker : numberPickers) {
+                numberPicker.setValue((int) (tdeeResult * getMacroPercentageForPicker(numberPicker) / (numberPicker == fatNumberPicker ? 9 : 4)));
             }
 
+            updateMacroPercentages();
+
             textViewTdee.setText(String.valueOf(tdeeResult));
-
-
             modifierTdeeTextView.setText(Math.abs(modifierPercentage) < 0.00001 ? "0%" : String.format(Locale.getDefault(), "%.0f%%", modifierPercentage * 100));
         }
     }
 
     /**
-     * Update the NumberPickers when TDEE value is changed.
+     * Method to get the macro percentage for a given NumberPicker
+     *
+     * @param numberPicker The NumberPicker to get the macro percentage for
+     * @return The macro percentage for the given NumberPicker
+     */
+    private double getMacroPercentageForPicker(NumberPicker numberPicker) {
+        if (modifierPercentage == 0) {
+            return getMacrosPercentagesForModifier("Mantenimiento")[numberPickers.indexOf(numberPicker)];
+        } else if (modifierPercentage < 0) {
+            return getMacrosPercentagesForModifier("Definición")[numberPickers.indexOf(numberPicker)];
+        } else {
+            return getMacrosPercentagesForModifier("Volumen")[numberPickers.indexOf(numberPicker)];
+        }
+    }
+
+    /**
+     * Method to update the macro percentages
+     */
+    private void updateMacroPercentages() {
+        for (int i = 0; i < numberPickers.size(); i++) {
+            NumberPicker numberPicker = numberPickers.get(i);
+            double macroPercentage = (double) numberPicker.getValue() * (numberPicker == fatNumberPicker ? 9 : 4) / tdeeResult;
+            macroPercentages.get(i).setText(String.format(Locale.getDefault(), "%.0f%%", macroPercentage * 100));
+        }
+    }
+
+    /**
+     * Method to update the NumberPickers
      */
     private void updateNumberPickers() {
         if (!userChangedPickers) return;
-        isManualChange = true;
+        boolean isManualChange = true;
 
         tdeeResult = 0;
         for (NumberPicker numberPicker : numberPickers) {
@@ -243,16 +245,16 @@ public class TdeeMacros extends Fragment {
         }
 
         textViewTdee.setText(String.valueOf(tdeeResult));
-
         userChangedPickers = false;
         isManualChange = false;
+
+        updateMacroPercentages();
     }
 
     /**
-     * Returns a TreeMap where the keys are Double values representing intensity modifiers and the values are
-     * corresponding String labels. This map is used to display the appropriate label for a given intensity modifier.
+     * Method to get the intensity modifiers
      *
-     * @return TreeMap<Double, String> where the keys are intensity modifiers and the values are corresponding labels.
+     * @return The intensity modifiers
      */
     @NonNull
     private static TreeMap<Double, String> getDoubleStringLabelModifiersTreeMap() {
@@ -270,10 +272,9 @@ public class TdeeMacros extends Fragment {
     }
 
     /**
-     * Handle options item selections.
+     * Method to handle the back button press
      *
-     * @param item The selected menu item.
-     * @return Return false to allow normal menu processing to proceed, true to consume it here.
+     * @return True if the back button was pressed, false otherwise
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -285,7 +286,7 @@ public class TdeeMacros extends Fragment {
     }
 
     /**
-     * Called when the fragment is no longer in use.
+     * Method to reset the ActionBar when the Fragment is destroyed
      */
     @Override
     public void onDestroy() {
@@ -294,7 +295,7 @@ public class TdeeMacros extends Fragment {
     }
 
     /**
-     * Reset the ActionBar to its default state.
+     * Method to reset the ActionBar
      */
     private void resetActionBar() {
         ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
