@@ -15,9 +15,9 @@ public class MacrosManager {
 
     static {
         // Initialize modifier macros percentages, in this order: Proteins, Fats, Carbs. The key is modifier name - value.
-        modifierMacrosPercentages.put("Mantenimiento", new Double[]{0.25, 0.25, 0.50});
-        modifierMacrosPercentages.put("Definición", new Double[]{0.30, 0.25, 0.45});
-        modifierMacrosPercentages.put("Volumen", new Double[]{0.35, 0.25, 0.40});
+        modifierMacrosPercentages.put("Mantenimiento", new Double[]{0.35, 0.25, 0.45});
+        modifierMacrosPercentages.put("Definición", new Double[]{0.35, 0.25, 0.40});
+        modifierMacrosPercentages.put("Volumen", new Double[]{0.25, 0.20, 0.55});
     }
 
     /**
