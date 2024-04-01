@@ -190,6 +190,7 @@ public class TdeeMacros extends Fragment {
             TreeMap<Double, String> intensityModifiers = getDoubleStringLabelModifiersTreeMap();
             if (newModifierPercentage < 0.05 && newModifierPercentage > -0.0001) {
                 intensityModifierTextView.setText(intensityModifiers.get(0.00));
+                modifierPercentage = 0.00;
             } else {
                 intensityModifierTextView.setText(Objects.requireNonNull(intensityModifiers.floorEntry(modifierPercentage)).getValue());
             }
