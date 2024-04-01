@@ -188,7 +188,11 @@ public class TdeeMacros extends Fragment {
             tdeeResult = (int) (originalTDEE * (1 + modifierPercentage));
 
             TreeMap<Double, String> intensityModifiers = getDoubleStringLabelModifiersTreeMap();
-            intensityModifierTextView.setText(Objects.requireNonNull(intensityModifiers.floorEntry(modifierPercentage)).getValue());
+            if (newModifierPercentage < 0.05 && newModifierPercentage > -0.0001) {
+                intensityModifierTextView.setText(intensityModifiers.get(0.00));
+            } else {
+                intensityModifierTextView.setText(Objects.requireNonNull(intensityModifiers.floorEntry(modifierPercentage)).getValue());
+            }
 
             for (NumberPicker numberPicker : numberPickers) {
                 numberPicker.setValue((int) (tdeeResult * getMacroPercentageForPicker(numberPicker) / (numberPicker == fatNumberPicker ? 9 : 4)));
