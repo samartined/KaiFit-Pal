@@ -264,6 +264,69 @@ public class Calculator extends Fragment {
     }
 
     /**
+     * This method is called before the Fragment's state is saved.
+     * It allows the Fragment to save its dynamic state, so the state can be restored in onCreate(Bundle) or onCreateView(LayoutInflater, ViewGroup, Bundle).
+     * In this method, we call the superclass implementation of onSaveInstanceState() and then save the state of the fragment.
+     * The state of the fragment includes the age, weight, height, neck, waist, hip measurements and the calculated body fat percentage.
+     *
+     * @param outState Bundle in which to place your saved state.
+     */
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("age", dynamicAge.getText().toString()); // Save the age
+        outState.putString("weight", weightEditText.getText().toString()); // Save the weight
+        outState.putString("height", heightEditText.getText().toString()); // Save the height
+        outState.putString("neck", neckEditText.getText().toString()); // Save the neck measurement
+        outState.putString("waist", waistEditText.getText().toString()); // Save the waist measurement
+        outState.putString("hip", hipEditText.getText().toString()); // Save the hip measurement
+        outState.putString("fatPercentage", fatPercentageEditText.getText().toString()); // Save the calculated body fat percentage
+    }
+
+    /**
+     * This method is called when the fragment's activity has been created and the fragment's view hierarchy instantiated.
+     * In this method, we call the superclass implementation of onViewStateRestored() and then restore the state of the fragment.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     */
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            dynamicAge.setText(savedInstanceState.getString("age"));
+            weightEditText.setText(savedInstanceState.getString("weight"));
+            heightEditText.setText(savedInstanceState.getString("height"));
+            neckEditText.setText(savedInstanceState.getString("neck"));
+            waistEditText.setText(savedInstanceState.getString("waist"));
+            hipEditText.setText(savedInstanceState.getString("hip"));
+            fatPercentageEditText.setText(savedInstanceState.getString("fatPercentage"));
+        }
+    }
+
+    /**
+     * This method is called when the fragment is no longer attached to its activity.
+     * It is typically used to clean up resources that the fragment holds (like threads, registered listeners, receivers etc.).
+     * In this method, we call the superclass implementation of onDetach() and then set the callback to null.
+     */
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callback = null; // We set the callback to null to avoid memory leaks
+    }
+
+    /**
+     * This method is called when the Fragment is no longer in use and is being destroyed.
+     * It is typically used to clean up resources that the fragment holds (like threads, registered listeners, receivers etc.).
+     * In this method, we call the superclass implementation of onDestroy() and then set the callback to null.
+     * Setting the callback to null is important to avoid memory leaks.
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        callback = null; // We set the callback to null to avoid memory leaks
+    }
+
+    /**
      * This interface is used to communicate with the activity and get the data from the user.
      */
     public interface OnCalculateClickListener {
