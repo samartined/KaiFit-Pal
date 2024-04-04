@@ -126,12 +126,15 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         }
     }
 
+    @SuppressWarnings("MissingSuperCall") // super call is not needed in this context
     @Override
     public void onBackPressed() {
-        if (fragmentManager.getBackStackEntryCount() > 0) {
-            fragmentManager.popBackStack();
+        if (currentFragment instanceof Calculator) {
+            finish();
         } else {
-            super.onBackPressed();
+            fragmentManager.beginTransaction().hide(currentFragment).show(defaultFragment).commit();
+            currentFragment = defaultFragment;
+            bottomNavigationView.setSelectedItemId(R.id.calculator_menu_option);
         }
     }
 
