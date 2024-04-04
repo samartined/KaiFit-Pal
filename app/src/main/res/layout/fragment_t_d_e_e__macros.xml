@@ -16,7 +16,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/firstMidScreenLayout"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="250dp"
             android:background="#C2F1BF"
             app:layout_constraintBottom_toTopOf="@+id/secondMidScreenLayout"
             app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +37,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.241" />
+                app:layout_constraintVertical_bias="0.194" />
 
             <TextView
                 android:id="@+id/tdeeResultTextView"
@@ -52,7 +52,7 @@
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.6" />
+                app:layout_constraintVertical_bias="0.54" />
 
             <TextView
                 android:id="@+id/caloriesTextView"
@@ -66,7 +66,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tdeeResultTextView"
-                app:layout_constraintVertical_bias="0.187" />
+                app:layout_constraintVertical_bias="0.156" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -83,7 +83,7 @@
                 android:id="@+id/managementCaloriesText"
                 android:layout_width="279dp"
                 android:layout_height="39dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="12dp"
                 android:gravity="center"
                 android:text="Ajustar superávit / déficit calórico"
                 android:textColor="#838383"
@@ -92,19 +92,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/intensityModifierTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="TextView"
-                android:textColor="@color/black"
-                android:textStyle="italic"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.501"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/modifierTDEEtextView" />
 
             <Button
                 android:id="@+id/btnMinusCalories"
@@ -121,24 +108,7 @@
                 app:layout_constraintHorizontal_bias="0.321"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.133" />
-
-            <TextView
-                android:id="@+id/modifierTDEEtextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="21dp"
-                android:layout_marginBottom="24dp"
-                android:text="0 %"
-                android:textColor="@color/black"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.133" />
+                app:layout_constraintVertical_bias="0.16" />
 
             <Button
                 android:id="@+id/btnPlusCalories"
@@ -156,11 +126,40 @@
                 app:layout_constraintHorizontal_bias="0.675"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.133" />
+                app:layout_constraintVertical_bias="0.16" />
+
+            <TextView
+                android:id="@+id/modifierTDEEtextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="21dp"
+                android:layout_marginBottom="24dp"
+                android:text="0 %"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.16" />
+
+            <TextView
+                android:id="@+id/intensityModifierTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="TextView"
+                android:textStyle="italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.501"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/modifierTDEEtextView" />
 
             <LinearLayout
                 android:layout_width="357dp"
-                android:layout_height="217dp"
+                android:layout_height="230dp"
                 android:layout_marginTop="56dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -171,9 +170,10 @@
                     android:id="@+id/textView2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="12dp"
                     android:gravity="center"
                     android:text="Macronutrientes Diarios"
+                    android:textColor="#838383"
                     android:textSize="17dp"
                     android:textStyle="bold" />
 
@@ -209,13 +209,13 @@
                                 android:id="@+id/proteinsPercentageTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="13dp"
+                                android:layout_marginBottom="5dp"
                                 android:text="TextView" />
 
                             <NumberPicker
                                 android:id="@+id/proteinsNumberPicker"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
+                                android:layout_height="91dp" />
 
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -250,14 +250,14 @@
                                 android:id="@+id/fatsPercentageTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="13dp"
+                                android:layout_marginBottom="5dp"
 
                                 android:text="TextView" />
 
                             <NumberPicker
                                 android:id="@+id/fatsNumberPicker"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
+                                android:layout_height="91dp" />
 
 
                         </LinearLayout>
@@ -294,13 +294,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
 
-                                android:layout_marginBottom="13dp"
+                                android:layout_marginBottom="5dp"
                                 android:text="TextView" />
 
                             <NumberPicker
                                 android:id="@+id/carbsNumberPicker"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
+                                android:layout_height="91dp" />
 
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
