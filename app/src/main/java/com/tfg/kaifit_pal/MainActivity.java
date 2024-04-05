@@ -1,13 +1,11 @@
 package com.tfg.kaifit_pal;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tfg.kaifit_pal.fragments.Calculator;
@@ -28,9 +26,10 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity implements Calculator.OnCalculateClickListener {
 
+    private TdeeMacros childFragmentTdee;
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fragmentManager;
-    private Fragment defaultFragment; // Default app fragment
+    private Fragment defaultFragment;
     private Fragment currentFragment;
 
     private final List<Class<? extends Fragment>> mainFragments = Arrays.asList(Profile.class, Calculator.class, KaiQ.class, Help.class, Settings.class); // We use a list of fragments to create the fragments HashMap
@@ -97,20 +96,9 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
             } else {
                 fragmentManager.beginTransaction().hide(currentFragment).add(R.id.fragment_container_view, selectedFragment).addToBackStack(fragmentTag).commit();
             }
-
             currentFragment = selectedFragment;
-
             return true;
         });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void addDefaultFragment(Bundle savedInstanceState) {
@@ -121,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
             fragmentManager.beginTransaction().add(R.id.fragment_container_view, defaultFragment, "Calculator").commit();
 
             bottomNavigationView = findViewById(R.id.bottom_navigation);
-
             bottomNavigationView.setSelectedItemId(R.id.calculator_menu_option); // Highlight the calculator menu item option
         }
     }
@@ -131,20 +118,53 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
     public void onBackPressed() {
         if (currentFragment instanceof Calculator) {
             finish();
+        } else if (currentFragment instanceof TdeeMacros) {
+            returnToCalculator();
         } else {
-            fragmentManager.beginTransaction().hide(currentFragment).show(defaultFragment).commit();
-            currentFragment = defaultFragment;
-            bottomNavigationView.setSelectedItemId(R.id.calculator_menu_option);
+            returnToPreviousFragmentOrCalculator();
         }
+    }
+
+    private void returnToCalculator() {
+        fragmentManager.popBackStackImmediate();
+        bottomNavigationView.setSelectedItemId(R.id.calculator_menu_option);
+    }
+
+    private void returnToPreviousFragmentOrCalculator() {
+        int index = fragmentManager.getBackStackEntryCount() - 2;
+        if (index >= 0 && isPreviousFragmentTdeeMacros(index)) {
+            returnToTdeeMacros();
+        } else {
+            returnToDefaultFragment();
+        }
+    }
+
+    private boolean isPreviousFragmentTdeeMacros(int index) {
+        FragmentManager.BackStackEntry backEntry = fragmentManager.getBackStackEntryAt(index);
+        String tag = backEntry.getName();
+        return tag != null && tag.equals("TdeeMacros");
+    }
+
+    private void returnToTdeeMacros() {
+        fragmentManager.popBackStackImmediate();
+        bottomNavigationView.getMenu().findItem(R.id.calculator_menu_option).setChecked(false);
+        currentFragment = childFragmentTdee;
+    }
+
+    private void returnToDefaultFragment() {
+        fragmentManager.beginTransaction().hide(currentFragment).show(defaultFragment).commit();
+        currentFragment = defaultFragment;
+        bottomNavigationView.setSelectedItemId(R.id.calculator_menu_option);
     }
 
     @Override
     public void onCalculateClick(int tdeeResult) {
-        TdeeMacros childFragmentTdee = new TdeeMacros();
+        childFragmentTdee = new TdeeMacros();
         Bundle bundle = new Bundle();
         bundle.putInt("tdeeResult", tdeeResult);
         childFragmentTdee.setArguments(bundle);
 
-        fragmentManager.beginTransaction().hide(currentFragment).replace(R.id.fragment_container_view, childFragmentTdee).addToBackStack("TdeeMacros").commit();
+        fragmentManager.beginTransaction().hide(currentFragment).add(R.id.fragment_container_view, childFragmentTdee).addToBackStack("TdeeMacros").commit();
+        currentFragment = childFragmentTdee;
     }
 }
