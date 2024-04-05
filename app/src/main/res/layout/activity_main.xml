@@ -43,6 +43,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_menu_bar" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton2"
+        android:layout_width="55dp"
+        android:layout_height="151dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.955"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.91"
+        app:srcCompat="@drawable/chat_ia" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
