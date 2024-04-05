@@ -41,8 +41,6 @@ public class Calculator extends Fragment {
 
     private Button femaleButton; // This button is used to select the female gender.
 
-    private Spinner activityFactorSpinner; // This Spinner allows the user to select their activity level.
-
     // This callback is used to communicate with the activity and get the data from the user.
     private OnCalculateClickListener callback;
 
@@ -241,7 +239,8 @@ public class Calculator extends Fragment {
      * @return The activity factor selected by the user.
      */
     private double getActivityFactor(@NonNull View view) {
-        activityFactorSpinner = view.findViewById(R.id.spinnerActivityFactor);
+        // This Spinner allows the user to select their activity level.
+        Spinner activityFactorSpinner = view.findViewById(R.id.spinnerActivityFactor);
 
         // Now we use the activity factor values defined in activity_factor_values.xml
         int selectedFactorIndex = activityFactorSpinner.getSelectedItemPosition();
