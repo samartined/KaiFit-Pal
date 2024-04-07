@@ -1,16 +1,20 @@
 package com.tfg.kaifit_pal;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tfg.kaifit_pal.fragments.Calculator;
 import com.tfg.kaifit_pal.fragments.Help;
-import com.tfg.kaifit_pal.fragments.KaiQ;
+import com.tfg.kaifit_pal.fragments.kaiqassistant.KaiQ;
 import com.tfg.kaifit_pal.fragments.Profile;
 import com.tfg.kaifit_pal.fragments.Settings;
 import com.tfg.kaifit_pal.fragments.TdeeMacros;
@@ -26,12 +30,15 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity implements Calculator.OnCalculateClickListener {
 
+    private boolean isKaiQFragmentVisible = false;
     private TdeeMacros childFragmentTdee;
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fragmentManager;
     private Fragment defaultFragment;
     private Fragment currentFragment;
+    private DialogFragment kaiQFragment;
 
+    private FloatingActionButton kaiQFab;
     private final List<Class<? extends Fragment>> mainFragments = Arrays.asList(Profile.class, Calculator.class, KaiQ.class, Help.class, Settings.class); // We use a list of fragments to create the fragments HashMap
     private HashMap<String, Fragment> mainFragmentsHashMap = new HashMap<>(); // The key is the fragment class name and the value is the fragment
 
@@ -54,13 +61,39 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
             }
         }
 
-        // Set the bottom navigation view
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        setUpGUIComponents();
 
         addDefaultFragment(savedInstanceState);
 
         // Set the fragments exchange stack
         fragmentsExchangeStack();
+    }
+
+    public void setUpGUIComponents() {
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        kaiQFab = findViewById(R.id.floatingActionButton);
+        setUpListeners();
+    }
+
+    public void setUpListeners() {
+        kaiQFab.setOnClickListener(v -> toggleKaiQChatVisibility());
+    }
+
+    public void toggleKaiQChatVisibility() {
+        if (isKaiQFragmentVisible) {
+            kaiQFragment.dismiss();
+            isKaiQFragmentVisible = false;
+        } else {
+            createKaiQFragment();
+            isKaiQFragmentVisible = true;
+
+        }
+    }
+
+    private void createKaiQFragment() {
+        kaiQFragment = new KaiQ();
+        kaiQFragment.show(fragmentManager, "KaiQ");
+        isKaiQFragmentVisible = true;
     }
 
     private void fragmentsExchangeStack() {
@@ -76,8 +109,6 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
                 fragmentTag = "Profile";
             } else if (itemId == R.id.calculator_menu_option) {
                 fragmentTag = "Calculator";
-            } else if (itemId == R.id.assistant_menu_option) {
-                fragmentTag = "KaiQ";
             } else if (itemId == R.id.help_info_menu_option) {
                 fragmentTag = "Help";
             } else if (itemId == R.id.settings_menu_option) {

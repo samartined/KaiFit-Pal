@@ -10,10 +10,6 @@
         android:icon="@drawable/calculator_icon"
         android:title="Calculadora" />
     <item
-        android:id="@+id/assistant_menu_option"
-        android:icon="@drawable/chat_ia"
-        android:title="Kai-Q" />
-    <item
         android:id="@+id/help_info_menu_option"
         android:icon="@drawable/help_info_icon"
         android:title="Ayuda" />
