@@ -75,6 +75,7 @@ public class KaiQ extends DialogFragment {
             messageList.add(new MessageController(message, sentBy));
             messageAdapter.notifyDataSetChanged();
             recyclerView.smoothScrollToPosition(messageAdapter.getItemCount());
+            messageEditText.setText("");
         };
         requireActivity().runOnUiThread(runnable);
     }
