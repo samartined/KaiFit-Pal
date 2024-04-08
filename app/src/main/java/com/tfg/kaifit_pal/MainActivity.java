@@ -10,10 +10,10 @@ import android.util.Log;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tfg.kaifit_pal.fragments.Calculator;
 import com.tfg.kaifit_pal.fragments.Help;
-import com.tfg.kaifit_pal.fragments.KaiQ;
 import com.tfg.kaifit_pal.fragments.Profile;
 import com.tfg.kaifit_pal.fragments.Settings;
 import com.tfg.kaifit_pal.fragments.TdeeMacros;
+import com.tfg.kaifit_pal.fragments.kaiqassistant.KaiQ;
 
 import java.util.Arrays;
 import java.util.HashMap;
