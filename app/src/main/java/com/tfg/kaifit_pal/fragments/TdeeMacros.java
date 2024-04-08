@@ -66,7 +66,7 @@ public class TdeeMacros extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_t_d_e_e__macros, container, false);
-        setupActionBar();
+        setUpActionBar();
         ScrollView scrollView = view.findViewById(R.id.scrollView);
         scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
         initializeUIComponents(view);
@@ -76,7 +76,7 @@ public class TdeeMacros extends Fragment {
     /**
      * Method to set up the ActionBar
      */
-    private void setupActionBar() {
+    private void setUpActionBar() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         assert activity != null;
         Toolbar toolbar = activity.findViewById(R.id.toolbar);
