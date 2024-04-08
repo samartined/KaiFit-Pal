@@ -23,6 +23,7 @@ import com.tfg.kaifit_pal.chatcontroller.MessageController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class KaiQ extends DialogFragment {
 
@@ -75,5 +76,6 @@ public class KaiQ extends DialogFragment {
             messageAdapter.notifyDataSetChanged();
             recyclerView.smoothScrollToPosition(messageAdapter.getItemCount());
         };
+        requireActivity().runOnUiThread(runnable);
     }
 }
