@@ -10,9 +10,11 @@ import android.util.Log;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tfg.kaifit_pal.fragments.Calculator;
 import com.tfg.kaifit_pal.fragments.Help;
+import com.tfg.kaifit_pal.fragments.KaiQ;
 import com.tfg.kaifit_pal.fragments.Profile;
 import com.tfg.kaifit_pal.fragments.Settings;
 import com.tfg.kaifit_pal.fragments.TdeeMacros;
+import com.tfg.kaifit_pal.utilities.AppBarHandler;
 import com.tfg.kaifit_pal.fragments.kaiqassistant.KaiQ;
 
 import java.util.Arrays;
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
             }
         }
 
+        AppBarHandler.setUpActionBar(this, "KaiFit-Pal", false, false); // Set the action bar
+
         // Set the bottom navigation view
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -89,6 +93,10 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
 
             selectedFragment = mainFragmentsHashMap.get(fragmentTag);
             assert selectedFragment != null;
+            if (currentFragment instanceof TdeeMacros) {
+                AppBarHandler.resetActionBar(this);
+            }
+
             // Hide the current fragment and show the selected fragment
             if (selectedFragment.isAdded()) {
                 fragmentManager.beginTransaction().hide(currentFragment).show(selectedFragment).addToBackStack(fragmentTag).commit();
@@ -97,8 +105,23 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
                 fragmentManager.beginTransaction().hide(currentFragment).add(R.id.fragment_container_view, selectedFragment).addToBackStack(fragmentTag).commit();
             }
             currentFragment = selectedFragment;
+            setAppBar();
             return true;
         });
+    }
+
+    public void setAppBar() {
+        if (currentFragment instanceof Profile) {
+            AppBarHandler.setTitle(this, "Perfil");
+        } else if (currentFragment instanceof Calculator) {
+            AppBarHandler.setTitle(this, "KaiFit-Pal");
+        } else if (currentFragment instanceof KaiQ) {
+            AppBarHandler.setTitle(this, "KaiQ");
+        } else if (currentFragment instanceof Help) {
+            AppBarHandler.setTitle(this, "FAQs");
+        } else if (currentFragment instanceof Settings) {
+            AppBarHandler.setTitle(this, "Ajustes");
+        }
     }
 
     private void addDefaultFragment(Bundle savedInstanceState) {
