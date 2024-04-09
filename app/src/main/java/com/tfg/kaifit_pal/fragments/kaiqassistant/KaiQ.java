@@ -14,7 +14,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.tfg.kaifit_pal.R;
-import com.tfg.kaifit_pal.chatcontroller.MessageController;
+import com.tfg.kaifit_pal.chatcontrollers.GPTApiCaller;
+import com.tfg.kaifit_pal.chatcontrollers.MessageController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class KaiQ extends DialogFragment {
     private EditText messageEditText;
     private ImageButton sendButton;
     private List<MessageController> messageList;
-    MessageAdapter messageAdapter;
+    private MessageAdapter messageAdapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -51,9 +52,11 @@ public class KaiQ extends DialogFragment {
     public void setUpListeners() {
         sendButton.setOnClickListener(v -> {
             String userQuery = messageEditText.getText().toString().trim();
+            GPTApiCaller gptApiCaller = new GPTApiCaller(this);
             if (!userQuery.isEmpty()) {
                 addToChat(userQuery, MessageController.SENT_BY_USER);
                 messageEditText.setText("");
+                gptApiCaller.callGPTApi(userQuery);
             }
         });
     }
@@ -64,7 +67,6 @@ public class KaiQ extends DialogFragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-
     }
 
     public void addToChat(final String message, final String sentBy) {
@@ -74,5 +76,9 @@ public class KaiQ extends DialogFragment {
             recyclerView.smoothScrollToPosition(messageAdapter.getItemCount());
         };
         requireActivity().runOnUiThread(runnable);
+    }
+
+    public void addResponseToChat(String response) {
+        addToChat(response, MessageController.SENT_BY_BOT);
     }
 }

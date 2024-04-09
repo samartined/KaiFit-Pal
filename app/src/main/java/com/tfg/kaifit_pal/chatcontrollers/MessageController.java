@@ -1,4 +1,4 @@
-package com.tfg.kaifit_pal.chatcontroller;
+package com.tfg.kaifit_pal.chatcontrollers;
 
 public class MessageController {
 
