@@ -3,16 +3,11 @@ package com.tfg.kaifit_pal.fragments.kaiqassistant;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -23,7 +18,6 @@ import com.tfg.kaifit_pal.chatcontroller.MessageController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class KaiQ extends DialogFragment {
 
@@ -57,7 +51,10 @@ public class KaiQ extends DialogFragment {
     public void setUpListeners() {
         sendButton.setOnClickListener(v -> {
             String userQuery = messageEditText.getText().toString().trim();
-            addToChat(userQuery, MessageController.SENT_BY_USER);
+            if (!userQuery.isEmpty()) {
+                addToChat(userQuery, MessageController.SENT_BY_USER);
+                messageEditText.setText("");
+            }
         });
     }
 
@@ -75,7 +72,6 @@ public class KaiQ extends DialogFragment {
             messageList.add(new MessageController(message, sentBy));
             messageAdapter.notifyDataSetChanged();
             recyclerView.smoothScrollToPosition(messageAdapter.getItemCount());
-            messageEditText.setText("");
         };
         requireActivity().runOnUiThread(runnable);
     }
