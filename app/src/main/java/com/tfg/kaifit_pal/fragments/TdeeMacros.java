@@ -94,25 +94,42 @@ public class TdeeMacros extends Fragment {
     }
 
     /**
-     * Method to initialize the UI components
+     * Initializes UI components for the fragment.
+     * This includes setting up TextViews, NumberPickers, and Buttons.
      *
-     * @param view The view where the components are located
+     * @param view The view of the fragment.
      */
     private void initializeUIComponents(@NonNull View view) {
+        // Initialize TextViews
         textViewTdee = view.findViewById(R.id.tdeeResultTextView);
         modifierTdeeTextView = view.findViewById(R.id.modifierTDEEtextView);
-        modifierTdeeTextView.setText(String.format(Locale.getDefault(), "%.0f%%", modifierPercentage * 100));
         intensityModifierTextView = view.findViewById(R.id.intensityModifierTextView);
-        intensityModifierTextView.setText("Mantenimiento");
 
+        // Initialize NumberPickers
+        proteinsNumberPicker = view.findViewById(R.id.proteinsNumberPicker);
+        fatNumberPicker = view.findViewById(R.id.fatsNumberPicker);
+        carbsNumberPicker = view.findViewById(R.id.carbsNumberPicker);
+
+        // Set TDEE result if arguments are not null
         if (getArguments() != null) {
             tdeeResult = getArguments().getInt("tdeeResult");
             originalTDEE = tdeeResult;
             textViewTdee.setText(String.valueOf(tdeeResult));
         }
 
+        // Setup Buttons, TextViews, and NumberPickers
         setupButtons(view);
+        setupTextViews(view);
+        setupNumberPickers();
+    }
 
+    /**
+     * Sets up the TextViews for the fragment.
+     *
+     * @param view The view of the fragment.
+     */
+    private void setupTextViews(@NonNull View view) {
+        // Initialize and setup macro titles TextViews
         ArrayList<TextView> macroTitles = new ArrayList<>(Arrays.asList(
                 view.findViewById(R.id.proteinTitle),
                 view.findViewById(R.id.fatTitle),
@@ -126,6 +143,7 @@ public class TdeeMacros extends Fragment {
             titles.setGravity(1);
         }
 
+        // Initialize and setup macro percentages TextViews
         macroPercentages = new ArrayList<>(Arrays.asList(
                 view.findViewById(R.id.proteinsPercentageTextView),
                 view.findViewById(R.id.fatsPercentageTextView),
@@ -137,22 +155,27 @@ public class TdeeMacros extends Fragment {
             macroPercentage.setTypeface(macroPercentage.getTypeface(), Typeface.BOLD);
             macroPercentage.setGravity(1);
         }
+    }
 
-        proteinsNumberPicker = view.findViewById(R.id.proteinsNumberPicker);
-        fatNumberPicker = view.findViewById(R.id.fatsNumberPicker);
-        carbsNumberPicker = view.findViewById(R.id.carbsNumberPicker);
-
+    /**
+     * Sets up the NumberPickers for the fragment.
+     * This includes setting the gravity, min value, descendant focusability, max value, and value.
+     * It also includes setting an OnValueChangedListener for each NumberPicker.
+     */
+    private void setupNumberPickers() {
+        // Initialize NumberPickers
         numberPickers = new ArrayList<>(Arrays.asList(proteinsNumberPicker, fatNumberPicker, carbsNumberPicker));
-
         Double[] defaultMacrosPercentages = getMacrosPercentagesForModifier("Mantenimiento");
 
         for (NumberPicker numberPicker : numberPickers) {
+            // Setup NumberPicker
             numberPicker.setGravity(1);
             numberPicker.setMinValue(0);
-            numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
             numberPicker.setDescendantFocusability(NumberPicker.FOCUS_AFTER_DESCENDANTS);
-
+            numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
             numberPicker.setValue((int) (tdeeResult * (numberPicker == proteinsNumberPicker ? defaultMacrosPercentages[0] : (numberPicker == fatNumberPicker ? defaultMacrosPercentages[1] : defaultMacrosPercentages[2])) / (numberPicker == fatNumberPicker ? 9 : 4)));
+
+            // Set OnValueChangedListener
             numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
                 userChangedPickers = true;
                 updateNumberPickers();
@@ -160,8 +183,13 @@ public class TdeeMacros extends Fragment {
             });
         }
 
+        // Update macro percentages TextViews
         for (TextView macroPercentage : macroPercentages) {
-            macroPercentage.setText(String.format(Locale.getDefault(), "%.0f%%", (macroPercentage == macroPercentages.get(0) ? defaultMacrosPercentages[0] : (macroPercentage == macroPercentages.get(1) ? defaultMacrosPercentages[1] : defaultMacrosPercentages[2])) * 100));
+            if (proteinsNumberPicker.getValue() == 0 || fatNumberPicker.getValue() == 0 || carbsNumberPicker.getValue() == 0) {
+                macroPercentage.setText("0%");
+            } else {
+                macroPercentage.setText(String.format(Locale.getDefault(), "%.0f%%", (macroPercentage == macroPercentages.get(0) ? defaultMacrosPercentages[0] : (macroPercentage == macroPercentages.get(1) ? defaultMacrosPercentages[1] : defaultMacrosPercentages[2])) * 100));
+            }
         }
     }
 
