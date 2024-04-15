@@ -17,17 +17,7 @@ public class MessageController {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public String getSentBy() {
         return sentBy;
     }
-
-    public void setSentBy(String sentBy) {
-        this.sentBy = sentBy;
-    }
-
-
 }

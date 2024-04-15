@@ -28,6 +28,9 @@ public class KaiQ extends DialogFragment {
     private List<MessageController> messageList;
     private MessageAdapter messageAdapter;
 
+    private final GPTApiCaller gptApiCaller = new GPTApiCaller(this);
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,7 +55,6 @@ public class KaiQ extends DialogFragment {
     public void setUpListeners() {
         sendButton.setOnClickListener(v -> {
             String userQuery = messageEditText.getText().toString().trim();
-            GPTApiCaller gptApiCaller = new GPTApiCaller(this);
             if (!userQuery.isEmpty()) {
                 addToChat(userQuery, MessageController.SENT_BY_USER);
                 messageEditText.setText("");

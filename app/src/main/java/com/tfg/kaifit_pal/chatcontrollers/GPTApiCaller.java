@@ -39,7 +39,7 @@ public class GPTApiCaller {
         try {
             jsonObject.put("model", "gpt-3.5-turbo");
             jsonObject.put("prompt", query);
-            jsonObject.put("max_tokens", 100);
+            jsonObject.put("max_tokens", 4000);
             jsonObject.put("temperature", 0.5);
         } catch (JSONException e) {
             LOGGER.log(Level.SEVERE, "Error creating JSON object for GPT API request", e);
@@ -55,7 +55,7 @@ public class GPTApiCaller {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                kaiQ.addToChat("Error al conectar con el servidor", e.getMessage());
+                kaiQ.addResponseToChat("Error al conectar con el servidor" + e.getMessage());
             }
 
             @Override
@@ -66,13 +66,13 @@ public class GPTApiCaller {
                         JSONObject jsonObject = new JSONObject(response.body().string());
                         JSONArray jsonArray = jsonObject.getJSONArray("choices");
                         String result = jsonArray.getJSONObject(0).getString("text");
-                        kaiQ.addToChat(result.trim(), MessageController.SENT_BY_BOT);
+                        kaiQ.addResponseToChat(result.trim());
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
 
                 } else {
-                    kaiQ.addToChat("Error al conectar con el servidor", response.message());
+                    kaiQ.addResponseToChat("Error al conectar con el servidor" + response.message());
                 }
             }
         });
