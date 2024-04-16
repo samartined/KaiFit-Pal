@@ -167,15 +167,26 @@ public class TdeeMacros extends Fragment {
         numberPickers = new ArrayList<>(Arrays.asList(proteinsNumberPicker, fatNumberPicker, carbsNumberPicker));
         Double[] defaultMacrosPercentages = getMacrosPercentagesForModifier("Mantenimiento");
 
+        // Loop through each NumberPicker
         for (NumberPicker numberPicker : numberPickers) {
             // Setup NumberPicker
-            numberPicker.setGravity(1);
-            numberPicker.setMinValue(0);
-            numberPicker.setDescendantFocusability(NumberPicker.FOCUS_AFTER_DESCENDANTS);
-            numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
-            numberPicker.setValue((int) (tdeeResult * (numberPicker == proteinsNumberPicker ? defaultMacrosPercentages[0] : (numberPicker == fatNumberPicker ? defaultMacrosPercentages[1] : defaultMacrosPercentages[2])) / (numberPicker == fatNumberPicker ? 9 : 4)));
+            // If tdeeResult is 0, set the gravity, min value, descendant focusability, max value, and value to 0
+            if (tdeeResult == 0) {
+                numberPicker.setGravity(1);
+                numberPicker.setMinValue(0);
+                numberPicker.setDescendantFocusability(NumberPicker.FOCUS_AFTER_DESCENDANTS);
+                numberPicker.setMaxValue(0);
+                numberPicker.setValue(0);
+            } else {
+                // If tdeeResult is not 0, set the gravity, min value, descendant focusability, and calculate the max value and value based on tdeeResult and the macro percentage
+                numberPicker.setGravity(1);
+                numberPicker.setMinValue(0);
+                numberPicker.setDescendantFocusability(NumberPicker.FOCUS_AFTER_DESCENDANTS);
+                numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
+                numberPicker.setValue((int) (tdeeResult * (numberPicker == proteinsNumberPicker ? defaultMacrosPercentages[0] : (numberPicker == fatNumberPicker ? defaultMacrosPercentages[1] : defaultMacrosPercentages[2])) / (numberPicker == fatNumberPicker ? 9 : 4)));
+            }
 
-            // Set OnValueChangedListener
+            // Set OnValueChangedListener to update the NumberPickers and macro percentages when the value changes
             numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
                 userChangedPickers = true;
                 updateNumberPickers();
@@ -183,7 +194,6 @@ public class TdeeMacros extends Fragment {
             });
         }
 
-        // Update macro percentages TextViews
         for (TextView macroPercentage : macroPercentages) {
             if (proteinsNumberPicker.getValue() == 0 || fatNumberPicker.getValue() == 0 || carbsNumberPicker.getValue() == 0) {
                 macroPercentage.setText("0%");
@@ -209,8 +219,11 @@ public class TdeeMacros extends Fragment {
      * @param modifier The modifier to apply to the TDEE
      */
     private void modifyTDEE(double modifier) {
-        double newModifierPercentage = modifierPercentage + modifier;
 
+        // If the TDEE result is 0, return
+        if (tdeeResult == 0) return;
+
+        double newModifierPercentage = modifierPercentage + modifier;
         if (newModifierPercentage >= -0.20 && newModifierPercentage <= 0.20) {
             modifierPercentage = newModifierPercentage;
             tdeeResult = (int) (originalTDEE * (1 + modifierPercentage));
