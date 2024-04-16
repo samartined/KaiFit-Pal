@@ -54,9 +54,10 @@ public class GPTApiCaller {
             JSONArray messages = new JSONArray();
             messages.put(new JSONObject().put("role", "system").put("content", "Eres Kai-Q, un nutricionista deportivo inteligente y amigable."));
             messages.put(new JSONObject().put("role", "user").put("content", query));
+            jsonObject.put("presence_penalty", 0.6);
             jsonObject.put("messages", messages);
-            jsonObject.put("max_tokens", 4000);
-            jsonObject.put("temperature", 0.5);
+            jsonObject.put("max_tokens", 1000);
+            jsonObject.put("temperature", 0.4);
         } catch (JSONException e) {
             LOGGER.log(Level.SEVERE, "Error creating JSON object for GPT API request", e);
         }
