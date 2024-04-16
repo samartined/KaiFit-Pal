@@ -24,7 +24,9 @@
             android:layout_toStartOf="@id/send_btn"
             android:background="@drawable/rounded_corner"
             android:hint="Pregunta a Kai-Q "
-            android:padding="16dp" />
+            android:inputType="textCapSentences"
+            android:padding="16dp"
+            android:textIsSelectable="true" />
 
         <ImageButton
             android:id="@+id/send_btn"
@@ -35,7 +37,6 @@
             android:layout_marginStart="10dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
-            android:src="@drawable/send_message_vector"
-            />
+            android:src="@drawable/send_message_vector" />
     </RelativeLayout>
 </RelativeLayout>
