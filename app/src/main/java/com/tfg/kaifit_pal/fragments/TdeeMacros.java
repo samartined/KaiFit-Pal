@@ -118,9 +118,9 @@ public class TdeeMacros extends Fragment {
         }
 
         // Setup Buttons, TextViews, and NumberPickers
-        setupButtons(view);
-        setupTextViews(view);
-        setupNumberPickers();
+        setUpButtons(view);
+        setUpTextViews(view);
+        setUpNumberPickers();
     }
 
     /**
@@ -128,7 +128,7 @@ public class TdeeMacros extends Fragment {
      *
      * @param view The view of the fragment.
      */
-    private void setupTextViews(@NonNull View view) {
+    private void setUpTextViews(@NonNull View view) {
         // Initialize and setup macro titles TextViews
         ArrayList<TextView> macroTitles = new ArrayList<>(Arrays.asList(
                 view.findViewById(R.id.proteinTitle),
@@ -162,7 +162,7 @@ public class TdeeMacros extends Fragment {
      * This includes setting the gravity, min value, descendant focusability, max value, and value.
      * It also includes setting an OnValueChangedListener for each NumberPicker.
      */
-    private void setupNumberPickers() {
+    private void setUpNumberPickers() {
         // Initialize NumberPickers
         numberPickers = new ArrayList<>(Arrays.asList(proteinsNumberPicker, fatNumberPicker, carbsNumberPicker));
         Double[] defaultMacrosPercentages = getMacrosPercentagesForModifier("Mantenimiento");
@@ -174,14 +174,12 @@ public class TdeeMacros extends Fragment {
             if (tdeeResult == 0) {
                 numberPicker.setGravity(1);
                 numberPicker.setMinValue(0);
-                numberPicker.setDescendantFocusability(NumberPicker.FOCUS_AFTER_DESCENDANTS);
                 numberPicker.setMaxValue(0);
                 numberPicker.setValue(0);
             } else {
                 // If tdeeResult is not 0, set the gravity, min value, descendant focusability, and calculate the max value and value based on tdeeResult and the macro percentage
                 numberPicker.setGravity(1);
                 numberPicker.setMinValue(0);
-                numberPicker.setDescendantFocusability(NumberPicker.FOCUS_AFTER_DESCENDANTS);
                 numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
                 numberPicker.setValue((int) (tdeeResult * (numberPicker == proteinsNumberPicker ? defaultMacrosPercentages[0] : (numberPicker == fatNumberPicker ? defaultMacrosPercentages[1] : defaultMacrosPercentages[2])) / (numberPicker == fatNumberPicker ? 9 : 4)));
             }
@@ -208,9 +206,9 @@ public class TdeeMacros extends Fragment {
      *
      * @param view The view where the buttons are located
      */
-    private void setupButtons(@NonNull View view) {
-        view.findViewById(R.id.btnMinusCalories).setOnClickListener(v -> modifyTDEE(-0.05));
-        view.findViewById(R.id.btnPlusCalories).setOnClickListener(v -> modifyTDEE(0.05));
+    private void setUpButtons(@NonNull View view) {
+        view.findViewById(R.id.btnMinusCalories).setOnClickListener(v -> modifyTdee(-0.05));
+        view.findViewById(R.id.btnPlusCalories).setOnClickListener(v -> modifyTdee(0.05));
     }
 
     /**
@@ -218,7 +216,7 @@ public class TdeeMacros extends Fragment {
      *
      * @param modifier The modifier to apply to the TDEE
      */
-    private void modifyTDEE(double modifier) {
+    private void modifyTdee(double modifier) {
 
         // If the TDEE result is 0, return
         if (tdeeResult == 0) return;
