@@ -6,8 +6,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/bottom_layout" />
+        android:layout_height="584dp"
+        android:layout_above="@id/bottom_layout"
+        android:layout_marginBottom="-6dp" />
 
     <RelativeLayout
         android:id="@+id/bottom_layout"
@@ -24,8 +25,15 @@
             android:layout_toStartOf="@id/send_btn"
             android:background="@drawable/rounded_corner"
             android:hint="Pregunta a Kai-Q "
-            android:inputType="textCapSentences"
-            android:padding="16dp"
+            android:inputType="textCapSentences|textMultiLine"
+            android:lines="2"
+            android:maxLines="10"
+            android:paddingLeft="6dp"
+            android:paddingTop="6dp"
+            android:paddingRight="6dp"
+            android:paddingBottom="6dp"
+            android:scrollbars="vertical"
+            android:scrollHorizontally="false"
             android:textIsSelectable="true" />
 
         <ImageButton

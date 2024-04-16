@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         } else if (currentFragment instanceof Calculator) {
             AppBarHandler.setTitle(this, "KaiFit-Pal");
         } else if (currentFragment instanceof KaiQ) {
-            AppBarHandler.setTitle(this, "KaiQ");
+            AppBarHandler.setTitle(this, "Kai-Q");
         } else if (currentFragment instanceof Help) {
             AppBarHandler.setTitle(this, "FAQs");
         } else if (currentFragment instanceof Settings) {
