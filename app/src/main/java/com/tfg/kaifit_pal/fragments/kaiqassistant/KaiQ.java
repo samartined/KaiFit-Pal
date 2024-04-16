@@ -58,7 +58,7 @@ public class KaiQ extends DialogFragment {
             if (!userQuery.isEmpty()) {
                 addToChat(userQuery, MessageController.SENT_BY_USER);
                 messageEditText.setText("");
-                gptApiCaller.callGPTApi(userQuery);
+                gptApiCaller.gptApiRequest(userQuery);
             }
         });
     }

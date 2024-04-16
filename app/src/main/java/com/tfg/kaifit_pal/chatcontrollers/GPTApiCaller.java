@@ -34,11 +34,15 @@ public class GPTApiCaller {
         client = new OkHttpClient();
     }
 
-    public void callGPTApi(String query) {
+    public void gptApiRequest(String query) {
         JSONObject jsonObject = new JSONObject();
         try {
+            // we configure chat gpt to use the query as the first message
             jsonObject.put("model", "gpt-3.5-turbo");
-            jsonObject.put("prompt", query);
+            JSONArray messages = new JSONArray();
+            messages.put(new JSONObject().put("role", "system").put("content", "Eres Kai-Q, un nutricionista deportivo inteligente y amigable."));
+            messages.put(new JSONObject().put("role", "user").put("content", query));
+            jsonObject.put("messages", messages);
             jsonObject.put("max_tokens", 4000);
             jsonObject.put("temperature", 0.5);
         } catch (JSONException e) {
@@ -48,6 +52,7 @@ public class GPTApiCaller {
         RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
         Request request = new Request.Builder()
                 .url("https://api.openai.com/v1/chat/completions")
+                .addHeader("Content-Type", "application/json")
                 .addHeader("Authorization", "Bearer " + BuildConfig.AKy_URL)
                 .post(body)
                 .build();
@@ -60,19 +65,21 @@ public class GPTApiCaller {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                assert response.body() != null;
+                String responseString = response.body().string();
                 if (response.isSuccessful()) {
                     try {
-                        assert response.body() != null;
-                        JSONObject jsonObject = new JSONObject(response.body().string());
-                        JSONArray jsonArray = jsonObject.getJSONArray("choices");
-                        String result = jsonArray.getJSONObject(0).getString("text");
-                        kaiQ.addResponseToChat(result.trim());
+                        JSONObject responseJson = new JSONObject(responseString);
+                        JSONArray choices = responseJson.getJSONArray("choices");
+                        JSONObject choice = choices.getJSONObject(0);
+                        JSONObject message = choice.getJSONObject("message");
+                        String responseMessage = message.getString("content");
+                        kaiQ.addResponseToChat(responseMessage);
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        LOGGER.log(Level.SEVERE, "Error parsing JSON response from GPT API", e);
                     }
-
                 } else {
-                    kaiQ.addResponseToChat("Error al conectar con el servidor" + response.message());
+                    kaiQ.addResponseToChat("Error al conectar con el servidor" + responseString);
                 }
             }
         });
