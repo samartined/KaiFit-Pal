@@ -27,15 +27,27 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity implements Calculator.OnCalculateClickListener {
 
+    // Child fragment for TDEE calculations
     private TdeeMacros childFragmentTdee;
+    // Bottom navigation view
     private BottomNavigationView bottomNavigationView;
+    // Fragment manager for managing fragments
     private FragmentManager fragmentManager;
+    // Default fragment to be displayed
     private Fragment defaultFragment;
+    // Currently displayed fragment
     private Fragment currentFragment;
 
+    // List of main fragments
     private final List<Class<? extends Fragment>> mainFragments = Arrays.asList(Profile.class, Calculator.class, KaiQ.class, Help.class, Settings.class); // We use a list of fragments to create the fragments HashMap
+    // HashMap of main fragments
     private HashMap<String, Fragment> mainFragmentsHashMap = new HashMap<>(); // The key is the fragment class name and the value is the fragment
 
+    /**
+     * Called when the activity is starting.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         fragmentsExchangeStack();
     }
 
+    /**
+     * Sets up the fragments exchange stack.
+     */
     private void fragmentsExchangeStack() {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -109,6 +124,9 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         });
     }
 
+    /**
+     * Sets the app bar title based on the current fragment.
+     */
     public void setAppBar() {
         if (currentFragment instanceof Profile) {
             AppBarHandler.setTitle(this, "Perfil");
@@ -123,6 +141,11 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         }
     }
 
+    /**
+     * Adds the default fragment to the activity.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
+     */
     private void addDefaultFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             defaultFragment = mainFragmentsHashMap.get("Calculator");
@@ -135,6 +158,9 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         }
     }
 
+    /**
+     * Called when the activity has detected the user's press of the back key.
+     */
     @SuppressWarnings("MissingSuperCall") // super call is not needed in this context
     @Override
     public void onBackPressed() {
@@ -147,11 +173,17 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         }
     }
 
+    /**
+     * Returns to the Calculator fragment.
+     */
     private void returnToCalculator() {
         fragmentManager.popBackStackImmediate();
         bottomNavigationView.setSelectedItemId(R.id.calculator_menu_option);
     }
 
+    /**
+     * Returns to the previous fragment or the Calculator fragment.
+     */
     private void returnToPreviousFragmentOrCalculator() {
         int index = fragmentManager.getBackStackEntryCount() - 2;
         if (index >= 0 && isPreviousFragmentTdeeMacros(index)) {
@@ -161,24 +193,41 @@ public class MainActivity extends AppCompatActivity implements Calculator.OnCalc
         }
     }
 
+    /**
+     * Checks if the previous fragment is TdeeMacros.
+     *
+     * @param index The index of the previous fragment.
+     * @return True if the previous fragment is TdeeMacros, false otherwise.
+     */
     private boolean isPreviousFragmentTdeeMacros(int index) {
         FragmentManager.BackStackEntry backEntry = fragmentManager.getBackStackEntryAt(index);
         String tag = backEntry.getName();
         return tag != null && tag.equals("TdeeMacros");
     }
 
+    /**
+     * Returns to the TdeeMacros fragment.
+     */
     private void returnToTdeeMacros() {
         fragmentManager.popBackStackImmediate();
         bottomNavigationView.getMenu().findItem(R.id.calculator_menu_option).setChecked(false);
         currentFragment = childFragmentTdee;
     }
 
+    /**
+     * Returns to the default fragment.
+     */
     private void returnToDefaultFragment() {
         fragmentManager.beginTransaction().hide(currentFragment).show(defaultFragment).commit();
         currentFragment = defaultFragment;
         bottomNavigationView.setSelectedItemId(R.id.calculator_menu_option);
     }
 
+    /**
+     * Called when the calculate button is clicked in the Calculator fragment.
+     *
+     * @param tdeeResult The result of the TDEE calculation.
+     */
     @Override
     public void onCalculateClick(int tdeeResult) {
         childFragmentTdee = new TdeeMacros();
