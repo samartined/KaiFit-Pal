@@ -54,11 +54,11 @@ public class GPTApiCaller {
         try {
             jsonObject.put("model", "gpt-3.5-turbo");
             if (chatHistoryManager.getChatHistory().isEmpty()) {
-                chatHistoryManager.addAssistantMessageToHistory("Eres Kai-Q, un nutricionista deportivo inteligente y amigable.");
+                chatHistoryManager.addAssistantMessageToHistory("Eres Kai-Q, debes actuar como un nutricionista deportivo real, inteligente y conciso con sus respuestas. Das la información concreta que te pide el usuario, y solo amplias tu explicación si requiere un conocimiento muy técnico.");
             }
             chatHistoryManager.addUserMessageToHistory(query);
             jsonObject.put("messages", new JSONArray(chatHistoryManager.getChatHistory()));
-                jsonObject.put("max_tokens", 800);
+            jsonObject.put("max_tokens", 800);
             jsonObject.put("temperature", 0.2);
         } catch (JSONException e) {
             LOGGER.log(Level.SEVERE, "Error creating JSON object for GPT API request", e);
