@@ -27,6 +27,7 @@ import com.tfg.kaifit_pal.fragments.kaiqassistant.KaiQ;
  */
 public class GPTApiCaller {
 
+    private final ChatHistoryManager chatHistoryManager;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private static final Logger LOGGER = Logger.getLogger(GPTApiCaller.class.getName());
     private final OkHttpClient client;
@@ -39,6 +40,7 @@ public class GPTApiCaller {
      */
     public GPTApiCaller(KaiQ kaiQ) {
         this.kaiQ = kaiQ;
+        this.chatHistoryManager = new ChatHistoryManager();
         client = new OkHttpClient();
     }
 
@@ -51,15 +53,17 @@ public class GPTApiCaller {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("model", "gpt-3.5-turbo");
-            JSONArray messages = new JSONArray();
-            messages.put(new JSONObject().put("role", "system").put("content", "Eres Kai-Q, un nutricionista deportivo inteligente y amigable."));
-            messages.put(new JSONObject().put("role", "user").put("content", query));
-            jsonObject.put("messages", messages);
-            jsonObject.put("max_tokens", 4000);
-            jsonObject.put("temperature", 0.5);
+            if (chatHistoryManager.getChatHistory().isEmpty()) {
+                chatHistoryManager.addAssistantMessageToHistory("Eres Kai-Q, un nutricionista deportivo inteligente y amigable.");
+            }
+            chatHistoryManager.addUserMessageToHistory(query);
+            jsonObject.put("messages", new JSONArray(chatHistoryManager.getChatHistory()));
+                jsonObject.put("max_tokens", 800);
+            jsonObject.put("temperature", 0.2);
         } catch (JSONException e) {
             LOGGER.log(Level.SEVERE, "Error creating JSON object for GPT API request", e);
         }
+
 
         RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
         Request request = new Request.Builder()
@@ -97,6 +101,7 @@ public class GPTApiCaller {
                         JSONObject message = choice.getJSONObject("message");
                         String responseMessage = message.getString("content");
                         kaiQ.addResponseToChat(responseMessage);
+                        chatHistoryManager.addAssistantMessageToHistory(responseMessage);
                     } catch (JSONException e) {
                         LOGGER.log(Level.SEVERE, "Error parsing JSON response from GPT API", e);
                     }
