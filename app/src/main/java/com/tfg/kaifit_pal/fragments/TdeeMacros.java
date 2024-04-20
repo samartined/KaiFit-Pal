@@ -19,7 +19,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.tfg.kaifit_pal.R;
-import com.tfg.kaifit_pal.logic.MacrosManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,16 +51,14 @@ public class TdeeMacros extends Fragment {
     // ArrayList to store the NumberPickers
     private ArrayList<NumberPicker> numberPickers;
 
-    // MacrosManager object to handle the macros proportion
-    private MacrosManager macrosProportion;
 
     /**
-     * Method to create the view of the Fragment
+     * This method is called to do initial creation of the fragment.
      *
      * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment
      * @param container          The parent view that the fragment's UI should be attached to
-     * @param savedInstanceState A Bundle object containing the activity's previously saved state
-     * @return The view of the Fragment
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state
+     * @return The view of the fragment
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

@@ -26,7 +26,6 @@ import com.tfg.kaifit_pal.fragments.kaiqassistant.KaiQ;
  * This class is responsible for making API calls to the GPT-3 model.
  */
 public class GPTApiCaller {
-
     private final ChatHistoryManager chatHistoryManager;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private static final Logger LOGGER = Logger.getLogger(GPTApiCaller.class.getName());
@@ -45,16 +44,19 @@ public class GPTApiCaller {
     }
 
     /**
-     * This method makes a request to the GPT-3 API.
+     * This method makes a request to the GPT-3 API with the user query.
      *
-     * @param query The query to be sent to the GPT-3 model.
+     * @param query The user query.
      */
     public void gptApiRequest(String query) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("model", "gpt-3.5-turbo");
             if (chatHistoryManager.getChatHistory().isEmpty()) {
-                chatHistoryManager.addAssistantMessageToHistory("Eres Kai-Q, debes actuar como un nutricionista deportivo real, inteligente y conciso con sus respuestas. Das la información concreta que te pide el usuario, y solo amplias tu explicación si requiere un conocimiento muy técnico.");
+                chatHistoryManager.addAssistantMessageToHistory("Eres Kai-Q, debes actuar como un nutricionista deportivo real, " +
+                        "inteligente y conciso con sus respuestas. " +
+                        "Eres un asistente que complementa al uso de una calculadora nutricional. " +
+                        "Das la información concreta y breve que te pide el usuario, y solo amplias tu explicación si requiere un conocimiento muy técnico.");
             }
             chatHistoryManager.addUserMessageToHistory(query);
             jsonObject.put("messages", new JSONArray(chatHistoryManager.getChatHistory()));

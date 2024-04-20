@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -46,8 +49,8 @@ public class KaiQ extends Fragment {
 
         messageList = new ArrayList<>();
 
+        setHasOptionsMenu(true);
         setUpComponents(view);
-
         setUpAdapter();
 
         return view;
@@ -76,6 +79,21 @@ public class KaiQ extends Fragment {
                 messageEditText.setText("");
                 gptApiCaller.gptApiRequest(userQuery);
             }
+        });
+    }
+
+    /**
+     * This method is called to create the options menu and clear the chat.
+     *
+     * @param menu     The options menu in which you place your items.
+     * @param inflater The MenuInflater object that can be used to inflate the menu.
+     */
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.kai_q_appbar, menu);
+        MenuItem restoreItem = menu.findItem(R.id.action_restore);
+        restoreItem.setOnMenuItemClickListener(item -> {
+            clearChat();
+            return true;
         });
     }
 
@@ -112,5 +130,13 @@ public class KaiQ extends Fragment {
      */
     public void addResponseToChat(String response) {
         addToChat(response, MessageController.SENT_BY_BOT);
+    }
+
+    /**
+     * This method is called to clean the chat and start a new conversation.
+     */
+    public void clearChat() {
+        messageList.clear();
+        messageAdapter.notifyDataSetChanged();
     }
 }
