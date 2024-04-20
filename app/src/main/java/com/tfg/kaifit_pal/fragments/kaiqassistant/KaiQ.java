@@ -3,7 +3,7 @@ package com.tfg.kaifit_pal.fragments.kaiqassistant;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,10 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represents the KaiQ dialog fragment.
+ * This class represents the KaiQ fragment.
  * It handles the user interaction with the chat interface.
  */
-public class KaiQ extends DialogFragment {
+public class KaiQ extends Fragment {
 
     private RecyclerView recyclerView;
     private EditText messageEditText;
