@@ -15,7 +15,6 @@ import android.widget.ImageButton;
 
 import com.tfg.kaifit_pal.R;
 import com.tfg.kaifit_pal.chatcontrollers.GPTApiCaller;
-import com.tfg.kaifit_pal.chatcontrollers.MessageController;
 
 import java.util.ArrayList;
 import java.util.List;

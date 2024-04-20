@@ -1,4 +1,4 @@
-package com.tfg.kaifit_pal.chatcontrollers;
+package com.tfg.kaifit_pal.fragments.kaiqassistant;
 
 /**
  * This class represents a message in the chat.
