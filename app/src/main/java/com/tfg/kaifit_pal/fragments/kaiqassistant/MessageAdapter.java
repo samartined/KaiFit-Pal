@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tfg.kaifit_pal.R;
-import com.tfg.kaifit_pal.chatcontrollers.MessageController;
 
 import java.util.List;
 
