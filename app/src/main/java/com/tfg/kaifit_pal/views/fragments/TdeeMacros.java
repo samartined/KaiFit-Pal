@@ -173,6 +173,7 @@ public class TdeeMacros extends Fragment {
                 numberPicker.setMinValue(0);
                 numberPicker.setMaxValue(0);
                 numberPicker.setValue(0);
+
             } else {
                 // If tdeeResult is not 0, set the gravity, min value, descendant focusability, and calculate the max value and value based on tdeeResult and the macro percentage
                 numberPicker.setGravity(1);
@@ -180,6 +181,14 @@ public class TdeeMacros extends Fragment {
                 numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
                 numberPicker.setValue((int) (tdeeResult * (numberPicker == proteinsNumberPicker ? defaultMacrosPercentages[0] : (numberPicker == fatNumberPicker ? defaultMacrosPercentages[1] : defaultMacrosPercentages[2])) / (numberPicker == fatNumberPicker ? 9 : 4)));
             }
+
+            // Set a custom formatter for the NumberPicker
+            numberPicker.setFormatter(new NumberPicker.Formatter() {
+                @Override
+                public String format(int value) {
+                    return value + " g";
+                }
+            });
 
             // Set OnValueChangedListener to update the NumberPickers and macro percentages when the value changes
             numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
