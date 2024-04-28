@@ -1,4 +1,4 @@
-package com.tfg.kaifit_pal.fragments.kaiqassistant;
+package com.tfg.kaifit_pal.fragments.kaiq;
 
 import android.os.Bundle;
 
@@ -14,8 +14,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.tfg.kaifit_pal.R;
-import com.tfg.kaifit_pal.chatcontrollers.GPTApiCaller;
-import com.tfg.kaifit_pal.chatcontrollers.MessageController;
+import com.tfg.kaifit_pal.kaimodel.GPTApiCaller;
+import com.tfg.kaifit_pal.kaimodel.MessageController;
 
 import java.util.ArrayList;
 import java.util.List;

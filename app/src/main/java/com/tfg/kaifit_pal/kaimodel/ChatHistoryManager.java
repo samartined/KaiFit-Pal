@@ -1,4 +1,4 @@
-package com.tfg.kaifit_pal.chatcontrollers;
+package com.tfg.kaifit_pal.kaimodel;
 
 import androidx.annotation.NonNull;
 
