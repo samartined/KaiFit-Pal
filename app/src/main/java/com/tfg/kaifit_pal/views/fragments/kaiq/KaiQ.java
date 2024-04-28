@@ -2,65 +2,141 @@ package com.tfg.kaifit_pal.views.fragments.kaiq;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.tfg.kaifit_pal.R;
+import com.tfg.kaifit_pal.kaimodel.GPTApiCaller;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link KaiQ#newInstance} factory method to
- * create an instance of this fragment.
+ * This class represents the KaiQ fragment.
+ * It handles the user interaction with the chat interface.
  */
 public class KaiQ extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView recyclerView;
+    private EditText messageEditText;
+    private ImageButton sendButton;
+    private List<MessageController> messageList;
+    private MessageAdapter messageAdapter;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    // An instance of the GPTApiCaller class to make API requests
+    private final GPTApiCaller gptApiCaller = new GPTApiCaller(this);
 
-    public KaiQ() {
-        // Required empty public constructor
+    /**
+     * This method is called to do initial creation of the fragment.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     */
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_kai_q, container, false);
+
+        messageList = new ArrayList<>();
+
+        setHasOptionsMenu(true);
+        setUpComponents(view);
+        setUpAdapter();
+
+        return view;
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * This method sets up the components of the fragment.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment KaiQ.
+     * @param view The View returned by onCreateView(LayoutInflater, ViewGroup, Bundle).
      */
-    // TODO: Rename and change types and number of parameters
-    public static KaiQ newInstance(String param1, String param2) {
-        KaiQ fragment = new KaiQ();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public void setUpComponents(@NonNull View view) {
+        recyclerView = view.findViewById(R.id.recycler_view);
+        messageEditText = view.findViewById(R.id.message_edit_text);
+        sendButton = view.findViewById(R.id.send_btn);
+        setUpListeners();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    /**
+     * This method sets up the listeners for the components of the fragment.
+     */
+    public void setUpListeners() {
+        sendButton.setOnClickListener(v -> {
+            String userQuery = messageEditText.getText().toString().trim();
+            if (!userQuery.isEmpty()) {
+                addToChat(userQuery, MessageController.SENT_BY_USER);
+                messageEditText.setText("");
+                gptApiCaller.gptApiRequest(userQuery);
+            }
+        });
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_kai_q, container, false);
+    /**
+     * This method is called to create the options menu and clear the chat.
+     *
+     * @param menu     The options menu in which you place your items.
+     * @param inflater The MenuInflater object that can be used to inflate the menu.
+     */
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.kai_q_appbar, menu);
+        MenuItem restoreItem = menu.findItem(R.id.action_restore);
+        restoreItem.setOnMenuItemClickListener(item -> {
+            clearChat();
+            return true;
+        });
+    }
+
+    /**
+     * This method sets up the adapter for the RecyclerView.
+     */
+    public void setUpAdapter() {
+        messageAdapter = new MessageAdapter(messageList);
+        recyclerView.setAdapter(messageAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+    }
+
+    /**
+     * This method adds a message to the chat.
+     *
+     * @param message The message to be added.
+     * @param sentBy  The sender of the message.
+     */
+    public void addToChat(final String message, final String sentBy) {
+        Runnable runnable = () -> {
+            messageList.add(new MessageController(message, sentBy));
+            messageAdapter.notifyDataSetChanged();
+            recyclerView.smoothScrollToPosition(messageAdapter.getItemCount());
+        };
+        requireActivity().runOnUiThread(runnable);
+    }
+
+    /**
+     * This method adds a response to the chat.
+     *
+     * @param response The response to be added.
+     */
+    public void addResponseToChat(String response) {
+        addToChat(response, MessageController.SENT_BY_BOT);
+    }
+
+    /**
+     * This method is called to clean the chat and start a new conversation.
+     */
+    public void clearChat() {
+        messageList.clear();
+        messageAdapter.notifyDataSetChanged();
     }
 }

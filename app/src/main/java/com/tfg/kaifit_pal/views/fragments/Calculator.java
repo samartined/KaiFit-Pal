@@ -2,6 +2,8 @@ package com.tfg.kaifit_pal.views.fragments;
 
 import static java.lang.Integer.parseInt;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,6 +20,10 @@ import androidx.fragment.app.Fragment;
 import com.tfg.kaifit_pal.R;
 import com.tfg.kaifit_pal.logic.CalculatorLogic;
 import com.tfg.kaifit_pal.utilities.DataParser;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class is used to create the Calculator fragment. This fragment is used to calculate the Total Daily Energy Expenditure (TDEE) and body fat percentage of the user.
@@ -43,11 +49,9 @@ public class Calculator extends Fragment {
 
     private Spinner activityFactorSpinner; // This Spinner allows the user to select their activity level.
 
-    // This callback is used to communicate with the activity and get the data from the user.
-    private OnCalculateClickListener callback;
-
     // This instance of the CalculatorLogic class is used to perform the TDEE and body fat percentage calculations.
     private CalculatorLogic calculatorInstance;
+    private CalculateListenerInterface callback;
 
     /**
      * This method is called when the fragment is first attached to its context.
@@ -59,10 +63,10 @@ public class Calculator extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            // Attempt to cast the context to an OnCalculateClickListener
-            callback = (OnCalculateClickListener) context;
+            // Attempt to cast the context to an OnCalculateClickListenerInterface
+            callback = (CalculateListenerInterface) context;
         } catch (ClassCastException e) {
-            // If the context does not implement OnCalculateClickListener, throw an exception
+            // If the context does not implement OnCalculateClickListenerInterface, throw an exception
             throw new ClassCastException(context + " debe implementar OnCalculateClickListener");
         }
     }
@@ -79,7 +83,7 @@ public class Calculator extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calculator, container, false);
         dynamicAge = view.findViewById(R.id.ageTextView);
-        setupButtons(view);
+        setUpComponentes(view);
 
         // We need to separate this listener from the others to avoid being called when the calculator is not parameterized
         view.findViewById(R.id.buttonCalculate).setOnClickListener(v -> {
@@ -98,7 +102,8 @@ public class Calculator extends Fragment {
     }
 
     /**
-     * This method is called when the fragment is created and the view is created. It sets the initial values for the age, weight, height, neck, waist, and hip fields.
+     * This method is called when the fragment is created and the view is created.
+     * It sets the initial values for the age, weight, height, neck, waist, and hip fields.
      *
      * @param view               The View for the fragment.
      * @param savedInstanceState The Bundle containing the saved instance state of the fragment.
@@ -115,7 +120,7 @@ public class Calculator extends Fragment {
      *
      * @param view The View for the fragment.
      */
-    private void setupButtons(@NonNull View view) {
+    private void setUpComponentes(@NonNull View view) {
         // The minus button decreases the age by 1 when clicked.
         view.findViewById(R.id.btnMinus).setOnClickListener(v -> updateAge(-1));
 
@@ -127,6 +132,53 @@ public class Calculator extends Fragment {
 
         // The female button sets the gender to female when clicked.
         view.findViewById(R.id.ButtonFemale).setOnClickListener(v -> selectGender(false, view));
+
+        // Initialize the info imageviews
+        setUpInfoImageViews(view);
+    }
+
+    /**
+     * This method sets up the info imageviews for the Calculator fragment.
+     * It assigns onClickListeners to each info imageview to display a dialog with information when clicked.
+     *
+     * @param view The View for the fragment.
+     */
+    private void setUpInfoImageViews(@NonNull View view) {
+        // The waist info imageview displays a dialog with information on how to measure the waist when clicked.
+        view.findViewById(R.id.waistInfo).setOnClickListener(v -> showInfoDialog("Para medir la cintura, " +
+                "coloca la cinta métrica alrededor de tu cintura si eres hombre " +
+                "o justo por encima de tu ombligo si eres mujer."));
+
+        // The neck info imageview displays a dialog with information on how to measure the neck when clicked.
+        view.findViewById(R.id.neckInfo).setOnClickListener(v -> showInfoDialog("Para medir el cuello," +
+                " coloca la cinta métrica alrededor de tu cuello, " +
+                "justo por debajo de la laringe y ligeramente inclinada hacia adelante."));
+
+        // The hips info imageview displays a dialog with information on how to measure the hips when clicked.
+        view.findViewById(R.id.hipsInfo).setOnClickListener(v -> showInfoDialog("Esta medida es opcional para hombres y obligatoria para mujeres. " +
+                "Para medir las caderas, coloca la cinta métrica alrededor de la parte más ancha de tus caderas."));
+
+        // The percent info imageview displays a dialog with information on body fat percentage when clicked.
+        view.findViewById(R.id.percentInfo).setOnClickListener(v -> showInfoDialog("El porcentaje de grasa corporal es un número que representa " +
+                "la cantidad de grasa en tu cuerpo en relación con tu peso total."));
+
+        // The activity factor info imageview displays a dialog with information on activity factor when clicked.
+        view.findViewById(R.id.actFactorInfo).setOnClickListener(v -> showInfoDialog("El factor de actividad es " +
+                "un número que representa tu nivel de actividad física. " +
+                "Cuanto más activo seas, mayor será tu factor de actividad."));
+    }
+
+    /**
+     * This method displays a dialog with a given message.
+     * It is used to provide information to the user when they click on an info imageview.
+     *
+     * @param message The message to be displayed in the dialog.
+     */
+    private void showInfoDialog(String message) {
+        new AlertDialog.Builder(getContext())
+                .setMessage(message)
+                .setPositiveButton("OK", null)
+                .show();
     }
 
     /**
@@ -261,12 +313,5 @@ public class Calculator extends Fragment {
             Log.e("Calculator", "Invalid selectedFactorIndex: " + selectedFactorIndex);
         }
         return 1.2; // Default value
-    }
-
-    /**
-     * This interface is used to communicate with the activity and get the data from the user.
-     */
-    public interface OnCalculateClickListener {
-        void onCalculateClick(int tdeeResult);
     }
 }
