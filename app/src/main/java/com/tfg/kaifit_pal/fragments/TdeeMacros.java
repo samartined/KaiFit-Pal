@@ -152,6 +152,15 @@ public class TdeeMacros extends Fragment {
             numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
             numberPicker.setDescendantFocusability(NumberPicker.FOCUS_AFTER_DESCENDANTS);
 
+            int maxValue = tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4);
+
+            String[] pickerValues = new String[maxValue + 1];
+            for (int i = 0; i <= maxValue; i++) {
+                pickerValues[i] = i + " g.";
+            }
+
+            numberPicker.setDisplayedValues(pickerValues);
+
             numberPicker.setValue((int) (tdeeResult * (numberPicker == proteinsNumberPicker ? defaultMacrosPercentages[0] : (numberPicker == fatNumberPicker ? defaultMacrosPercentages[1] : defaultMacrosPercentages[2])) / (numberPicker == fatNumberPicker ? 9 : 4)));
             numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
                 userChangedPickers = true;
