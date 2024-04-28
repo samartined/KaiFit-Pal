@@ -57,10 +57,10 @@ public class Calculator extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            // Attempt to cast the context to an OnCalculateClickListener
+            // Attempt to cast the context to an OnCalculateClickListenerInterface
             callback = (CalculateListenerInterface) context;
         } catch (ClassCastException e) {
-            // If the context does not implement OnCalculateClickListener, throw an exception
+            // If the context does not implement OnCalculateClickListenerInterface, throw an exception
             throw new ClassCastException(context + " debe implementar OnCalculateClickListener");
         }
     }
