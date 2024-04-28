@@ -49,8 +49,6 @@ public class Calculator extends Fragment {
 
     private Spinner activityFactorSpinner; // This Spinner allows the user to select their activity level.
 
-    private ArrayList<ImageView> infoComponents = new ArrayList<>(); // This ArrayList is used to store the info ImageViews.
-
     // This instance of the CalculatorLogic class is used to perform the TDEE and body fat percentage calculations.
     private CalculatorLogic calculatorInstance;
     private CalculateListenerInterface callback;
@@ -135,30 +133,47 @@ public class Calculator extends Fragment {
         // The female button sets the gender to female when clicked.
         view.findViewById(R.id.ButtonFemale).setOnClickListener(v -> selectGender(false, view));
 
-        // We initialize the info imageviews
+        // Initialize the info imageviews
         setUpInfoImageViews(view);
-
     }
 
-    // we intialize the info imageviews
+    /**
+     * This method sets up the info imageviews for the Calculator fragment.
+     * It assigns onClickListeners to each info imageview to display a dialog with information when clicked.
+     *
+     * @param view The View for the fragment.
+     */
     private void setUpInfoImageViews(@NonNull View view) {
+        // The waist info imageview displays a dialog with information on how to measure the waist when clicked.
         view.findViewById(R.id.waistInfo).setOnClickListener(v -> showInfoDialog("Para medir la cintura, " +
                 "coloca la cinta métrica alrededor de tu cintura si eres hombre " +
                 "o justo por encima de tu ombligo si eres mujer."));
+
+        // The neck info imageview displays a dialog with information on how to measure the neck when clicked.
         view.findViewById(R.id.neckInfo).setOnClickListener(v -> showInfoDialog("Para medir el cuello," +
                 " coloca la cinta métrica alrededor de tu cuello, " +
                 "justo por debajo de la laringe y ligeramente inclinada hacia adelante."));
+
+        // The hips info imageview displays a dialog with information on how to measure the hips when clicked.
         view.findViewById(R.id.hipsInfo).setOnClickListener(v -> showInfoDialog("Esta medida es opcional para hombres y obligatoria para mujeres. " +
                 "Para medir las caderas, coloca la cinta métrica alrededor de la parte más ancha de tus caderas."));
 
+        // The percent info imageview displays a dialog with information on body fat percentage when clicked.
         view.findViewById(R.id.percentInfo).setOnClickListener(v -> showInfoDialog("El porcentaje de grasa corporal es un número que representa " +
                 "la cantidad de grasa en tu cuerpo en relación con tu peso total."));
 
+        // The activity factor info imageview displays a dialog with information on activity factor when clicked.
         view.findViewById(R.id.actFactorInfo).setOnClickListener(v -> showInfoDialog("El factor de actividad es " +
                 "un número que representa tu nivel de actividad física. " +
                 "Cuanto más activo seas, mayor será tu factor de actividad."));
     }
 
+    /**
+     * This method displays a dialog with a given message.
+     * It is used to provide information to the user when they click on an info imageview.
+     *
+     * @param message The message to be displayed in the dialog.
+     */
     private void showInfoDialog(String message) {
         new AlertDialog.Builder(getContext())
                 .setMessage(message)
