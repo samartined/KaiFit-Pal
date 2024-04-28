@@ -1,4 +1,4 @@
-package com.tfg.kaifit_pal.views.fragments.kaiqassistant;
+package com.tfg.kaifit_pal.views.fragments.kaiq;
 
 /**
  * This class represents a message in the chat.

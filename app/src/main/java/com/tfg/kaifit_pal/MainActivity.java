@@ -15,7 +15,7 @@ import com.tfg.kaifit_pal.views.fragments.Settings;
 import com.tfg.kaifit_pal.views.fragments.TdeeMacros;
 import com.tfg.kaifit_pal.views.fragments.CalculateListenerInterface;
 import com.tfg.kaifit_pal.utilities.AppBarHandler;
-import com.tfg.kaifit_pal.views.fragments.kaiqassistant.KaiQ;
+import com.tfg.kaifit_pal.views.fragments.kaiq.KaiQ;
 
 import java.util.Arrays;
 import java.util.HashMap;
