@@ -20,7 +20,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import com.tfg.kaifit_pal.fragments.kaiqassistant.KaiQ;
+import com.tfg.kaifit_pal.views.fragments.kaiqassistant.KaiQ;
 
 /**
  * This class is responsible for making API calls to the GPT-3 model.
