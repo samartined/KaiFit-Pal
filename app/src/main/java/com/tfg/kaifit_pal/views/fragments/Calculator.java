@@ -1,4 +1,4 @@
-package com.tfg.kaifit_pal.fragments;
+package com.tfg.kaifit_pal.views.fragments;
 
 import static java.lang.Integer.parseInt;
 

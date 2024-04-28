@@ -8,13 +8,13 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.tfg.kaifit_pal.fragments.Calculator;
-import com.tfg.kaifit_pal.fragments.Help;
-import com.tfg.kaifit_pal.fragments.Profile;
-import com.tfg.kaifit_pal.fragments.Settings;
-import com.tfg.kaifit_pal.fragments.TdeeMacros;
+import com.tfg.kaifit_pal.views.fragments.Calculator;
+import com.tfg.kaifit_pal.views.fragments.Help;
+import com.tfg.kaifit_pal.views.fragments.Profile;
+import com.tfg.kaifit_pal.views.fragments.Settings;
+import com.tfg.kaifit_pal.views.fragments.TdeeMacros;
 import com.tfg.kaifit_pal.utilities.AppBarHandler;
-import com.tfg.kaifit_pal.fragments.kaiq.KaiQ;
+import com.tfg.kaifit_pal.views.fragments.kaiq.KaiQ;
 
 import java.util.Arrays;
 import java.util.HashMap;

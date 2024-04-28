@@ -1,4 +1,4 @@
-package com.tfg.kaifit_pal.fragments.kaiq;
+package com.tfg.kaifit_pal.views.fragments.kaiq;
 
 import android.view.View;
 import android.view.ViewGroup;
