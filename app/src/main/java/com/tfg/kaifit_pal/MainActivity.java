@@ -8,6 +8,13 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.tfg.kaifit_pal.views.fragments.Calculator;
+import com.tfg.kaifit_pal.views.fragments.Help;
+import com.tfg.kaifit_pal.views.fragments.KaiQ;
+import com.tfg.kaifit_pal.views.fragments.Profile;
+import com.tfg.kaifit_pal.views.fragments.Settings;
+import com.tfg.kaifit_pal.views.fragments.TdeeMacros;
+import com.tfg.kaifit_pal.views.fragments.CalculateListenerInterface;
 import com.tfg.kaifit_pal.fragments.Calculator;
 import com.tfg.kaifit_pal.fragments.Help;
 import com.tfg.kaifit_pal.fragments.Profile;
@@ -20,12 +27,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * MainActivity class that extends AppCompatActivity and implements Calculator.OnCalculateClickListener
  * This class is the main activity of the app, it contains the bottom navigation view and the fragments
  * that are displayed when the user clicks on the bottom navigation view.
  */
-public class MainActivity extends AppCompatActivity implements Calculator.OnCalculateClickListener {
+public class MainActivity extends AppCompatActivity implements CalculateListenerInterface {
 
     // Child fragment for TDEE calculations
     private TdeeMacros childFragmentTdee;

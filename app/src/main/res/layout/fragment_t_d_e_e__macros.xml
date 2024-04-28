@@ -11,7 +11,7 @@
         android:id="@+id/constraitLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".fragments.TdeeMacros">
+        tools:context=".views.fragments.TdeeMacros">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/firstMidScreenLayout"

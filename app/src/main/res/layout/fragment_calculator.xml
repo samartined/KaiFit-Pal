@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tfg.kaifit_pal.fragments.Calculator">
+    tools:context="com.tfg.kaifit_pal.views.fragments.Calculator">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -159,9 +159,49 @@
             android:layout_width="match_parent"
             android:layout_height="490dp">
 
+            <ImageView
+                android:id="@+id/actFactorInfo"
+                android:layout_width="21dp"
+                android:layout_height="21dp"
+                android:layout_marginTop="27dp"
+                android:layout_marginEnd="155dp"
+                android:src="@drawable/baseline_info_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider8" />
+
+            <ImageView
+                android:id="@+id/percentInfo"
+                android:layout_width="21dp"
+                android:layout_height="21dp"
+                android:layout_marginEnd="88dp"
+                android:layout_marginBottom="76dp"
+                android:src="@drawable/baseline_info_24"
+                app:layout_constraintBottom_toTopOf="@+id/divider8"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/neckInfo"
+                android:layout_width="21dp"
+                android:layout_height="21dp"
+                android:layout_marginEnd="92dp"
+                android:layout_marginBottom="156dp"
+                android:src="@drawable/baseline_info_24"
+                app:layout_constraintBottom_toTopOf="@+id/divider8"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/hipsInfo"
+                android:layout_width="21dp"
+                android:layout_height="21dp"
+                android:layout_marginStart="116dp"
+                android:layout_marginBottom="76dp"
+                android:src="@drawable/baseline_info_24"
+                app:layout_constraintBottom_toTopOf="@+id/divider8"
+                app:layout_constraintStart_toStartOf="parent" />
+
             <TextView
                 android:id="@+id/heightText"
-                android:layout_width="63dp"
+                android:layout_width="51dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="56dp"
                 android:layout_marginTop="17dp"
@@ -210,10 +250,10 @@
 
             <TextView
                 android:id="@+id/neckText"
-                android:layout_width="63dp"
+                android:layout_width="53dp"
                 android:layout_height="24dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="104dp"
+                android:layout_marginEnd="113dp"
                 android:gravity="start"
                 android:text="Cuello"
                 android:textColor="#838383"
@@ -244,9 +284,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="36dp"
+                android:layout_marginEnd="118dp"
                 android:gravity="center"
-                android:text="% Grasa Corporal"
+                android:text="% PGC"
                 android:textColor="#838383"
                 android:textSize="17dp"
                 android:textStyle="bold"
@@ -272,7 +312,7 @@
 
             <TextView
                 android:id="@+id/waistText"
-                android:layout_width="63dp"
+                android:layout_width="57dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="56dp"
                 android:layout_marginTop="8dp"
@@ -304,7 +344,7 @@
 
             <TextView
                 android:id="@+id/hipText"
-                android:layout_width="63dp"
+                android:layout_width="56dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="56dp"
                 android:layout_marginTop="8dp"
@@ -411,6 +451,16 @@
                 android:textSize="17dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fatPercentText" />
+
+            <ImageView
+                android:id="@+id/waistInfo"
+                android:layout_width="21dp"
+                android:layout_height="21dp"
+                android:layout_marginStart="116dp"
+                android:layout_marginBottom="157dp"
+                android:src="@drawable/baseline_info_24"
+                app:layout_constraintBottom_toTopOf="@+id/divider8"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
