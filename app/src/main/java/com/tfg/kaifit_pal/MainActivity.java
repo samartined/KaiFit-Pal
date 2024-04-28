@@ -9,17 +9,18 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.tfg.kaifit_pal.fragments.Calculator;
-import com.tfg.kaifit_pal.fragments.Help;
-import com.tfg.kaifit_pal.fragments.KaiQ;
-import com.tfg.kaifit_pal.fragments.Profile;
-import com.tfg.kaifit_pal.fragments.Settings;
-import com.tfg.kaifit_pal.fragments.TdeeMacros;
+import com.tfg.kaifit_pal.views.fragments.Calculator;
+import com.tfg.kaifit_pal.views.fragments.Help;
+import com.tfg.kaifit_pal.views.fragments.KaiQ;
+import com.tfg.kaifit_pal.views.fragments.Profile;
+import com.tfg.kaifit_pal.views.fragments.Settings;
+import com.tfg.kaifit_pal.views.fragments.TdeeMacros;
+import com.tfg.kaifit_pal.views.fragments.CalculateListenerInterface;
 
 /**
  * Main activity class that holds all the fragments.
  */
-public class MainActivity extends AppCompatActivity implements Calculator.OnCalculateClickListener {
+public class MainActivity extends AppCompatActivity implements CalculateListenerInterface {
 
     /**
      * FragmentManager to manage fragments

@@ -1,4 +1,4 @@
-package com.tfg.kaifit_pal.fragments;
+package com.tfg.kaifit_pal.views.fragments;
 
 import static java.lang.Integer.parseInt;
 
@@ -43,11 +43,9 @@ public class Calculator extends Fragment {
 
     private Spinner activityFactorSpinner; // This Spinner allows the user to select their activity level.
 
-    // This callback is used to communicate with the activity and get the data from the user.
-    private OnCalculateClickListener callback;
-
     // This instance of the CalculatorLogic class is used to perform the TDEE and body fat percentage calculations.
     private CalculatorLogic calculatorInstance;
+    private CalculateListenerInterface callback;
 
     /**
      * This method is called when the fragment is first attached to its context.
@@ -60,7 +58,7 @@ public class Calculator extends Fragment {
         super.onAttach(context);
         try {
             // Attempt to cast the context to an OnCalculateClickListener
-            callback = (OnCalculateClickListener) context;
+            callback = (CalculateListenerInterface) context;
         } catch (ClassCastException e) {
             // If the context does not implement OnCalculateClickListener, throw an exception
             throw new ClassCastException(context + " debe implementar OnCalculateClickListener");
@@ -261,12 +259,5 @@ public class Calculator extends Fragment {
             Log.e("Calculator", "Invalid selectedFactorIndex: " + selectedFactorIndex);
         }
         return 1.2; // Default value
-    }
-
-    /**
-     * This interface is used to communicate with the activity and get the data from the user.
-     */
-    public interface OnCalculateClickListener {
-        void onCalculateClick(int tdeeResult);
     }
 }
