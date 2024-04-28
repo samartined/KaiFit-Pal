@@ -9,12 +9,12 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.tfg.kaifit_pal.fragments.Calculator;
-import com.tfg.kaifit_pal.fragments.Help;
-import com.tfg.kaifit_pal.fragments.KaiQ;
-import com.tfg.kaifit_pal.fragments.Profile;
-import com.tfg.kaifit_pal.fragments.Settings;
-import com.tfg.kaifit_pal.fragments.TdeeMacros;
+import com.tfg.kaifit_pal.views.fragments.Calculator;
+import com.tfg.kaifit_pal.views.fragments.Help;
+import com.tfg.kaifit_pal.views.fragments.kaiq.KaiQ;
+import com.tfg.kaifit_pal.views.fragments.Profile;
+import com.tfg.kaifit_pal.views.fragments.Settings;
+import com.tfg.kaifit_pal.views.fragments.TdeeMacros;
 
 /**
  * Main activity class that holds all the fragments.
