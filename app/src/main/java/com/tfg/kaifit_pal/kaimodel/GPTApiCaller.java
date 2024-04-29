@@ -23,9 +23,14 @@ import okhttp3.Response;
 import com.tfg.kaifit_pal.views.fragments.kaiq.KaiQ;
 
 /**
- * This class is responsible for making API calls to the GPT-3 model.
+ * The GPTApiCaller class is responsible for making requests to the GPT-3 API.
+ * It uses an instance of the OkHttpClient to make these requests.
+ * It also uses an instance of the ChatHistoryManager to manage the chat history.
+ * The chat history is used as part of the input to the GPT-3 API.
+ * The class also contains a reference to an instance of the KaiQ class, which is used to add responses to the chat.
  */
 public class GPTApiCaller {
+    // The ChatHistoryManager instance used to manage the chat history
     private final ChatHistoryManager chatHistoryManager;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private static final Logger LOGGER = Logger.getLogger(GPTApiCaller.class.getName());
@@ -77,7 +82,7 @@ public class GPTApiCaller {
 
         client.newCall(request).enqueue(new Callback() {
             /**
-             * This method is called when the request to the GPT-3 API fails.
+             * This method is called when the request to the GPT-3.5 API fails.
              * @param call The failed Call.
              * @param e The IOException that occurred during the request.
              */
@@ -87,7 +92,7 @@ public class GPTApiCaller {
             }
 
             /**
-             * This method is called when the request to the GPT-3 API is successful.
+             * This method is called when the request to the GPT-3.5 API is successful.
              * @param call The successful Call.
              * @param response The Response from the GPT-3 API.
              */
