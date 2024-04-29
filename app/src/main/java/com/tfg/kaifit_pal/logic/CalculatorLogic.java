@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
  * It uses the Katch-McArdle formula to calculate the BMR and then the TDEE.
  * It also uses the Katch-McArdle formula to calculate the fat percentage.
  * Finally, it calculates the macros using the TDEE.
+ * This class uses the Singleton pattern to avoid creating multiple instances of it.
  */
 public class CalculatorLogic {
 
@@ -20,7 +21,6 @@ public class CalculatorLogic {
      */
     private CalculatorLogic() {
     }
-
 
     /**
      * Creates an instance of the CalculatorLogic class with the provided parameters.
@@ -47,7 +47,6 @@ public class CalculatorLogic {
         instance.fatPercentage = calculateFatPercentage(sex, height, waist, neck, hip);
         return instance;
     }
-
 
     /**
      * Calculates the body fat percentage based on the given measurements.

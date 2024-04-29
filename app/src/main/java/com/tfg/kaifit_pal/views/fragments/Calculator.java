@@ -3,7 +3,6 @@ package com.tfg.kaifit_pal.views.fragments;
 import static java.lang.Integer.parseInt;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -21,12 +20,10 @@ import com.tfg.kaifit_pal.R;
 import com.tfg.kaifit_pal.logic.CalculatorLogic;
 import com.tfg.kaifit_pal.utilities.DataParser;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * This class is used to create the Calculator fragment. This fragment is used to calculate the Total Daily Energy Expenditure (TDEE) and body fat percentage of the user.
+ * This class is used to create the Calculator fragment.
+ * This fragment is used to calculate the Total Daily Energy Expenditure (TDEE)
+ * and body fat percentage of the user.
  */
 public class Calculator extends Fragment {
 
@@ -44,9 +41,7 @@ public class Calculator extends Fragment {
     private EditText neckEditText;
     private EditText waistEditText;
     private EditText hipEditText;
-
     private Button femaleButton; // This button is used to select the female gender.
-
     private Spinner activityFactorSpinner; // This Spinner allows the user to select their activity level.
 
     // This instance of the CalculatorLogic class is used to perform the TDEE and body fat percentage calculations.
@@ -83,17 +78,24 @@ public class Calculator extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calculator, container, false);
         dynamicAge = view.findViewById(R.id.ageTextView);
-        setUpComponentes(view);
+        setUpComponents(view);
 
-        // We need to separate this listener from the others to avoid being called when the calculator is not parameterized
+        // We need to separate this listener from the others
+        // to avoid being called when the calculator is not parameterized
         view.findViewById(R.id.buttonCalculate).setOnClickListener(v -> {
             calculateTDEEAndNotify(view);
         });
-        setupTextChangeListeners(view);
+        setUpTextChangeListeners(view);
 
         return view;
     }
 
+    /**
+     * This method calculates the Total Daily Energy Expenditure (TDEE)
+     * and notifies the parent activity of the result.
+     *
+     * @param view The View for the fragment.
+     */
     private void calculateTDEEAndNotify(View view) {
         boolean isFemale = femaleButton.isSelected();
         int age = DataParser.parseIntUtility(dynamicAge.getText().toString());
@@ -104,6 +106,7 @@ public class Calculator extends Fragment {
         double hip = DataParser.parseDoubleUtility(hipEditText.getText().toString().trim());
         double activityFactor = getActivityFactor(view);
 
+        // We instance the CalculatorLogic class with the data from the UI
         calculatorInstance = CalculatorLogic.createInstance(isFemale, age, height, weight, neck, waist, hip);
         calculatorInstance.setActivityFactor(activityFactor);
 
@@ -117,7 +120,7 @@ public class Calculator extends Fragment {
      *
      * @param view The View for the fragment.
      */
-    private void setUpComponentes(@NonNull View view) {
+    private void setUpComponents(@NonNull View view) {
         // The minus button decreases the age by 1 when clicked.
         view.findViewById(R.id.btnMinus).setOnClickListener(v -> updateAge(-1));
 
@@ -232,7 +235,7 @@ public class Calculator extends Fragment {
      *
      * @param view The View for the fragment.
      */
-    private void setupTextChangeListeners(@NonNull View view) {
+    private void setUpTextChangeListeners(@NonNull View view) {
         weightEditText = view.findViewById(R.id.editTextWeight);
         heightEditText = view.findViewById(R.id.editTextHeight);
         neckEditText = view.findViewById(R.id.editTextNeck);
@@ -240,7 +243,6 @@ public class Calculator extends Fragment {
         hipEditText = view.findViewById(R.id.editTextHip);
         fatPercentageEditText = view.findViewById(R.id.TextViewFatPercent);
         femaleButton = view.findViewById(R.id.ButtonFemale);
-
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
@@ -297,7 +299,10 @@ public class Calculator extends Fragment {
 
         String[] activityFactorValues = getResources().getStringArray(R.array.activity_factors);
 
-        if (selectedFactorIndex >= 0 && selectedFactorIndex < activityFactorValues.length) { // This condition check is necessary to avoid ArrayIndexOutOfBoundsException. If the selectedFactorIndex is out of bounds, it will return the Log.e message and the default value
+        if (selectedFactorIndex >= 0 && selectedFactorIndex < activityFactorValues.length) { // This condition
+            // check is necessary to avoid ArrayIndexOutOfBoundsException.
+            // If the selectedFactorIndex is out of bounds, it will return the Log.e message
+            // and the default value
 
             // We capture eventual NumberFormatExceptions
             try {
