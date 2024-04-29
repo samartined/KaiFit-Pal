@@ -3,7 +3,6 @@ package com.tfg.kaifit_pal.views.fragments;
 import static java.lang.Integer.parseInt;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -20,10 +19,6 @@ import androidx.fragment.app.Fragment;
 import com.tfg.kaifit_pal.R;
 import com.tfg.kaifit_pal.logic.CalculatorLogic;
 import com.tfg.kaifit_pal.utilities.DataParser;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class is used to create the Calculator fragment. This fragment is used to calculate the Total Daily Energy Expenditure (TDEE) and body fat percentage of the user.
