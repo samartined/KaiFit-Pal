@@ -87,31 +87,28 @@ public class Calculator extends Fragment {
 
         // We need to separate this listener from the others to avoid being called when the calculator is not parameterized
         view.findViewById(R.id.buttonCalculate).setOnClickListener(v -> {
-            double activityFactor = getActivityFactor(view);
-
-            // We need to create here the instance of the CalculatorLogic class to pass the activityFactor updated
-            calculatorInstance = CalculatorLogic.createInstance(femaleButton.isSelected(), DataParser.parseIntUtility(dynamicAge.getText().toString()), DataParser.parseIntUtility(heightEditText.getText().toString().trim()), DataParser.parseDoubleUtility(weightEditText.getText().toString().trim()), DataParser.parseDoubleUtility(neckEditText.getText().toString().trim()), DataParser.parseDoubleUtility(waistEditText.getText().toString().trim()), DataParser.parseDoubleUtility(hipEditText.getText().toString().trim()));
-            calculatorInstance.setActivityFactor(activityFactor);
-
-            tdeeResult = calculatorInstance.calculateTDEE();
-            callback.onCalculateClick(tdeeResult);
+            calculateTDEEAndNotify(view);
         });
         setupTextChangeListeners(view);
 
         return view;
     }
 
-    /**
-     * This method is called when the fragment is created and the view is created.
-     * It sets the initial values for the age, weight, height, neck, waist, and hip fields.
-     *
-     * @param view               The View for the fragment.
-     * @param savedInstanceState The Bundle containing the saved instance state of the fragment.
-     */
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        view.post(() -> selectGender(true, view));
+    private void calculateTDEEAndNotify(View view) {
+        boolean isFemale = femaleButton.isSelected();
+        int age = DataParser.parseIntUtility(dynamicAge.getText().toString());
+        int height = DataParser.parseIntUtility(heightEditText.getText().toString().trim());
+        double weight = DataParser.parseDoubleUtility(weightEditText.getText().toString().trim());
+        double neck = DataParser.parseDoubleUtility(neckEditText.getText().toString().trim());
+        double waist = DataParser.parseDoubleUtility(waistEditText.getText().toString().trim());
+        double hip = DataParser.parseDoubleUtility(hipEditText.getText().toString().trim());
+        double activityFactor = getActivityFactor(view);
+
+        calculatorInstance = CalculatorLogic.createInstance(isFemale, age, height, weight, neck, waist, hip);
+        calculatorInstance.setActivityFactor(activityFactor);
+
+        tdeeResult = calculatorInstance.calculateTDEE();
+        callback.onCalculateClick(tdeeResult);
     }
 
     /**
@@ -313,5 +310,18 @@ public class Calculator extends Fragment {
             Log.e("Calculator", "Invalid selectedFactorIndex: " + selectedFactorIndex);
         }
         return 1.2; // Default value
+    }
+
+    /**
+     * This method is called when the fragment is created and the view is created.
+     * It sets the initial values for the age, weight, height, neck, waist, and hip fields.
+     *
+     * @param view               The View for the fragment.
+     * @param savedInstanceState The Bundle containing the saved instance state of the fragment.
+     */
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.post(() -> selectGender(true, view));
     }
 }
