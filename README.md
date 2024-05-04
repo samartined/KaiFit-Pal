@@ -22,7 +22,7 @@ To get started with KaiFit-Pal:
 ## Usage 🤳
 Once installed, KaiFit-Pal offers the following main functionalities:
 - **Nutritional Calculator**: Calculate nutritional values of foods and meals effortlessly.
-- **AI Assistant**: Engage in chat-based conversations to receive personalized nutritional guidance. A personal OpenAI key's needed in order to implementad as a local property.
+- **AI Assistant**: Engage in chat-based conversations to receive personalized nutritional guidance. A personal OpenAI key's needed in order to implemented as a local property.
 
 ## Screenshots 📸
 (Coming soon!)
