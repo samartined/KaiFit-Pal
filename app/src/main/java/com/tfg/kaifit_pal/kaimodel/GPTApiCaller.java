@@ -2,8 +2,6 @@ package com.tfg.kaifit_pal.kaimodel;
 
 import androidx.annotation.NonNull;
 
-import com.tfg.kaifit_pal.BuildConfig;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,37 +20,21 @@ import okhttp3.Response;
 
 import com.tfg.kaifit_pal.views.fragments.kaiq.KaiQ;
 
-/**
- * The GPTApiCaller class is responsible for making requests to the GPT-3 API.
- * It uses an instance of the OkHttpClient to make these requests.
- * It also uses an instance of the ChatHistoryManager to manage the chat history.
- * The chat history is used as part of the input to the GPT-3 API.
- * The class also contains a reference to an instance of the KaiQ class, which is used to add responses to the chat.
- */
+import com.tfg.kaifit_pal.BuildConfig;
+
 public class GPTApiCaller {
-    // The ChatHistoryManager instance used to manage the chat history
     private final ChatHistoryManager chatHistoryManager;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private static final Logger LOGGER = Logger.getLogger(GPTApiCaller.class.getName());
     private final OkHttpClient client;
     private final KaiQ kaiQ;
 
-    /**
-     * Constructor for the GPTApiCaller class.
-     *
-     * @param kaiQ An instance of the KaiQ class.
-     */
     public GPTApiCaller(KaiQ kaiQ) {
         this.kaiQ = kaiQ;
         this.chatHistoryManager = new ChatHistoryManager();
         client = new OkHttpClient();
     }
 
-    /**
-     * This method makes a request to the GPT-3 API with the user query.
-     *
-     * @param query The user query.
-     */
     public void gptApiRequest(String query) {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -81,21 +63,12 @@ public class GPTApiCaller {
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
-            /**
-             * This method is called when the request to the GPT-3.5 API fails.
-             * @param call The failed Call.
-             * @param e The IOException that occurred during the request.
-             */
+
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 kaiQ.addResponseToChat("Error al conectar con el servidor" + e.getMessage());
             }
 
-            /**
-             * This method is called when the request to the GPT-3.5 API is successful.
-             * @param call The successful Call.
-             * @param response The Response from the GPT-3 API.
-             */
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 assert response.body() != null;

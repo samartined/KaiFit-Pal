@@ -7,19 +7,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.tfg.kaifit_pal.R;
 
-/**
- * Utility class for handling AppBar related operations.
- */
 public class AppBarHandler {
 
-    /**
-     * Sets up the ActionBar for the given activity.
-     *
-     * @param activity               The activity where the ActionBar is to be set up.
-     * @param title                  The title to be displayed in the ActionBar.
-     * @param displayHomeAsUpEnabled Whether the home button should be displayed in the ActionBar.
-     * @param displayShowHomeEnabled Whether the home button should be enabled in the ActionBar.
-     */
     public static void setUpActionBar(@NonNull AppCompatActivity activity, String title, boolean displayHomeAsUpEnabled, boolean displayShowHomeEnabled) {
         Toolbar toolbar = activity.findViewById(R.id.toolbar);
         toolbar.setContentInsetStartWithNavigation(0);
@@ -36,11 +25,6 @@ public class AppBarHandler {
         }
     }
 
-    /**
-     * Resets the ActionBar for the given activity.
-     *
-     * @param activity The activity where the ActionBar is to be reset.
-     */
     public static void resetActionBar(@NonNull AppCompatActivity activity) {
         ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {
@@ -50,12 +34,6 @@ public class AppBarHandler {
         }
     }
 
-    /**
-     * Sets the title of the ActionBar for the given activity.
-     *
-     * @param activity The activity where the ActionBar title is to be set.
-     * @param title    The title to be displayed in the ActionBar.
-     */
     public static void setTitle(@NonNull AppCompatActivity activity, String title) {
         ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {

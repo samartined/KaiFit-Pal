@@ -26,40 +26,19 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.TreeMap;
 
-/**
- * TdeeMacros is a Fragment class that handles the Total Daily Energy Expenditure (TDEE) and macronutrient calculations.
- * It provides an interface for the user to adjust their TDEE and macronutrient ratios.
- */
+
 public class TdeeMacros extends Fragment {
 
-    // Variables to store the TDEE result and the original TDEE
     private int tdeeResult, originalTDEE;
-    // Variable to store the modifier percentage
     private double modifierPercentage = 0;
-    // Flag to check if the user has changed the pickers
     private boolean userChangedPickers = false;
-
-    // TextViews to display the TDEE, modifier TDEE and intensity modifier
     private TextView textViewTdee;
     private TextView modifierTdeeTextView;
     private TextView intensityModifierTextView;
-
-    // NumberPickers for proteins, fats and carbs
     private NumberPicker proteinsNumberPicker, fatNumberPicker, carbsNumberPicker;
-    // ArrayList to store the macro percentages
     ArrayList<TextView> macroPercentages = new ArrayList<>();
-    // ArrayList to store the NumberPickers
     private ArrayList<NumberPicker> numberPickers;
 
-
-    /**
-     * This method is called to do initial creation of the fragment.
-     *
-     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment
-     * @param container          The parent view that the fragment's UI should be attached to
-     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state
-     * @return The view of the fragment
-     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_t_d_e_e__macros, container, false);
@@ -70,9 +49,6 @@ public class TdeeMacros extends Fragment {
         return view;
     }
 
-    /**
-     * Method to set up the ActionBar
-     */
     private void setUpActionBar() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         assert activity != null;
@@ -90,43 +66,27 @@ public class TdeeMacros extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    /**
-     * Initializes UI components for the fragment.
-     * This includes setting up TextViews, NumberPickers, and Buttons.
-     *
-     * @param view The view of the fragment.
-     */
     private void initializeUIComponents(@NonNull View view) {
-        // Initialize TextViews
         textViewTdee = view.findViewById(R.id.tdeeResultTextView);
         modifierTdeeTextView = view.findViewById(R.id.modifierTDEEtextView);
         intensityModifierTextView = view.findViewById(R.id.intensityModifierTextView);
 
-        // Initialize NumberPickers
         proteinsNumberPicker = view.findViewById(R.id.proteinsNumberPicker);
         fatNumberPicker = view.findViewById(R.id.fatsNumberPicker);
         carbsNumberPicker = view.findViewById(R.id.carbsNumberPicker);
 
-        // Set TDEE result if arguments are not null
         if (getArguments() != null) {
             tdeeResult = getArguments().getInt("tdeeResult");
             originalTDEE = tdeeResult;
             textViewTdee.setText(String.valueOf(tdeeResult));
         }
 
-        // Setup Buttons, TextViews, and NumberPickers
         setUpButtons(view);
         setUpTextViews(view);
         setUpNumberPickers();
     }
 
-    /**
-     * Sets up the TextViews for the fragment.
-     *
-     * @param view The view of the fragment.
-     */
     private void setUpTextViews(@NonNull View view) {
-        // Initialize and setup macro titles TextViews
         ArrayList<TextView> macroTitles = new ArrayList<>(Arrays.asList(
                 view.findViewById(R.id.proteinTitle),
                 view.findViewById(R.id.fatTitle),
@@ -140,7 +100,6 @@ public class TdeeMacros extends Fragment {
             titles.setGravity(1);
         }
 
-        // Initialize and setup macro percentages TextViews
         macroPercentages = new ArrayList<>(Arrays.asList(
                 view.findViewById(R.id.proteinsPercentageTextView),
                 view.findViewById(R.id.fatsPercentageTextView),
@@ -154,20 +113,11 @@ public class TdeeMacros extends Fragment {
         }
     }
 
-    /**
-     * Sets up the NumberPickers for the fragment.
-     * This includes setting the gravity, min value, descendant focusability, max value, and value.
-     * It also includes setting an OnValueChangedListener for each NumberPicker.
-     */
     private void setUpNumberPickers() {
-        // Initialize NumberPickers
         numberPickers = new ArrayList<>(Arrays.asList(proteinsNumberPicker, fatNumberPicker, carbsNumberPicker));
         Double[] defaultMacrosPercentages = getMacrosPercentagesForModifier("Mantenimiento");
 
-        // Loop through each NumberPicker
         for (NumberPicker numberPicker : numberPickers) {
-            // Setup NumberPicker
-            // If tdeeResult is 0, set the gravity, min value, descendant focusability, max value, and value to 0
             if (tdeeResult == 0) {
                 numberPicker.setGravity(1);
                 numberPicker.setMinValue(0);
@@ -175,14 +125,12 @@ public class TdeeMacros extends Fragment {
                 numberPicker.setValue(0);
 
             } else {
-                // If tdeeResult is not 0, set the gravity, min value, descendant focusability, and calculate the max value and value based on tdeeResult and the macro percentage
                 numberPicker.setGravity(1);
                 numberPicker.setMinValue(0);
                 numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
                 numberPicker.setValue((int) (tdeeResult * (numberPicker == proteinsNumberPicker ? defaultMacrosPercentages[0] : (numberPicker == fatNumberPicker ? defaultMacrosPercentages[1] : defaultMacrosPercentages[2])) / (numberPicker == fatNumberPicker ? 9 : 4)));
             }
 
-            // Set a custom formatter for the NumberPicker
             numberPicker.setFormatter(new NumberPicker.Formatter() {
                 @Override
                 public String format(int value) {
@@ -190,7 +138,6 @@ public class TdeeMacros extends Fragment {
                 }
             });
 
-            // Set OnValueChangedListener to update the NumberPickers and macro percentages when the value changes
             numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
                 userChangedPickers = true;
                 updateNumberPickers();
@@ -207,24 +154,13 @@ public class TdeeMacros extends Fragment {
         }
     }
 
-    /**
-     * Method to set up the buttons
-     *
-     * @param view The view where the buttons are located
-     */
     private void setUpButtons(@NonNull View view) {
         view.findViewById(R.id.btnMinusCalories).setOnClickListener(v -> modifyTdee(-0.05));
         view.findViewById(R.id.btnPlusCalories).setOnClickListener(v -> modifyTdee(0.05));
     }
 
-    /**
-     * Method to modify the TDEE
-     *
-     * @param modifier The modifier to apply to the TDEE
-     */
     private void modifyTdee(double modifier) {
 
-        // If the TDEE result is 0, return
         if (tdeeResult == 0) return;
 
         double newModifierPercentage = modifierPercentage + modifier;
@@ -237,26 +173,28 @@ public class TdeeMacros extends Fragment {
                 intensityModifierTextView.setText(intensityModifiers.get(0.00));
                 modifierPercentage = 0.00;
             } else {
-                intensityModifierTextView.setText(Objects.requireNonNull(intensityModifiers.floorEntry(modifierPercentage)).getValue());
+                intensityModifierTextView.setText(Objects.requireNonNull(
+                        intensityModifiers.floorEntry(modifierPercentage)).getValue()
+                );
             }
 
             for (NumberPicker numberPicker : numberPickers) {
-                numberPicker.setValue((int) (tdeeResult * getMacroPercentageForPicker(numberPicker) / (numberPicker == fatNumberPicker ? 9 : 4)));
+                numberPicker.setValue((int) (
+                        tdeeResult * getMacroPercentageForPicker(numberPicker) / (numberPicker == fatNumberPicker ? 9 : 4))
+                );
             }
 
             updateMacroPercentages();
 
             textViewTdee.setText(String.valueOf(tdeeResult));
-            modifierTdeeTextView.setText(Math.abs(modifierPercentage) < 0.00001 ? "0%" : String.format(Locale.getDefault(), "%.0f%%", modifierPercentage * 100));
+            modifierTdeeTextView.setText(
+                    Math.abs(modifierPercentage) < 0.00001 ? "0%" : String.format(
+                            Locale.getDefault(), "%.0f%%", modifierPercentage * 100
+                    )
+            );
         }
     }
 
-    /**
-     * Method to get the macro percentage for a given NumberPicker
-     *
-     * @param numberPicker The NumberPicker to get the macro percentage for
-     * @return The macro percentage for the given NumberPicker
-     */
     private double getMacroPercentageForPicker(NumberPicker numberPicker) {
         if (modifierPercentage == 0) {
             return getMacrosPercentagesForModifier("Mantenimiento")[numberPickers.indexOf(numberPicker)];
@@ -267,9 +205,6 @@ public class TdeeMacros extends Fragment {
         }
     }
 
-    /**
-     * Method to update the macro percentages
-     */
     private void updateMacroPercentages() {
         for (int i = 0; i < numberPickers.size(); i++) {
             NumberPicker numberPicker = numberPickers.get(i);
@@ -278,9 +213,6 @@ public class TdeeMacros extends Fragment {
         }
     }
 
-    /**
-     * Method to update the NumberPickers
-     */
     private void updateNumberPickers() {
         if (!userChangedPickers) return;
         boolean isManualChange = true;
@@ -301,11 +233,6 @@ public class TdeeMacros extends Fragment {
         updateMacroPercentages();
     }
 
-    /**
-     * Method to get the intensity modifiers
-     *
-     * @return The intensity modifiers
-     */
     @NonNull
     private static TreeMap<Double, String> getDoubleStringLabelModifiersTreeMap() {
         TreeMap<Double, String> intensityModifiers = new TreeMap<>();
@@ -321,11 +248,6 @@ public class TdeeMacros extends Fragment {
         return intensityModifiers;
     }
 
-    /**
-     * Method to handle the back button press
-     *
-     * @return True if the back button was pressed, false otherwise
-     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -335,68 +257,36 @@ public class TdeeMacros extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * This method is called when the Fragment is no longer visible to the user.
-     * This could happen when the user navigates away from the Fragment or the Fragment is otherwise removed or replaced.
-     * In this method, we call the superclass implementation of onPause() and then call the updateNumberPickers() method.
-     * The updateNumberPickers() method is used to update the NumberPickers before leaving the Fragment to avoid losing the changes.
-     */
     @Override
     public void onPause() {
         super.onPause();
         updateNumberPickers();
     }
 
-    /**
-     * This method is called before the Fragment's state is saved.
-     * It allows the Fragment to save its dynamic state, so the state can be restored in onCreate(Bundle) or onCreateView(LayoutInflater, ViewGroup, Bundle).
-     * In this method, we call the superclass implementation of onSaveInstanceState() and then call the updateNumberPickers() method.
-     * The updateNumberPickers() method is used to update the NumberPickers before the state is saved to avoid losing the changes.
-     *
-     * @param outState Bundle in which to place your saved state.
-     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         updateNumberPickers();
     }
 
-    /**
-     * This method is called when the view's saved state has been restored.
-     * The onViewStateRestored method is called after onStart() and before onResume().
-     * The updateNumberPickers() method is used to update the NumberPickers when the view's state has been restored.
-     *
-     * @param savedInstanceState Bundle containing the state of the view
-     */
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         updateNumberPickers();
     }
 
-    /**
-     * This method is called when the Fragment is no longer interacting with the user.
-     * It is the next step in the lifecycle after onPause() and can be followed by either onRestart() or onDestroy().
-     * In this method, we call the superclass implementation of onStop() and then call the resetActionBar() method.
-     * The resetActionBar() method is used to reset the ActionBar to its default state when the Fragment is no longer visible.
-     */
     @Override
     public void onStop() {
-        super.onStop(); // Call to the superclass implementation of onStop()
-        resetActionBar(); // Call to reset the ActionBar
+        super.onStop();
+        resetActionBar();
     }
 
-    /**
-     * This method is used to reset the ActionBar to its default state.
-     * It is typically called when the Fragment is no longer visible to the user.
-     * The ActionBar's navigation button is hidden, the home button is disabled, and the title is set to "KaiFit-Pal".
-     */
     private void resetActionBar() {
         ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(false); // Hide the navigation button
-            actionBar.setDisplayShowHomeEnabled(false); // Disable the home button
-            actionBar.setTitle("KaiFit-Pal"); // Set the title to "KaiFit-Pal"
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setTitle("KaiFit-Pal");
         }
     }
 }
