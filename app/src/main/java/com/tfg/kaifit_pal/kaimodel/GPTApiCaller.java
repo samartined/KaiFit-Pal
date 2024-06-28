@@ -19,7 +19,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import com.tfg.kaifit_pal.views.fragments.kaiq.KaiQ;
-
+//TODO: repair this import
 import com.tfg.kaifit_pal.BuildConfig;
 
 public class GPTApiCaller {
