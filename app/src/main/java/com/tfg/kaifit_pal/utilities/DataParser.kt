@@ -10,7 +10,7 @@ class DataParser private constructor() {
             return try {
                 str.toDouble()
             } catch (e: NumberFormatException) {
-                0
+                0.0
             }
         }
 

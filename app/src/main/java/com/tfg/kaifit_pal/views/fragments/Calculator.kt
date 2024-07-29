@@ -86,7 +86,7 @@ class Calculator : Fragment() {
             waist,
             hip
         )
-        calculatorInstance.setActivityFactor(activityFactor)
+        calculatorInstance?.activityFactor = activityFactor
 
         tdeeResult = calculatorInstance!!.calculateTDEE()
         callback!!.onCalculateClick(tdeeResult)
@@ -168,8 +168,15 @@ class Calculator : Fragment() {
         femaleEditText.setText("")
         maleButton.setBackgroundResource(if (sex) R.drawable.rect_button_pressed else R.drawable.rect_button_notpressed)
 
-        femaleButton.setSelected(!sex)
-        femaleButton.setBackgroundResource(if (!sex) R.drawable.rect_button_pressed else R.drawable.rect_button_notpressed)
+        val localFemaleButton = femaleButton
+        localFemaleButton?.setSelected(!sex)
+
+        localFemaleButton?.setBackgroundResource(
+            if (!sex)
+                R.drawable.rect_button_pressed
+            else
+                R.drawable.rect_button_notpressed
+        )
 
         femaleEditText.isEnabled = !sex
         femaleEditText.setBackgroundResource(if (!sex) R.drawable.edittext_borders else R.drawable.edittext_disabled_background)
@@ -185,18 +192,31 @@ class Calculator : Fragment() {
         femaleButton = view.findViewById(R.id.ButtonFemale)
         val textWatcher: TextWatcher = object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
-                val age = dynamicAge!!.text.toString().toInt()
-                val sex = femaleButton.isSelected()
+                val localDynamicAge = dynamicAge
+                val localFemaleButton = femaleButton
+                val localWeightEditText = weightEditText
+                val localHeightEditText = heightEditText
+                val localNeckEditText = neckEditText
+                val localWaistEditText = waistEditText
+                val localHipEditText = hipEditText
+
+                val age = localDynamicAge!!.text.toString().toInt()
+                val sex = localFemaleButton?.isSelected ?: false
+
                 val valueWeight: Double = DataParser.Companion.parseDoubleUtility(
-                    weightEditText.getText().toString().trim { it <= ' ' })
+                    localWeightEditText?.getText().toString().trim { it <= ' ' })
+
                 val valueHeight: Int = DataParser.Companion.parseIntUtility(
-                    heightEditText.getText().toString().trim { it <= ' ' })
+                    localHeightEditText?.getText().toString().trim { it <= ' ' })
+
                 val valueNeck: Double = DataParser.Companion.parseDoubleUtility(
-                    neckEditText.getText().toString().trim { it <= ' ' })
+                    localNeckEditText?.getText().toString().trim { it <= ' ' })
+
                 val valueWaist: Double = DataParser.Companion.parseDoubleUtility(
-                    waistEditText.getText().toString().trim { it <= ' ' })
+                    localWaistEditText?.getText().toString().trim { it <= ' ' })
+
                 val valueHip: Double = DataParser.Companion.parseDoubleUtility(
-                    hipEditText.getText().toString().trim { it <= ' ' })
+                    localHipEditText?.getText().toString().trim { it <= ' ' })
 
                 calculatorInstance = CalculatorLogic.Companion.createInstance(
                     sex,

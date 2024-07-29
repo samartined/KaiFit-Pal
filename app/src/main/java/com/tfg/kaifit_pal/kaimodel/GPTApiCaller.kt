@@ -5,13 +5,11 @@ import com.tfg.kaifit_pal.views.fragments.kaiq.KaiQ
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Request.Builder.addHeader
-import okhttp3.Request.Builder.build
-import okhttp3.Request.Builder.post
-import okhttp3.Request.Builder.url
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONException
@@ -46,8 +44,8 @@ class GPTApiCaller(private val kaiQ: KaiQ) {
         }
 
 
-        val body: RequestBody = RequestBody.create(jsonObject.toString(), JSON)
-        val request: Request = Builder()
+        val body: RequestBody = jsonObject.toString().toRequestBody(JSON)
+        val request: Request = Request.Builder()
             .url("https://api.openai.com/v1/chat/completions")
             .addHeader("Content-Type", "application/json")
             .addHeader("Authorization", "Bearer " + BuildConfig.AKy_URL)
@@ -61,8 +59,8 @@ class GPTApiCaller(private val kaiQ: KaiQ) {
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                checkNotNull(response.body())
-                val responseString = response.body()!!.string()
+                checkNotNull(response.body)
+                val responseString = response.body!!.string()
                 if (response.isSuccessful) {
                     try {
                         val responseJson = JSONObject(responseString)
@@ -83,7 +81,7 @@ class GPTApiCaller(private val kaiQ: KaiQ) {
     }
 
     companion object {
-        val JSON: MediaType = get.get("application/json; charset=utf-8")
+        val JSON: MediaType = "application/json; charset=utf-8".toMediaTypeOrNull()!!
         private val LOGGER: Logger = Logger.getLogger(
             GPTApiCaller::class.java.name
         )
