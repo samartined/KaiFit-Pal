@@ -93,12 +93,19 @@ class Calculator : Fragment() {
     }
 
     private fun setUpComponents(view: View) {
-        view.findViewById<View>(R.id.btnMinus).setOnClickListener { v: View? -> updateAge(-1) }
-        view.findViewById<View>(R.id.btnPlus).setOnClickListener { v: View? -> updateAge(1) }
-        view.findViewById<View>(R.id.ButtonMale)
-            .setOnClickListener { v: View? -> selectGender(true, view) }
+        view.findViewById<View>(R.id.btnMinus).setOnClickListener { v: View? ->
+            updateAge(-1)
+        }
+        view.findViewById<View>(R.id.btnPlus).setOnClickListener { v: View? ->
+            updateAge(1)
+        }
+        view.findViewById<View>(R.id.ButtonMale).setOnClickListener { v: View? ->
+            selectGender(true, view)
+        }
         view.findViewById<View>(R.id.ButtonFemale)
-            .setOnClickListener { v: View? -> selectGender(false, view) }
+            .setOnClickListener { v: View? ->
+                selectGender(false, view)
+            }
 
         setUpInfoImageViews(view)
     }
@@ -124,7 +131,8 @@ class Calculator : Fragment() {
         view.findViewById<View>(R.id.hipsInfo).setOnClickListener { v: View? ->
             showInfoDialog(
                 "Esta medida es opcional para hombres y obligatoria para mujeres. " +
-                        "Para medir las caderas, coloca la cinta métrica alrededor de la parte más ancha de tus caderas."
+                        "Para medir las caderas, " +
+                        "coloca la cinta métrica alrededor de la parte más ancha de tus caderas."
             )
         }
 
