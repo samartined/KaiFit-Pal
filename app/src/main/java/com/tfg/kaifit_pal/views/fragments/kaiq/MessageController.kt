@@ -1,23 +1,8 @@
-package com.tfg.kaifit_pal.views.fragments.kaiq;
+package com.tfg.kaifit_pal.views.fragments.kaiq
 
-public class MessageController {
-
-    public static final String SENT_BY_USER = "me";
-    public static final String SENT_BY_BOT = "bot";
-
-    String message;
-    String sentBy;
-
-    public MessageController(String message, String sentBy) {
-        this.message = message;
-        this.sentBy = sentBy;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getSentBy() {
-        return sentBy;
+class MessageController(var message: String?, var sentBy: String) {
+    companion object {
+        const val SENT_BY_USER: String = "me"
+        const val SENT_BY_BOT: String = "bot"
     }
 }

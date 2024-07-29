@@ -1,292 +1,298 @@
-package com.tfg.kaifit_pal.views.fragments;
+package com.tfg.kaifit_pal.views.fragments
 
-import static com.tfg.kaifit_pal.logic.MacrosManager.getMacrosPercentagesForModifier;
+import android.graphics.Typeface
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.NumberPicker
+import android.widget.ScrollView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
+import com.tfg.kaifit_pal.R
+import com.tfg.kaifit_pal.logic.MacrosManager
+import java.util.Arrays
+import java.util.Locale
+import java.util.Objects
+import java.util.TreeMap
+import kotlin.math.abs
 
-import android.graphics.Typeface;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.NumberPicker;
-import android.widget.ScrollView;
-import android.widget.TextView;
+class TdeeMacros : Fragment() {
+    private var tdeeResult = 0
+    private var originalTDEE = 0
+    private var modifierPercentage = 0.0
+    private var userChangedPickers = false
+    private var textViewTdee: TextView? = null
+    private var modifierTdeeTextView: TextView? = null
+    private var intensityModifierTextView: TextView? = null
+    private var proteinsNumberPicker: NumberPicker? = null
+    private var fatNumberPicker: NumberPicker? = null
+    private var carbsNumberPicker: NumberPicker? = null
+    var macroPercentages: ArrayList<TextView> = ArrayList()
+    private var numberPickers: ArrayList<NumberPicker?>? = null
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-
-import com.tfg.kaifit_pal.R;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.TreeMap;
-
-
-public class TdeeMacros extends Fragment {
-
-    private int tdeeResult, originalTDEE;
-    private double modifierPercentage = 0;
-    private boolean userChangedPickers = false;
-    private TextView textViewTdee;
-    private TextView modifierTdeeTextView;
-    private TextView intensityModifierTextView;
-    private NumberPicker proteinsNumberPicker, fatNumberPicker, carbsNumberPicker;
-    ArrayList<TextView> macroPercentages = new ArrayList<>();
-    private ArrayList<NumberPicker> numberPickers;
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_t_d_e_e__macros, container, false);
-        setUpActionBar();
-        ScrollView scrollView = view.findViewById(R.id.scrollView);
-        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
-        initializeUIComponents(view);
-        return view;
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_t_d_e_e__macros, container, false)
+        setUpActionBar()
+        val scrollView = view.findViewById<ScrollView>(R.id.scrollView)
+        scrollView.post { scrollView.fullScroll(View.FOCUS_DOWN) }
+        initializeUIComponents(view)
+        return view
     }
 
-    private void setUpActionBar() {
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        assert activity != null;
-        Toolbar toolbar = activity.findViewById(R.id.toolbar);
-        toolbar.setContentInsetStartWithNavigation(0);
-        activity.setSupportActionBar(toolbar);
+    private fun setUpActionBar() {
+        val activity = checkNotNull(activity as AppCompatActivity?)
+        val toolbar = activity.findViewById<Toolbar>(R.id.toolbar)
+        toolbar.contentInsetStartWithNavigation = 0
+        activity.setSupportActionBar(toolbar)
 
-        ActionBar actionBar = activity.getSupportActionBar();
+        val actionBar = activity.supportActionBar
         if (actionBar != null) {
-            actionBar.setTitle("TDEE & Macros");
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_back_arrow_black);
+            actionBar.title = "TDEE & Macros"
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.setDisplayShowHomeEnabled(true)
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_back_arrow_black)
         }
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true)
     }
 
-    private void initializeUIComponents(@NonNull View view) {
-        textViewTdee = view.findViewById(R.id.tdeeResultTextView);
-        modifierTdeeTextView = view.findViewById(R.id.modifierTDEEtextView);
-        intensityModifierTextView = view.findViewById(R.id.intensityModifierTextView);
+    private fun initializeUIComponents(view: View) {
+        textViewTdee = view.findViewById(R.id.tdeeResultTextView)
+        modifierTdeeTextView = view.findViewById(R.id.modifierTDEEtextView)
+        intensityModifierTextView = view.findViewById(R.id.intensityModifierTextView)
 
-        proteinsNumberPicker = view.findViewById(R.id.proteinsNumberPicker);
-        fatNumberPicker = view.findViewById(R.id.fatsNumberPicker);
-        carbsNumberPicker = view.findViewById(R.id.carbsNumberPicker);
+        proteinsNumberPicker = view.findViewById(R.id.proteinsNumberPicker)
+        fatNumberPicker = view.findViewById(R.id.fatsNumberPicker)
+        carbsNumberPicker = view.findViewById(R.id.carbsNumberPicker)
 
-        if (getArguments() != null) {
-            tdeeResult = getArguments().getInt("tdeeResult");
-            originalTDEE = tdeeResult;
-            textViewTdee.setText(String.valueOf(tdeeResult));
+        if (arguments != null) {
+            tdeeResult = arguments!!.getInt("tdeeResult")
+            originalTDEE = tdeeResult
+            textViewTdee.setText(tdeeResult.toString())
         }
 
-        setUpButtons(view);
-        setUpTextViews(view);
-        setUpNumberPickers();
+        setUpButtons(view)
+        setUpTextViews(view)
+        setUpNumberPickers()
     }
 
-    private void setUpTextViews(@NonNull View view) {
-        ArrayList<TextView> macroTitles = new ArrayList<>(Arrays.asList(
+    private fun setUpTextViews(view: View) {
+        val macroTitles = ArrayList(
+            Arrays.asList(
                 view.findViewById(R.id.proteinTitle),
                 view.findViewById(R.id.fatTitle),
-                view.findViewById(R.id.carbTitle)
-        ));
+                view.findViewById<TextView>(R.id.carbTitle)
+            )
+        )
 
-        for (TextView titles : macroTitles) {
-            titles.setTextColor(getResources().getColor(R.color.black));
-            titles.setTextSize(15);
-            titles.setTypeface(titles.getTypeface(), Typeface.BOLD);
-            titles.setGravity(1);
+        for (titles in macroTitles) {
+            titles.setTextColor(resources.getColor(R.color.black))
+            titles.textSize = 15f
+            titles.setTypeface(titles.typeface, Typeface.BOLD)
+            titles.gravity = 1
         }
 
-        macroPercentages = new ArrayList<>(Arrays.asList(
+        macroPercentages = ArrayList(
+            Arrays.asList(
                 view.findViewById(R.id.proteinsPercentageTextView),
                 view.findViewById(R.id.fatsPercentageTextView),
                 view.findViewById(R.id.carbsPercentageTextView)
-        ));
+            )
+        )
 
-        for (TextView macroPercentage : macroPercentages) {
-            macroPercentage.setTextSize(15);
-            macroPercentage.setTypeface(macroPercentage.getTypeface(), Typeface.BOLD);
-            macroPercentage.setGravity(1);
+        for (macroPercentage in macroPercentages) {
+            macroPercentage.textSize = 15f
+            macroPercentage.setTypeface(macroPercentage.typeface, Typeface.BOLD)
+            macroPercentage.gravity = 1
         }
     }
 
-    private void setUpNumberPickers() {
-        numberPickers = new ArrayList<>(Arrays.asList(proteinsNumberPicker, fatNumberPicker, carbsNumberPicker));
-        Double[] defaultMacrosPercentages = getMacrosPercentagesForModifier("Mantenimiento");
+    private fun setUpNumberPickers() {
+        numberPickers =
+            ArrayList(Arrays.asList(proteinsNumberPicker, fatNumberPicker, carbsNumberPicker))
+        val defaultMacrosPercentages =
+            MacrosManager.getMacrosPercentagesForModifier("Mantenimiento")
 
-        for (NumberPicker numberPicker : numberPickers) {
+        for (numberPicker in numberPickers!!) {
             if (tdeeResult == 0) {
-                numberPicker.setGravity(1);
-                numberPicker.setMinValue(0);
-                numberPicker.setMaxValue(0);
-                numberPicker.setValue(0);
-
+                numberPicker!!.gravity = 1
+                numberPicker.minValue = 0
+                numberPicker.maxValue = 0
+                numberPicker.value = 0
             } else {
-                numberPicker.setGravity(1);
-                numberPicker.setMinValue(0);
-                numberPicker.setMaxValue(tdeeResult / (numberPicker == fatNumberPicker ? 9 : 4));
-                numberPicker.setValue((int) (tdeeResult * (numberPicker == proteinsNumberPicker ? defaultMacrosPercentages[0] : (numberPicker == fatNumberPicker ? defaultMacrosPercentages[1] : defaultMacrosPercentages[2])) / (numberPicker == fatNumberPicker ? 9 : 4)));
+                numberPicker!!.gravity = 1
+                numberPicker.minValue = 0
+                numberPicker.maxValue =
+                    tdeeResult / (if (numberPicker === fatNumberPicker) 9 else 4)
+                numberPicker.value =
+                    (tdeeResult * ((if (numberPicker === proteinsNumberPicker) defaultMacrosPercentages!![0] else (if (numberPicker === fatNumberPicker) defaultMacrosPercentages!![1] else defaultMacrosPercentages!![2]))!!) / (if (numberPicker === fatNumberPicker) 9 else 4)).toInt()
             }
 
-            numberPicker.setFormatter(new NumberPicker.Formatter() {
-                @Override
-                public String format(int value) {
-                    return value + " g";
-                }
-            });
+            numberPicker.setFormatter { value -> "$value g" }
 
-            numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-                userChangedPickers = true;
-                updateNumberPickers();
-                updateMacroPercentages();
-            });
+            numberPicker.setOnValueChangedListener { picker: NumberPicker?, oldVal: Int, newVal: Int ->
+                userChangedPickers = true
+                updateNumberPickers()
+                updateMacroPercentages()
+            }
         }
 
-        for (TextView macroPercentage : macroPercentages) {
-            if (proteinsNumberPicker.getValue() == 0 || fatNumberPicker.getValue() == 0 || carbsNumberPicker.getValue() == 0) {
-                macroPercentage.setText("0%");
+        for (macroPercentage in macroPercentages) {
+            if (proteinsNumberPicker!!.value == 0 || fatNumberPicker!!.value == 0 || carbsNumberPicker!!.value == 0) {
+                macroPercentage.text = "0%"
             } else {
-                macroPercentage.setText(String.format(Locale.getDefault(), "%.0f%%", (macroPercentage == macroPercentages.get(0) ? defaultMacrosPercentages[0] : (macroPercentage == macroPercentages.get(1) ? defaultMacrosPercentages[1] : defaultMacrosPercentages[2])) * 100));
+                macroPercentage.text = String.format(
+                    Locale.getDefault(), "%.0f%%",
+                    (if (macroPercentage === macroPercentages[0]) defaultMacrosPercentages!![0] else (if (macroPercentage === macroPercentages[1]) defaultMacrosPercentages!![1] else defaultMacrosPercentages!![2]))!! * 100
+                )
             }
         }
     }
 
-    private void setUpButtons(@NonNull View view) {
-        view.findViewById(R.id.btnMinusCalories).setOnClickListener(v -> modifyTdee(-0.05));
-        view.findViewById(R.id.btnPlusCalories).setOnClickListener(v -> modifyTdee(0.05));
+    private fun setUpButtons(view: View) {
+        view.findViewById<View>(R.id.btnMinusCalories)
+            .setOnClickListener { v: View? -> modifyTdee(-0.05) }
+        view.findViewById<View>(R.id.btnPlusCalories)
+            .setOnClickListener { v: View? -> modifyTdee(0.05) }
     }
 
-    private void modifyTdee(double modifier) {
+    private fun modifyTdee(modifier: Double) {
+        if (tdeeResult == 0) return
 
-        if (tdeeResult == 0) return;
-
-        double newModifierPercentage = modifierPercentage + modifier;
+        val newModifierPercentage = modifierPercentage + modifier
         if (newModifierPercentage >= -0.20 && newModifierPercentage <= 0.20) {
-            modifierPercentage = newModifierPercentage;
-            tdeeResult = (int) (originalTDEE * (1 + modifierPercentage));
+            modifierPercentage = newModifierPercentage
+            tdeeResult = (originalTDEE * (1 + modifierPercentage)).toInt()
 
-            TreeMap<Double, String> intensityModifiers = getDoubleStringLabelModifiersTreeMap();
+            val intensityModifiers = doubleStringLabelModifiersTreeMap
             if (newModifierPercentage < 0.05 && newModifierPercentage > -0.0001) {
-                intensityModifierTextView.setText(intensityModifiers.get(0.00));
-                modifierPercentage = 0.00;
+                intensityModifierTextView!!.text = intensityModifiers[0.00]
+                modifierPercentage = 0.00
             } else {
-                intensityModifierTextView.setText(Objects.requireNonNull(
-                        intensityModifiers.floorEntry(modifierPercentage)).getValue()
-                );
+                intensityModifierTextView!!.text = Objects.requireNonNull(
+                    intensityModifiers.floorEntry(modifierPercentage)
+                ).value
             }
 
-            for (NumberPicker numberPicker : numberPickers) {
-                numberPicker.setValue((int) (
-                        tdeeResult * getMacroPercentageForPicker(numberPicker) / (numberPicker == fatNumberPicker ? 9 : 4))
-                );
+            for (numberPicker in numberPickers!!) {
+                numberPicker!!.value =
+                    (tdeeResult * getMacroPercentageForPicker(numberPicker) / (if (numberPicker === fatNumberPicker) 9 else 4)).toInt()
             }
 
-            updateMacroPercentages();
+            updateMacroPercentages()
 
-            textViewTdee.setText(String.valueOf(tdeeResult));
-            modifierTdeeTextView.setText(
-                    Math.abs(modifierPercentage) < 0.00001 ? "0%" : String.format(
-                            Locale.getDefault(), "%.0f%%", modifierPercentage * 100
-                    )
-            );
+            textViewTdee!!.text = tdeeResult.toString()
+            modifierTdeeTextView!!.text =
+                if (abs(modifierPercentage) < 0.00001) "0%" else String.format(
+                    Locale.getDefault(), "%.0f%%", modifierPercentage * 100
+                )
         }
     }
 
-    private double getMacroPercentageForPicker(NumberPicker numberPicker) {
-        if (modifierPercentage == 0) {
-            return getMacrosPercentagesForModifier("Mantenimiento")[numberPickers.indexOf(numberPicker)];
+    private fun getMacroPercentageForPicker(numberPicker: NumberPicker?): Double {
+        return if (modifierPercentage == 0.0) {
+            MacrosManager.getMacrosPercentagesForModifier("Mantenimiento")[numberPickers!!.indexOf(
+                numberPicker
+            )]
         } else if (modifierPercentage < 0) {
-            return getMacrosPercentagesForModifier("Definición")[numberPickers.indexOf(numberPicker)];
+            MacrosManager.getMacrosPercentagesForModifier("Definición")[numberPickers!!.indexOf(
+                numberPicker
+            )]
         } else {
-            return getMacrosPercentagesForModifier("Volumen")[numberPickers.indexOf(numberPicker)];
+            MacrosManager.getMacrosPercentagesForModifier("Volumen")[numberPickers!!.indexOf(
+                numberPicker
+            )]
         }
     }
 
-    private void updateMacroPercentages() {
-        for (int i = 0; i < numberPickers.size(); i++) {
-            NumberPicker numberPicker = numberPickers.get(i);
-            double macroPercentage = (double) numberPicker.getValue() * (numberPicker == fatNumberPicker ? 9 : 4) / tdeeResult;
-            macroPercentages.get(i).setText(String.format(Locale.getDefault(), "%.0f%%", macroPercentage * 100));
+    private fun updateMacroPercentages() {
+        for (i in numberPickers!!.indices) {
+            val numberPicker = numberPickers!![i]
+            val macroPercentage =
+                numberPicker!!.value.toDouble() * (if (numberPicker === fatNumberPicker) 9 else 4) / tdeeResult
+            macroPercentages[i].text =
+                String.format(Locale.getDefault(), "%.0f%%", macroPercentage * 100)
         }
     }
 
-    private void updateNumberPickers() {
-        if (!userChangedPickers) return;
-        boolean isManualChange = true;
+    private fun updateNumberPickers() {
+        if (!userChangedPickers) return
+        var isManualChange = true
 
-        tdeeResult = 0;
-        for (NumberPicker numberPicker : numberPickers) {
-            tdeeResult += numberPicker.getValue() * (numberPicker == proteinsNumberPicker ? 4 : (numberPicker == fatNumberPicker ? 9 : 4));
+        tdeeResult = 0
+        for (numberPicker in numberPickers!!) {
+            tdeeResult += numberPicker!!.value * (if (numberPicker === proteinsNumberPicker) 4 else (if (numberPicker === fatNumberPicker) 9 else 4))
         }
 
-        if (modifierPercentage == 0) {
-            originalTDEE = tdeeResult;
+        if (modifierPercentage == 0.0) {
+            originalTDEE = tdeeResult
         }
 
-        textViewTdee.setText(String.valueOf(tdeeResult));
-        userChangedPickers = false;
-        isManualChange = false;
+        textViewTdee!!.text = tdeeResult.toString()
+        userChangedPickers = false
+        isManualChange = false
 
-        updateMacroPercentages();
+        updateMacroPercentages()
     }
 
-    @NonNull
-    private static TreeMap<Double, String> getDoubleStringLabelModifiersTreeMap() {
-        TreeMap<Double, String> intensityModifiers = new TreeMap<>();
-        intensityModifiers.put(-0.20, "Déficit intenso");
-        intensityModifiers.put(-0.15, "Déficit moderado-intenso");
-        intensityModifiers.put(-0.10, "Déficit moderado");
-        intensityModifiers.put(-0.05, "Déficit ligero");
-        intensityModifiers.put(0.00, "Mantenimiento");
-        intensityModifiers.put(0.05, "Volumen ligero");
-        intensityModifiers.put(0.10, "Volumen moderado");
-        intensityModifiers.put(0.15, "Volumen moderado-intenso");
-        intensityModifiers.put(0.20, "Volumen intenso");
-        return intensityModifiers;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            requireActivity().onBackPressed();
-            return true;
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            requireActivity().onBackPressed()
+            return true
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        updateNumberPickers();
+    override fun onPause() {
+        super.onPause()
+        updateNumberPickers()
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        updateNumberPickers();
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        updateNumberPickers()
     }
 
-    @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        updateNumberPickers();
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        updateNumberPickers()
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        resetActionBar();
+    override fun onStop() {
+        super.onStop()
+        resetActionBar()
     }
 
-    private void resetActionBar() {
-        ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
+    private fun resetActionBar() {
+        val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
         if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(false);
-            actionBar.setDisplayShowHomeEnabled(false);
-            actionBar.setTitle("KaiFit-Pal");
+            actionBar.setDisplayHomeAsUpEnabled(false)
+            actionBar.setDisplayShowHomeEnabled(false)
+            actionBar.title = "KaiFit-Pal"
         }
+    }
+
+    companion object {
+        private val doubleStringLabelModifiersTreeMap: TreeMap<Double, String>
+            get() {
+                val intensityModifiers = TreeMap<Double, String>()
+                intensityModifiers[-0.20] = "Déficit intenso"
+                intensityModifiers[-0.15] = "Déficit moderado-intenso"
+                intensityModifiers[-0.10] = "Déficit moderado"
+                intensityModifiers[-0.05] = "Déficit ligero"
+                intensityModifiers[0.00] = "Mantenimiento"
+                intensityModifiers[0.05] = "Volumen ligero"
+                intensityModifiers[0.10] = "Volumen moderado"
+                intensityModifiers[0.15] = "Volumen moderado-intenso"
+                intensityModifiers[0.20] = "Volumen intenso"
+                return intensityModifiers
+            }
     }
 }

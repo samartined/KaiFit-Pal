@@ -1,24 +1,25 @@
-package com.tfg.kaifit_pal.utilities;
+package com.tfg.kaifit_pal.utilities
 
-public class DataParser {
-
-    private DataParser() {
-        throw new IllegalStateException("Utility class");
+class DataParser private constructor() {
+    init {
+        throw IllegalStateException("Utility class")
     }
 
-    public static double parseDoubleUtility(String str) {
-        try {
-            return Double.parseDouble(str);
-        } catch (NumberFormatException e) {
-            return 0;
+    companion object {
+        fun parseDoubleUtility(str: String): Double {
+            return try {
+                str.toDouble()
+            } catch (e: NumberFormatException) {
+                0
+            }
         }
-    }
 
-    public static int parseIntUtility(String str) {
-        try {
-            return Integer.parseInt(str);
-        } catch (NumberFormatException e) {
-            return 0;
+        fun parseIntUtility(str: String): Int {
+            return try {
+                str.toInt()
+            } catch (e: NumberFormatException) {
+                0
+            }
         }
     }
 }

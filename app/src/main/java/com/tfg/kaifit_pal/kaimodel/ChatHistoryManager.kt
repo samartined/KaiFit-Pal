@@ -1,41 +1,31 @@
-package com.tfg.kaifit_pal.kaimodel;
+package com.tfg.kaifit_pal.kaimodel
 
-import androidx.annotation.NonNull;
+import org.json.JSONException
+import org.json.JSONObject
 
-import org.json.JSONException;
-import org.json.JSONObject;
+class ChatHistoryManager {
+    public val chatHistory: MutableList<JSONObject> = ArrayList()
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ChatHistoryManager {
-    private final List<JSONObject> chatHistory;
-
-    public ChatHistoryManager() {
-        this.chatHistory = new ArrayList<>();
+    fun getChatHistory(): List<JSONObject> {
+        return chatHistory
     }
 
-    public List<JSONObject> getChatHistory() {
-        return chatHistory;
+    fun addUserMessageToHistory(message: String) {
+        chatHistory.add(createMessage("user", message))
     }
 
-    public void addUserMessageToHistory(String message) {
-        chatHistory.add(createMessage("user", message));
+    fun addAssistantMessageToHistory(message: String) {
+        chatHistory.add(createMessage("assistant", message))
     }
 
-    public void addAssistantMessageToHistory(String message) {
-        chatHistory.add(createMessage("assistant", message));
-    }
-
-    @NonNull
-    private JSONObject createMessage(String role, String content) {
-        JSONObject message = new JSONObject();
+    private fun createMessage(role: String, content: String): JSONObject {
+        val message = JSONObject()
         try {
-            message.put("role", role);
-            message.put("content", content);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+            message.put("role", role)
+            message.put("content", content)
+        } catch (e: JSONException) {
+            throw RuntimeException(e)
         }
-        return message;
+        return message
     }
 }

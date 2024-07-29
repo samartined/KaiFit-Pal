@@ -1,207 +1,213 @@
-package com.tfg.kaifit_pal;
+package com.tfg.kaifit_pal
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
-import android.os.Bundle;
-import android.util.Log;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.tfg.kaifit_pal.views.fragments.Calculator;
-import com.tfg.kaifit_pal.views.fragments.Help;
-import com.tfg.kaifit_pal.views.fragments.Profile;
-import com.tfg.kaifit_pal.views.fragments.Settings;
-import com.tfg.kaifit_pal.views.fragments.TdeeMacros;
-import com.tfg.kaifit_pal.views.fragments.CalculateListenerInterface;
-import com.tfg.kaifit_pal.utilities.AppBarHandler;
-import com.tfg.kaifit_pal.views.fragments.kaiq.KaiQ;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
+import com.tfg.kaifit_pal.utilities.AppBarHandler
+import com.tfg.kaifit_pal.views.fragments.CalculateListenerInterface
+import com.tfg.kaifit_pal.views.fragments.Calculator
+import com.tfg.kaifit_pal.views.fragments.Help
+import com.tfg.kaifit_pal.views.fragments.Profile
+import com.tfg.kaifit_pal.views.fragments.Settings
+import com.tfg.kaifit_pal.views.fragments.TdeeMacros
+import com.tfg.kaifit_pal.views.fragments.kaiq.KaiQ
+import java.util.Arrays
 
 /**
  * MainActivity class that extends AppCompatActivity and implements Calculator.OnCalculateClickListener
  * This class is the main activity of the app, it contains the bottom navigation view and the fragments
  * that are displayed when the user clicks on the bottom navigation view.
  */
-public class MainActivity extends AppCompatActivity implements CalculateListenerInterface {
+class MainActivity : AppCompatActivity(), CalculateListenerInterface {
+    private var childFragmentTdee: TdeeMacros? = null
+    private var bottomNavigationView: BottomNavigationView? = null
+    private var fragmentManager: FragmentManager? = null
+    private var defaultFragment: Fragment? = null
+    private var currentFragment: Fragment? = null
 
-    private TdeeMacros childFragmentTdee;
-    private BottomNavigationView bottomNavigationView;
-    private FragmentManager fragmentManager;
-    private Fragment defaultFragment;
-    private Fragment currentFragment;
+    private val mainFragments: List<Class<out Fragment>> = Arrays.asList(
+        Profile::class.java,
+        Calculator::class.java,
+        KaiQ::class.java,
+        Help::class.java,
+        Settings::class.java
+    )
+    private var mainFragmentsHashMap = HashMap<String, Fragment>()
 
-    private final List<Class<? extends Fragment>> mainFragments = Arrays.asList(
-            Profile.class, Calculator.class, KaiQ.class, Help.class, Settings.class
-    );
-    private HashMap<String, Fragment> mainFragmentsHashMap = new HashMap<>();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        fragmentManager = supportFragmentManager
 
-        fragmentManager = getSupportFragmentManager();
-
-        mainFragmentsHashMap = new HashMap<>();
-        for (Class<? extends Fragment> fragmentClass : mainFragments) {
+        mainFragmentsHashMap = HashMap()
+        for (fragmentClass in mainFragments) {
             try {
-                Fragment fragment = fragmentClass.newInstance();
-                mainFragmentsHashMap.put(fragmentClass.getSimpleName(), fragment);
-            } catch (IllegalAccessException | InstantiationException e) {
+                val fragment = fragmentClass.newInstance()
+                mainFragmentsHashMap[fragmentClass.simpleName] = fragment
+            } catch (e: IllegalAccessException) {
                 Log.e(
-                        "MainActivity", "Error creating fragment: " + fragmentClass.getSimpleName(), e
-                );
+                    "MainActivity", "Error creating fragment: " + fragmentClass.simpleName, e
+                )
+            } catch (e: InstantiationException) {
+                Log.e(
+                    "MainActivity", "Error creating fragment: " + fragmentClass.simpleName, e
+                )
             }
         }
 
         AppBarHandler.setUpActionBar(
-                this, "KaiFit-Pal", false, false
-        );
+            this, "KaiFit-Pal", false, false
+        )
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
 
-        addDefaultFragment(savedInstanceState);
+        addDefaultFragment(savedInstanceState)
 
-        fragmentsExchangeStack();
+        fragmentsExchangeStack()
     }
 
-    private void fragmentsExchangeStack() {
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+    private fun fragmentsExchangeStack() {
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
 
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            Fragment selectedFragment = null;
+        bottomNavigationView?.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
+            var selectedFragment: Fragment? = null
+            val itemId = item.itemId
+            var fragmentTag = ""
 
-            int itemId = item.getItemId();
-            String fragmentTag = "";
-
-            if (itemId == R.id.user_profile_menu_option) {
-                fragmentTag = "Profile";
+            fragmentTag = if (itemId == R.id.user_profile_menu_option) {
+                "Profile"
             } else if (itemId == R.id.calculator_menu_option) {
-                fragmentTag = "Calculator";
+                "Calculator"
             } else if (itemId == R.id.assistant_menu_option) {
-                fragmentTag = "KaiQ";
+                "KaiQ"
             } else if (itemId == R.id.help_info_menu_option) {
-                fragmentTag = "Help";
+                "Help"
             } else if (itemId == R.id.settings_menu_option) {
-                fragmentTag = "Settings";
+                "Settings"
             } else {
-                Log.e("MainActivity", "Invalid itemId: " + itemId);
-                return false;
+                Log.e("MainActivity", "Invalid itemId: $itemId")
+                return@OnItemSelectedListener false
             }
 
-            selectedFragment = mainFragmentsHashMap.get(fragmentTag);
-            assert selectedFragment != null;
-            if (currentFragment instanceof TdeeMacros) {
-                AppBarHandler.resetActionBar(this);
+            selectedFragment = mainFragmentsHashMap[fragmentTag]
+            checkNotNull(selectedFragment)
+            if (currentFragment is TdeeMacros) {
+                AppBarHandler.resetActionBar(this)
             }
 
-            if (selectedFragment.isAdded()) {
-                fragmentManager
-                        .beginTransaction()
-                        .hide(currentFragment)
+            if (selectedFragment.isAdded) {
+                fragmentManager?.let { fm ->
+                    fm.beginTransaction()
+                        .hide(currentFragment!!)
                         .show(selectedFragment)
                         .addToBackStack(fragmentTag)
-                        .commit();
+                        .commit()
+                }
             } else {
-                fragmentManager
-                        .beginTransaction()
-                        .hide(currentFragment)
-                        .add(R.id.fragment_container_view, selectedFragment)
+                fragmentManager?.let { fm ->
+                    fm.beginTransaction()
+                        .hide(currentFragment!!)
+                        .add(
+                            R.id.fragment_container_view,
+                            selectedFragment!!
+                        )
                         .addToBackStack(fragmentTag)
-                        .commit();
+                        .commit()
+                }
             }
-            currentFragment = selectedFragment;
-            setAppBar();
-            return true;
-        });
+
+            currentFragment = selectedFragment
+            setAppBar()
+            true
+        })
     }
 
-    public void setAppBar() {
-        if (currentFragment instanceof Profile) {
-            AppBarHandler.setTitle(this, "Perfil");
-        } else if (currentFragment instanceof Calculator) {
-            AppBarHandler.setTitle(this, "KaiFit-Pal");
-        } else if (currentFragment instanceof KaiQ) {
-            AppBarHandler.setTitle(this, "Kai-Q");
-        } else if (currentFragment instanceof Help) {
-            AppBarHandler.setTitle(this, "FAQs");
-        } else if (currentFragment instanceof Settings) {
-            AppBarHandler.setTitle(this, "Ajustes");
+    fun setAppBar() {
+        if (currentFragment is Profile) {
+            AppBarHandler.setTitle(this, "Perfil")
+        } else if (currentFragment is Calculator) {
+            AppBarHandler.setTitle(this, "KaiFit-Pal")
+        } else if (currentFragment is KaiQ) {
+            AppBarHandler.setTitle(this, "Kai-Q")
+        } else if (currentFragment is Help) {
+            AppBarHandler.setTitle(this, "FAQs")
+        } else if (currentFragment is Settings) {
+            AppBarHandler.setTitle(this, "Ajustes")
         }
     }
 
-    private void addDefaultFragment(Bundle savedInstanceState) {
+    private fun addDefaultFragment(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
-            defaultFragment = mainFragmentsHashMap.get("Calculator");
-            currentFragment = defaultFragment;
+            defaultFragment = mainFragmentsHashMap["Calculator"]
+            currentFragment = defaultFragment
 
-            fragmentManager.beginTransaction().add(
-                    R.id.fragment_container_view, defaultFragment, "Calculator"
-            ).commit();
+            fragmentManager!!.beginTransaction().add(
+                R.id.fragment_container_view, defaultFragment!!, "Calculator"
+            ).commit()
 
-            bottomNavigationView = findViewById(R.id.bottom_navigation);
-            bottomNavigationView.setSelectedItemId(R.id.calculator_menu_option);
+            bottomNavigationView = findViewById(R.id.bottom_navigation)
+            bottomNavigationView?.setSelectedItemId(R.id.calculator_menu_option)
         }
     }
 
-    @SuppressWarnings("MissingSuperCall")
-    @Override
-    public void onBackPressed() {
-        if (currentFragment instanceof Calculator) {
-            finish();
-        } else if (currentFragment instanceof TdeeMacros) {
-            returnToCalculator();
+    override fun onBackPressed() {
+        if (currentFragment is Calculator) {
+            finish()
+        } else if (currentFragment is TdeeMacros) {
+            returnToCalculator()
         } else {
-            returnToPreviousFragmentOrCalculator();
+            returnToPreviousFragmentOrCalculator()
         }
     }
 
-    private void returnToCalculator() {
-        fragmentManager.popBackStackImmediate();
-        bottomNavigationView.setSelectedItemId(R.id.calculator_menu_option);
+    private fun returnToCalculator() {
+        fragmentManager!!.popBackStackImmediate()
+        bottomNavigationView!!.selectedItemId = R.id.calculator_menu_option
     }
 
-    private void returnToPreviousFragmentOrCalculator() {
-        int index = fragmentManager.getBackStackEntryCount() - 2;
+    private fun returnToPreviousFragmentOrCalculator() {
+        val index = fragmentManager!!.backStackEntryCount - 2
         if (index >= 0 && isPreviousFragmentTdeeMacros(index)) {
-            returnToTdeeMacros();
+            returnToTdeeMacros()
         } else {
-            returnToDefaultFragment();
+            returnToDefaultFragment()
         }
     }
 
-    private boolean isPreviousFragmentTdeeMacros(int index) {
-        FragmentManager.BackStackEntry backEntry = fragmentManager.getBackStackEntryAt(index);
-        String tag = backEntry.getName();
-        return tag != null && tag.equals("TdeeMacros");
+    private fun isPreviousFragmentTdeeMacros(index: Int): Boolean {
+        val backEntry = fragmentManager!!.getBackStackEntryAt(index)
+        val tag = backEntry.name
+        return tag != null && tag == "TdeeMacros"
     }
 
-    private void returnToTdeeMacros() {
-        fragmentManager.popBackStackImmediate();
-        bottomNavigationView.getMenu().findItem(R.id.calculator_menu_option).setChecked(false);
-        currentFragment = childFragmentTdee;
+    private fun returnToTdeeMacros() {
+        fragmentManager!!.popBackStackImmediate()
+        bottomNavigationView!!.menu.findItem(R.id.calculator_menu_option).setChecked(false)
+        currentFragment = childFragmentTdee
     }
 
-    private void returnToDefaultFragment() {
-        fragmentManager.beginTransaction().hide(currentFragment).show(defaultFragment).commit();
-        currentFragment = defaultFragment;
-        bottomNavigationView.setSelectedItemId(R.id.calculator_menu_option);
+    private fun returnToDefaultFragment() {
+        fragmentManager!!.beginTransaction().hide(currentFragment!!).show(defaultFragment!!)
+            .commit()
+        currentFragment = defaultFragment
+        bottomNavigationView!!.selectedItemId = R.id.calculator_menu_option
     }
 
-    @Override
-    public void onCalculateClick(int tdeeResult) {
-        childFragmentTdee = new TdeeMacros();
-        Bundle bundle = new Bundle();
-        bundle.putInt("tdeeResult", tdeeResult);
-        childFragmentTdee.setArguments(bundle);
+    override fun onCalculateClick(tdeeResult: Int) {
+        childFragmentTdee = TdeeMacros()
+        val bundle = Bundle()
+        bundle.putInt("tdeeResult", tdeeResult)
+        childFragmentTdee!!.arguments = bundle
 
-        fragmentManager.beginTransaction().hide(currentFragment).add(
-                R.id.fragment_container_view, childFragmentTdee
-        ).addToBackStack("TdeeMacros").commit();
-        currentFragment = childFragmentTdee;
+        fragmentManager!!.beginTransaction().hide(currentFragment!!).add(
+            R.id.fragment_container_view, childFragmentTdee!!
+        ).addToBackStack("TdeeMacros").commit()
+        currentFragment = childFragmentTdee
     }
 }

@@ -1,6 +1,5 @@
-package com.tfg.kaifit_pal.views.fragments;
+package com.tfg.kaifit_pal.views.fragments
 
-public interface CalculateListenerInterface {
-
-    void onCalculateClick(int tdeeResult);
+interface CalculateListenerInterface {
+    fun onCalculateClick(tdeeResult: Int)
 }

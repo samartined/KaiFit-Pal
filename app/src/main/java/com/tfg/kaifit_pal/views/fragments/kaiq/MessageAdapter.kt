@@ -1,63 +1,44 @@
-package com.tfg.kaifit_pal.views.fragments.kaiq;
+package com.tfg.kaifit_pal.views.fragments.kaiq
 
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.tfg.kaifit_pal.R
+import com.tfg.kaifit_pal.views.fragments.kaiq.MessageAdapter.MyViewHolder
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+class MessageAdapter(var messageList: List<MessageController>?) :
+    RecyclerView.Adapter<MyViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        val KaiQChatView = View.inflate(parent.context, R.layout.chat_item, null)
 
-import com.tfg.kaifit_pal.R;
-
-import java.util.List;
-
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHolder> {
-    List<MessageController> messageList;
-
-    public MessageAdapter(List<MessageController> messageList) {
-        this.messageList = messageList;
+        return MyViewHolder(KaiQChatView)
     }
 
-    @NonNull
-    @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View KaiQChatView = View.inflate(parent.getContext(), R.layout.chat_item, null);
-
-        return new MyViewHolder(KaiQChatView);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        MessageController message = messageList.get(position);
-        if (message.getSentBy().equals(MessageController.SENT_BY_USER)) {
-            holder.kaiQChatView.setVisibility(View.GONE);
-            holder.userChatView.setVisibility(View.VISIBLE);
-            holder.userChatText.setText(message.getMessage());
-            holder.userChatText.setTextIsSelectable(true);
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        val message = messageList!![position]
+        if (message.getSentBy() == MessageController.Companion.SENT_BY_USER) {
+            holder.kaiQChatView.visibility = View.GONE
+            holder.userChatView.visibility = View.VISIBLE
+            holder.userChatText.text = message.getMessage()
+            holder.userChatText.setTextIsSelectable(true)
         } else {
-            holder.userChatView.setVisibility(View.GONE);
-            holder.kaiQChatView.setVisibility(View.VISIBLE);
-            holder.kaiQChatText.setText(message.getMessage());
-            holder.kaiQChatText.setTextIsSelectable(true);
+            holder.userChatView.visibility = View.GONE
+            holder.kaiQChatView.visibility = View.VISIBLE
+            holder.kaiQChatText.text = message.getMessage()
+            holder.kaiQChatText.setTextIsSelectable(true)
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return messageList.size();
+    override fun getItemCount(): Int {
+        return messageList!!.size
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout kaiQChatView, userChatView;
-        TextView kaiQChatText, userChatText;
-
-        public MyViewHolder(@NonNull View itemView) {
-            super(itemView);
-            kaiQChatView = itemView.findViewById(R.id.left_chat_view);
-            userChatView = itemView.findViewById(R.id.right_chat_view);
-            kaiQChatText = itemView.findViewById(R.id.left_chat_textview);
-            userChatText = itemView.findViewById(R.id.right_chat_textview);
-        }
+    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var kaiQChatView: LinearLayout = itemView.findViewById(R.id.left_chat_view)
+        var userChatView: LinearLayout = itemView.findViewById(R.id.right_chat_view)
+        var kaiQChatText: TextView = itemView.findViewById(R.id.left_chat_textview)
+        var userChatText: TextView = itemView.findViewById(R.id.right_chat_textview)
     }
 }
