@@ -308,6 +308,86 @@ class ProfileRepositoryTest {
     }
 
     @Test
+    fun saveOfManWithNaNHipThrowsAndKeepsThePreviousProfile() = runTest {
+        val repository = newRepository()
+        val previous = repository.saveMan()
+        val manWithNaNHip = man.copy(hipCm = Double.NaN)
+
+        try {
+            repository.saveWithDefaultPlan(manWithNaNHip, ActivityLevel.MODERATE, GoalModifier(-15))
+            fail("IllegalArgumentException expected")
+        } catch (e: IllegalArgumentException) {
+            assertNotNull(e.message)
+        }
+
+        assertEquals(previous, repository.profile.first())
+    }
+
+    @Test
+    fun saveOfManWithInfiniteHipThrowsAndWritesNothing() = runTest {
+        val dataStore = newDataStore()
+        val repository = ProfileRepository(dataStore, clock)
+        val manWithInfiniteHip = man.copy(hipCm = Double.POSITIVE_INFINITY)
+
+        try {
+            repository.saveWithDefaultPlan(manWithInfiniteHip, ActivityLevel.MODERATE, GoalModifier(-15))
+            fail("IllegalArgumentException expected")
+        } catch (e: IllegalArgumentException) {
+            assertNotNull(e.message)
+        }
+
+        assertEquals(emptyMap<Preferences.Key<*>, Any>(), dataStore.data.first().asMap())
+    }
+
+    @Test
+    fun saveWithNaNBmrThrowsAndWritesNothing() = runTest {
+        val dataStore = newDataStore()
+        val repository = ProfileRepository(dataStore, clock)
+        val tdee = tdeeOf(man, ActivityLevel.MODERATE).copy(bmrKcal = Double.NaN)
+        val macroPlan = MacroPlan.forGoal(GoalModifier(-15).applyTo(2819), Goal.DEFICIT)
+
+        try {
+            repository.save(man, ActivityLevel.MODERATE, tdee, GoalModifier(-15), macroPlan)
+            fail("IllegalArgumentException expected")
+        } catch (e: IllegalArgumentException) {
+            assertNotNull(e.message)
+        }
+
+        assertEquals(emptyMap<Preferences.Key<*>, Any>(), dataStore.data.first().asMap())
+    }
+
+    @Test
+    fun saveWithNaNBodyFatThrowsAndWritesNothing() = runTest {
+        val dataStore = newDataStore()
+        val repository = ProfileRepository(dataStore, clock)
+        val tdee = tdeeOf(man, ActivityLevel.MODERATE).copy(bodyFatPercent = Double.NaN)
+        val macroPlan = MacroPlan.forGoal(GoalModifier(-15).applyTo(2819), Goal.DEFICIT)
+
+        try {
+            repository.save(man, ActivityLevel.MODERATE, tdee, GoalModifier(-15), macroPlan)
+            fail("IllegalArgumentException expected")
+        } catch (e: IllegalArgumentException) {
+            assertNotNull(e.message)
+        }
+
+        assertEquals(emptyMap<Preferences.Key<*>, Any>(), dataStore.data.first().asMap())
+    }
+
+    @Test
+    fun manWithFiniteHipRoundTrips() = runTest {
+        val repository = newRepository()
+
+        val saved = repository.saveWithDefaultPlan(man.copy(hipCm = 95.0), ActivityLevel.MODERATE, GoalModifier(-15))
+        val read = repository.profile.first()
+
+        assertEquals(saved, read)
+        assertEquals(95.0, read!!.measurements.hipCm)
+        assertEquals(TdeeMethod.KATCH_MCARDLE, read.tdee.method)
+        assertEquals(2819, read.tdee.tdeeKcal)
+        assertEquals(2396, read.macroPlan.targetKcal)
+    }
+
+    @Test
     fun saveStoresTheDocumentedKeys() = runTest {
         val dataStore = newDataStore()
         ProfileRepository(dataStore, clock).saveMan()

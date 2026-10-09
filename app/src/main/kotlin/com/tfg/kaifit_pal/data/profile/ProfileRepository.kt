@@ -55,8 +55,10 @@ class ProfileRepository(
      * of an older profile never survives a save without it.
      *
      * @throws IllegalArgumentException before writing anything, if [measurements] are not valid,
-     *   if the target of [macroPlan] is not [goalModifier] applied to the TDEE, or if [tdee] has a
-     *   body fat percentage without using Katch-McArdle or the other way round.
+     *   if any number to store is `NaN` or infinite (also the hip of a man, the BMR and the body
+     *   fat percentage, which validation does not check), if the target of [macroPlan] is not
+     *   [goalModifier] applied to the TDEE, or if [tdee] has a body fat percentage without using
+     *   Katch-McArdle or the other way round.
      */
     suspend fun save(
         measurements: BodyMeasurements,
@@ -67,6 +69,9 @@ class ProfileRepository(
     ): SavedProfile {
         require(measurements.validate().isEmpty()) {
             "Cannot save invalid measurements: ${measurements.validate()}"
+        }
+        require(allStoredDoublesFinite(measurements, tdee)) {
+            "Cannot save a value that is NaN or infinite: $measurements, $tdee"
         }
         require(targetMatches(tdee, goalModifier, macroPlan)) {
             "Target ${macroPlan.targetKcal} kcal is not $goalModifier applied to ${tdee.tdeeKcal} kcal"
@@ -138,16 +143,15 @@ class ProfileRepository(
         val carbGrams = prefs.getOrNull(ProfileKeys.CARB_GRAMS) ?: return null
         val savedAtMillis = prefs.getOrNull(ProfileKeys.SAVED_AT_EPOCH_MILLIS) ?: return null
 
-        val doubles = listOfNotNull(heightCm, weightKg, neckCm, waistCm, hipCm, bmrKcal, bodyFatPercent)
-        if (doubles.any { !it.isFinite() }) return null
+        val measurements = BodyMeasurements(sex, ageYears, heightCm, weightKg, neckCm, waistCm, hipCm)
+        val tdee = TdeeResult(tdeeKcal, bmrKcal, method, bodyFatPercent)
+        if (!allStoredDoublesFinite(measurements, tdee)) return null
 
         val (goalModifier, macroPlan) = try {
             GoalModifier(goalModifierPercent) to MacroPlan(targetKcal, proteinGrams, fatGrams, carbGrams)
         } catch (e: IllegalArgumentException) {
             return null
         }
-        val measurements = BodyMeasurements(sex, ageYears, heightCm, weightKg, neckCm, waistCm, hipCm)
-        val tdee = TdeeResult(tdeeKcal, bmrKcal, method, bodyFatPercent)
         if (measurements.validate().isNotEmpty()) return null
         if (!targetMatches(tdee, goalModifier, macroPlan)) return null
         if (!tdee.hasBodyFatOnlyWithKatchMcArdle()) return null
@@ -188,6 +192,23 @@ internal object ProfileKeys {
     val CARB_GRAMS = intPreferencesKey("carb_g")
     val SAVED_AT_EPOCH_MILLIS = longPreferencesKey("saved_at_epoch_millis")
 }
+
+/**
+ * Whether every `Double` that a profile stores is finite: height, weight, the circumferences that
+ * are present (the hip too, whatever the sex) and the BMR and body fat percentage of [tdee].
+ *
+ * Saving and reading share this check, so they never disagree about which numbers can be stored.
+ */
+private fun allStoredDoublesFinite(measurements: BodyMeasurements, tdee: TdeeResult): Boolean =
+    listOfNotNull(
+        measurements.heightCm,
+        measurements.weightKg,
+        measurements.neckCm,
+        measurements.waistCm,
+        measurements.hipCm,
+        tdee.bmrKcal,
+        tdee.bodyFatPercent,
+    ).all { it.isFinite() }
 
 /** Whether the macro target is the goal modifier applied to the TDEE. */
 private fun targetMatches(tdee: TdeeResult, goalModifier: GoalModifier, macroPlan: MacroPlan): Boolean =
