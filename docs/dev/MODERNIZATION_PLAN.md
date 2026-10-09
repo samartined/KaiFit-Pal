@@ -1,0 +1,171 @@
+# KaiFit-Pal · Plan de modernización (Kotlin + Compose + asistente local)
+
+Plan técnico de la reescritura de KaiFit-Pal. El trabajo se hace en la rama `feat/ui-modernization`; la versión original (Java + XML) se conserva en la rama `backup/original-java` y en el tag anotado `v1.0.0`.
+
+## Contexto
+
+KaiFit-Pal es la app Android del TFG: calculadora de TDEE (Katch-McArdle) y % de grasa corporal (fórmula US Navy, hombre/mujer), reparto de macros ajustable y un chat "Kai-Q" que hoy llama a la API de OpenAI (gpt-3.5-turbo). Está escrita en Java + XML sobre `Theme.AppCompat` con layouts de márgenes absolutos, tres de cinco pestañas vacías (Perfil, Ayuda, Ajustes), cero tests reales y 20 bugs confirmados en la auditoría (3 crashes, un reparto de macros que suma 105 %, etiquetas de objetivo erróneas, build que falla sin `local.properties`, etc.).
+
+### Decisiones tomadas
+
+| Decisión | Elección |
+|---|---|
+| Stack | **Kotlin + Jetpack Compose + Material 3** (reescritura nativa; se mantiene `applicationId com.tfg.kaifit_pal`) |
+| Asistente | **Modelo local en el dispositivo: LiteRT-LM 0.18.0 + Gemma 4 E2B** (2,58 GB, Apache-2.0). OpenAI se elimina por completo |
+| Pestañas | Las cinco con contenido real: Perfil (datos persistidos), Calculadora, Resultados, Kai-Q, Ayuda (FAQ), Ajustes |
+| Ramas | Trabajo: `feat/ui-modernization` (desde `main`). Respaldo: `backup/original-java` + tag anotado `v1.0.0` en `50e5e23` |
+| Identidad visual | **No en este pase.** Material 3 ya aporta el sistema de diseño; si tras ver capturas reales se quiere una identidad más propia, se hará un pase de diseño aparte |
+
+### Versiones verificadas
+
+Versiones verificadas en Google Maven / Gradle el 2026-10-09: AGP 9.4.1 · Gradle 9.8.1 · Kotlin 2.4.21 · Compose BOM 2026.09.00 (material3 1.4.0, ui 1.12.1; exige compileSdk 37) · navigation-compose 2.10.2 · `com.google.ai.edge.litertlm:litertlm-android:0.18.0` (API Kotlin marcada "Stable" en la doc oficial).
+
+---
+
+## Diagnóstico resumido del código actual (para citar en el historial)
+
+Top 10 (verificado línea a línea en `main` 50e5e23):
+
+1. `MainActivity.java:137-148` + `:105,:113` — tras recrear la Activity (modo oscuro, fuente, muerte de proceso) `currentFragment` queda `null` → `hide(null)` → NPE al tocar cualquier pestaña; además `:49-59` crea fragments duplicados por reflexión.
+2. `MainActivity.java:151-161` — `onBackPressed` deprecado y pila de back que crece en cada pestaña (`:107,:114`).
+3. `Calculator.java:64-78` + `DataParser.java:13,21` + `CalculatorLogic.java:42-60` — sin validación: campos vacíos → `log10(0)` → TDEE 0 o `Integer.MIN_VALUE` → crash en `TdeeMacros.java:130` (`setMaxValue` negativo).
+4. `CalculatorLogic.java:7,18` — la edad se pide y nunca se usa; no hay fórmula alternativa (Mifflin-St Jeor) cuando faltan medidas.
+5. `TdeeMacros.java:158-178` — acumulación de `±0.05` en `double`: a −15 % muestra "Déficit intenso" (floorEntry cae en −0.20).
+6. `MacrosManager.java:14` — Mantenimiento `{0.35, 0.25, 0.45}` suma **105 %**.
+7. `TdeeMacros.java:216-234, 260-291` — editar un picker redefine el TDEE y pisa `originalTDEE`; hacks en `onPause/onSaveInstanceState`; manipula la ActionBar de la Activity.
+8. `GPTApiCaller.java:43` — prompt de sistema enviado con rol `assistant`; `:35` sin timeouts; `:89` vuelca el cuerpo de error al chat. (Desaparece con el cambio a modelo local.)
+9. `GPTApiCaller.java:30-33,69,83` → `KaiQ.java:90` — callback en hilo de red sobre un Fragment posiblemente desacoplado → `IllegalStateException`; `MessageAdapter.java:25` infla sin parent (burbujas del usuario no se alinean a la derecha).
+10. `app/build.gradle.kts:21` — `properties.load(...)` sin comprobar existencia → el build falla en cualquier clon limpio/CI; wrapper en `8.8-rc-1`; `dataBinding` activado sin uso.
+
+Otros: `values-night/themes.xml` vacío con parent Light (sin modo oscuro real); 21 `textSize` en `dp`; cero `contentDescription`; textos hardcodeados (strings.xml solo tiene `app_name`); `fragment_kai_q.xml:9` RecyclerView a 584dp fijos; ficheros basura `hqq`, `ot`, `taqqq`, `tatq` en la raíz; `.idea/` parcialmente versionado; README con enlace erróneo "gptapi.com". No hay ninguna clave API en el historial de git (142 commits revisados).
+
+---
+
+## Arquitectura objetivo (proporcionada a una app pequeña, sin Hilt ni Room)
+
+```
+app/src/main/kotlin/com/tfg/kaifit_pal/
+├── KaiFitApp.kt                 Application: AppContainer (DI manual, lazy)
+├── MainActivity.kt              setContent { KaiFitTheme { KaiFitNavHost() } }, enableEdgeToEdge
+├── domain/                      Kotlin puro, sin Android (100 % testeable)
+│   ├── BodyMeasurements.kt      data class + validate(): List<ValidationError>; Sex, ActivityLevel
+│   ├── BodyFatCalculator.kt     usNavy(m): Double?  (null si faltan datos o log<=0)
+│   ├── TdeeCalculator.kt        Katch-McArdle si hay % graso; si no, Mifflin-St Jeor (usa edad) → TdeeResult(method)
+│   ├── Goal.kt                  Goal(DEFICIT 35/25/40, MAINTENANCE 30/25/45, SURPLUS 25/20/55), GoalIntensity
+│   ├── GoalModifier.kt          value class Int (−20..+20, paso 5): adiós al bug de coma flotante
+│   └── MacroPlan.kt             gramos desde kcal; withProteinGrams/withFatGrams (carbs = resto)
+├── data/
+│   ├── profile/ProfileRepository.kt       DataStore Preferences: medidas, % graso, TDEE, GoalModifier, macros, fecha
+│   ├── settings/SettingsRepository.kt     tema (system/light/dark), dynamic color, backend (CPU/GPU), solo-WiFi
+│   ├── llm/ModelManager.kt                estado del modelo: NotDownloaded/Downloading(p)/Downloaded/Error; DownloadManager del sistema → getExternalFilesDir("models"); importación manual (SAF) como alternativa
+│   └── llm/LlmRepository.kt               LiteRT-LM: Engine único (app-scoped, lazy, close() en onTrimMemory), createConversation(systemInstruction = perfil), sendMessageAsync(): Flow<Message>
+└── ui/
+    ├── theme/  Color.kt (esquemas claro/oscuro, tokens abajo), Theme.kt (dynamicColor opcional ≥ API 31), Type.kt, Shape.kt
+    ├── navigation/ KaiFitNavHost.kt + rutas tipadas (kotlinx.serialization): Profile, Calculator, Results(tdee, bf?, method), Assistant, Help, Settings
+    ├── components/ NumberField (TextField numérico con sufijo de unidad y coma/punto), SegmentedSex, Stepper, MacroCard, MessageBubble, ModelStatusCard
+    ├── calculator/  CalculatorScreen.kt + CalculatorViewModel.kt (StateFlow<CalculatorUiState>, validación en vivo, % graso en vivo)
+    ├── results/     ResultsScreen.kt + ResultsViewModel.kt (GoalModifier, MacroPlan, "Guardar en perfil", "Preguntar a Kai-Q")
+    ├── assistant/   AssistantScreen.kt + AssistantViewModel.kt (máquina de estados modelo→chat, streaming, stop, nueva conversación, prompts sugeridos)
+    ├── profile/     ProfileScreen.kt + ProfileViewModel.kt
+    ├── help/        HelpScreen.kt (FAQ desplegable, contenido en strings.xml)
+    └── settings/    SettingsScreen.kt + SettingsViewModel.kt (tema, color dinámico, modelo: descargar/borrar/espacio, backend, acerca de)
+```
+
+Reglas transversales: todo texto en `res/values/strings.xml` (español por defecto; `values-en` opcional al final); tamaños en `sp`/tokens de tipografía; `contentDescription` en iconos; mínimo táctil 48 dp; edge-to-edge con insets; `Scaffold` + `NavigationBar` M3 con cinco destinos; Results es destino de detalle con flecha atrás (`TopAppBar`).
+
+### Tokens Material 3 (marca verde; contrastes AA calculados)
+
+Claro: `primary #3B7D2C`, `onPrimary #FFFFFF`, `primaryContainer #B2EDB0` (verde de marca), `onPrimaryContainer #0A2A05`, `secondary #54634D`, `secondaryContainer #D8E7CB`, `tertiary #1F6A6B` (acento del asistente), `tertiaryContainer #A8EFF0`, `error #BA1A1A`, `background/surface #F5F5EE` (beige de marca), `onSurface #1B1C18`, `surfaceVariant #E0E4D6`, `onSurfaceVariant #43483E`, `outline #73796E`, contenedores `#FFFFFF / #EFEFE8 / #E9E9E2 / #E3E4DC / #DDDED6`.
+
+Oscuro: `primary #9FD88A`, `onPrimary #0B3900`, `primaryContainer #245F17`, `onPrimaryContainer #B2EDB0`, `secondary #BCCBB1`, `secondaryContainer #3D4B36`, `tertiary #86D3D4`, `tertiaryContainer #004F51`, `error #FFB4AB`, `background/surface #121410`, `onSurface #E3E3DC`, `surfaceVariant #43483E`, `onSurfaceVariant #C3C8BC`, `outline #8D9387`, contenedores `#0D0F0B / #1B1C18 / #1F201C / #292B26 / #343631`.
+
+El verde oscuro original `#5A9E47` (3,27:1 sobre blanco) queda solo como token decorativo `brandGreen`.
+
+Tipografía: escala M3 por defecto (fuente del sistema); TDEE en `displayMedium` con cifras tabulares. Formas: 4/8/12/16/28 dp (cards 12, hero 16, diálogos 28, botones stepper full). Espaciado: 4/8/12/16/24/32 dp, padding horizontal 16 dp.
+
+### Pantallas
+
+- **Calculadora**: `SegmentedButton` Hombre/Mujer · stepper edad 18–90 · campos altura/peso/cuello/cintura/cadera (`OutlinedTextField`, teclado decimal, sufijo cm/kg, acepta coma y punto, error por campo) · cadera solo visible si Mujer · card "% graso" en vivo con nota del método (US Navy o "introduce cuello y cintura") · `ExposedDropdownMenu` nivel de actividad (etiquetas coherentes: 1,375 / 1,725) · botón Calcular habilitado solo con datos válidos.
+- **Resultados**: hero card con TDEE (kcal/día), método usado y % graso · selector de objetivo: `Slider` discreto −20..+20 (paso 5) con chip de etiqueta ("Déficit ligero"...) y kcal resultantes · tres `MacroCard` (proteína, grasa, carbohidratos) con gramos, % y `Slider` en proteína y grasa (carbohidratos se derivan; total siempre = objetivo ±2 kcal) · botones "Guardar en perfil" y "Preguntar a Kai-Q".
+- **Kai-Q**: estados → `ModelStatusCard` (sin modelo: explica 2,6 GB, RAM recomendada ≥ 6 GB vía `ActivityManager.memoryInfo`, botón Descargar / Importar archivo; descargando: progreso; cargando motor: hasta ~10 s) → chat (`LazyColumn`, burbujas, texto en streaming, botón detener, "Nueva conversación", prompts sugeridos en estado vacío, aviso "no sustituye consejo médico"). `systemInstruction` = persona Kai-Q + datos del perfil si existen (sexo, edad, peso, % graso, TDEE, objetivo, macros).
+- **Perfil**: resumen de última medición y resultado guardados; "Recalcular" abre la calculadora precargada; "Borrar datos".
+- **Ayuda**: FAQ con `ExpandableCard`: medir cintura/cuello/cadera (textos que hoy viven en `Calculator.java:92-108`, corregidos), qué es TDEE, qué fórmulas se usan, cómo funciona el asistente sin conexión, privacidad.
+- **Ajustes**: tema (sistema/claro/oscuro), color dinámico (≥ Android 12), modelo (estado, tamaño, borrar, backend CPU/GPU, solo WiFi), acerca de (versión, licencias Gemma/LiteRT-LM).
+
+---
+
+## Fases de implementación (commits pequeños y legibles)
+
+### Fase 0 — Ramas e higiene del repo
+- `git branch backup/original-java 50e5e23` + `git tag -a v1.0.0 50e5e23 -m "Original TFG version (Java + XML)"`; push de rama y tag.
+- `git checkout -b feat/ui-modernization 50e5e23` (`main` en ese momento).
+- Borrar `hqq`, `ot`, `taqqq`, `tatq`; dejar `.idea/` fuera del control de versiones (una única regla `/.idea/` en `.gitignore` en lugar de las entradas parciales, `git rm -r --cached .idea`); README: sección "Estado: en modernización" con enlace a la rama de respaldo y al tag; este plan técnico en `docs/dev/MODERNIZATION_PLAN.md`.
+- Commits: `chore(repo): remove stray git log dumps`, `chore(repo): stop tracking IDE settings`, `docs(readme): add modernization status note`, `docs(dev): add technical modernization plan`.
+
+### Fase 1 — Toolchain y esqueleto Compose (sustituye la UI Java)
+- `gradle/wrapper/gradle-wrapper.properties` → Gradle 9.8.1 (estable). `gradle/libs.versions.toml` nuevo (version catalog): agp 9.4.1, kotlin 2.4.21, compose-bom 2026.09.00, navigation 2.10.2, lifecycle (última estable), datastore-preferences (última estable), kotlinx-serialization, litertlm 0.18.0, junit4, robolectric/compose-ui-test.
+- `build.gradle.kts` raíz y `app/build.gradle.kts` reescritos: plugins `com.android.application`, `org.jetbrains.kotlin.plugin.compose`, serialization (en AGP 9 Kotlin viene integrado; verificar si hace falta `kotlin-android`); `compileSdk 37`, `targetSdk 36`, `minSdk 26` (canales de notificación para la descarga y `java.time`; LiteRT-LM exige ≥ 24), JVM 17, `buildFeatures.compose = true`, sin `dataBinding`/`viewBinding`, sin OkHttp ni `BuildConfig.AKy_URL`; `isMinifyEnabled = true` en release con reglas keep para LiteRT-LM si hacen falta.
+- `AndroidManifest.xml`: `MainActivity` Kotlin, sin bloqueo de orientación, `windowSoftInputMode=adjustResize`, `<uses-native-library libOpenCL.so / libvndksupport.so required=false>` (GPU), tema M3 para splash (`core-splashscreen`, ya declarado).
+- Eliminar `app/src/main/java/**` (Java) y layouts/menús/drawables de botones XML; conservar iconos vectoriales reutilizables y el icono adaptativo.
+- Crear `KaiFitApp`, `MainActivity`, `ui/theme/*`, `ui/navigation/*`, `NavigationBar` con cinco destinos y pantallas placeholder M3.
+- `local.properties.example` ya no es necesario (no hay claves); documentar en README.
+- Commits: `build: migrate to AGP 9.4 / Kotlin 2.4 / Compose BOM 2026.09 with version catalog`, `feat(ui): Material 3 theme, navigation scaffold and placeholder screens`.
+
+### Fase 2 — Dominio puro + tests
+- `domain/*` según el modelo de arriba. Redondeo con `roundToInt()` (nunca truncar).
+- `app/src/test/.../domain/*Test.kt` (JUnit 4) con valores de referencia calculados:
+  - US Navy hombre 180/85/38 → **16,15 %**; mujer 165/70/33/95 → **24,56 %**; hombre 175/80/40 → 10,98 %; mujer 170/75/34/100 → 27,97 %; cintura ≤ cuello, ceros o mujer sin cadera → `null`.
+  - Katch-McArdle 80 kg al 20 %, factor 1,55 → BMR 1752,4 → **2716 kcal**.
+  - Mifflin-St Jeor hombre 30 a/180 cm/80 kg → **1780** BMR → ×1,55 = 2759; mujer 30/165/60 → 1320,25 → ×1,2 = 1584; selección de método según datos disponibles.
+  - Macros a 2500 kcal: Mantenimiento 188/69/282 g (2501 kcal), Déficit 219/69/251, Superávit 156/56/343; cada `Goal` suma 1,00; `withProteinGrams(250)` → carbs 220 g; carbs nunca negativos.
+  - `GoalModifier` desde 2716: −20→2173, −15→2309 ("Déficit moderado-intenso"), −10→2444, −5→2580, 0→2716, +5→2852, +10→2988, +15→3123, +20→3259; clamp en ±20; `GoalModifier(7)` rechazado.
+- Commit: `feat(domain): pure Kotlin body-fat/TDEE/macro model with reference tests`.
+
+### Fase 3 — Datos: perfil y ajustes
+- `ProfileRepository` / `SettingsRepository` sobre DataStore Preferences (claves tipadas, `Flow`s). Test con Robolectric o `TestScope` + `PreferenceDataStoreFactory` en directorio temporal.
+- Commit: `feat(data): DataStore-backed profile and settings repositories`.
+
+### Fase 4 — Pantallas Calculadora, Resultados, Perfil, Ayuda, Ajustes
+- ViewModels con `StateFlow` + `collectAsStateWithLifecycle`; `NumberField` con `NumberFormat` del locale (coma/punto); `@Preview` claro/oscuro para cada pantalla.
+- Commits por pantalla: `feat(calculator): ...`, `feat(results): ...`, `feat(profile): ...`, `feat(help): ...`, `feat(settings): ...`.
+
+### Fase 5 — Kai-Q con LiteRT-LM + Gemma 4 E2B
+- `ModelManager`: URL `https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm/resolve/main/gemma-4-E2B-it.litertlm` (confirmar nombre de fichero y si está "gated" al implementar; si exige token, la vía principal pasa a ser "Importar archivo" con `OpenDocument` y copia a `getExternalFilesDir("models")`); `DownloadManager` con `setDestinationInExternalFilesDir`, solo-WiFi opcional, progreso por `ContentObserver`; verificación de tamaño/`ETag` al terminar.
+- `LlmRepository`: `EngineConfig(modelPath, backend = Backend.GPU() o CPU() según ajustes, cacheDir = context.cacheDir.path)`; `engine.initialize()` en `Dispatchers.IO`; `ConversationConfig(systemInstruction = Contents.of(prompt), samplerConfig = SamplerConfig(topK=40, topP=0.95, temperature=0.3), maxOutputToken=1024)`; respuestas con `sendMessageAsync(contents): Flow<Message>`; cancelación cancelando el `Job`; `close()` de conversación en "Nueva conversación" y del motor en `onTrimMemory`/`onCleared`; errores `LiteRtLmJniException` → mensaje amable y opción de reintentar/cambiar a CPU.
+- `AssistantViewModel`: estados `ModelState` × `ChatState`; historial en memoria del ViewModel (sobrevive rotación); límite de turnos para no desbordar contexto.
+- Commits: `feat(assistant): on-device model download and lifecycle`, `feat(assistant): Kai-Q chat on LiteRT-LM with streaming`.
+
+### Fase 6 — Pulido, documentación, CI
+- Splash M3, icono adaptativo (se conserva el actual, colores revisados), accesibilidad (TalkBack labels, `semantics`), `values-en` opcional.
+- README reescrito (qué hace, capturas, cómo funciona el asistente local, requisitos de dispositivo, cómo compilar, estructura, licencias); `CHANGELOG.md` con v2.0.0.
+- `.github/workflows/android.yml`: `assembleDebug`, `testDebugUnitTest`, `lintDebug` (y screenshot tests si quedan activos). Vale la pena: el bug nº 10 (build roto sin `local.properties`) habría saltado en CI.
+- Commits: `chore(ci): GitHub Actions build/test/lint`, `docs: rewrite README for v2`.
+
+---
+
+## Verificación
+
+**Entorno de build (Linux, sin emulador; red a dl.google.com confirmada):**
+1. Instalar Android cmdline-tools en `$HOME/android-sdk`, aceptar licencias, `platforms;android-37`, `build-tools` compatibles; exportar `ANDROID_HOME`.
+2. En cada fase: `./gradlew assembleDebug testDebugUnitTest lintDebug` (lint con `HardcodedText`, `SpUsage`, `ContentDescription` como error).
+3. Tests de UI sin emulador: Robolectric + `compose-ui-test` (`createComposeRule`) para navegación entre pestañas, formulario (botón deshabilitado con datos inválidos, cadera solo en Mujer), slider de objetivo.
+4. Capturas de pantalla sin emulador: plugin Compose Preview Screenshot Testing (`updateDebugScreenshotTest`) sobre los `@Preview` claro/oscuro de cada pantalla → se revisan las PNG para validar el diseño antes de la Fase 5. Si el plugin no funciona headless con AGP 9.4 se documenta y se omite.
+5. Se genera `app-debug.apk` para probar en un dispositivo real (el asistente local no se puede probar en el entorno de build: no hay emulador ni GPU).
+
+**Checklist manual en dispositivo real:** descarga del modelo (WiFi, progreso, reanudar tras cerrar la app), primer arranque del motor en GPU y en CPU, respuesta en streaming en español, detener generación, nueva conversación, contexto del perfil en la respuesta, rotación y modo oscuro sin perder estado, campos vacíos/coma decimal, −20 % alcanzable con etiqueta correcta, macros suman el objetivo, guardar/leer perfil, memoria en un móvil de 6 GB.
+
+---
+
+## Riesgos y mitigaciones
+
+- **Requisitos del modelo** (2,6 GB de almacenamiento, ≥ 6 GB RAM recomendados, 5–20 tok/s en CPU de gama media): comprobación previa de RAM/espacio y mensaje claro; backend GPU por defecto con fallback a CPU.
+- **Descarga desde Hugging Face** (posible gating/cambio de URL): vía alternativa "Importar archivo .litertlm".
+- **API de LiteRT-LM en evolución** (0.18.0): se fija la versión; nombres (`Engine`, `EngineConfig`, `Backend`, `ConversationConfig`, `sendMessageAsync`) confirmados en la doc oficial, se ajustan al compilar.
+- **AGP 9.x** (Kotlin integrado, Compose 1.12 exige compileSdk 37): resolver al configurar; si la plataforma 37 no estuviera disponible en el SDK del entorno de build, usar compileSdk 36 + Compose BOM 2026.06.01.
+- **Reescritura completa**: el historial queda en `backup/original-java` y el tag `v1.0.0`; la nueva app conserva `applicationId`, así que se instala como actualización.
+
+## Fuera de alcance (fases posteriores sugeridas)
+
+- Pase de identidad visual a partir de capturas reales.
+- Modo híbrido con ML Kit GenAI Prompt API (Gemini Nano) cuando el dispositivo lo soporte.
+- Historial de mediciones con gráfica, exportación, multiperfil.
