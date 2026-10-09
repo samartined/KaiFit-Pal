@@ -1,5 +1,10 @@
 # KaiFit-Pal 🍏📱
 
+## Estado: en modernización
+La app se está reescribiendo con **Kotlin + Jetpack Compose + Material 3**, y el asistente Kai-Q pasará a usar un **modelo local que se ejecuta en el propio dispositivo** (sustituye a la API de OpenAI).
+- El trabajo se hace en la rama [`feat/ui-modernization`](https://github.com/samartined/KaiFit-Pal/tree/feat/ui-modernization) y el plan técnico está en [`docs/dev/MODERNIZATION_PLAN.md`](docs/dev/MODERNIZATION_PLAN.md).
+- La versión original en Java + XML se conserva en la rama [`backup/original-java`](https://github.com/samartined/KaiFit-Pal/tree/backup/original-java) y en el tag [`v1.0.0`](https://github.com/samartined/KaiFit-Pal/tree/v1.0.0).
+
 ## Description ℹ️
 KaiFit-Pal is your handy Android companion for nutritional tracking and advice. It offers both a nutritional calculator and an AI assistant to guide you through your dietary journey.
 
