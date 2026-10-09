@@ -1,18 +1,13 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
-    <!-- Base application theme. -->
-    <style name="Base.Theme.KaiFitPal" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <item name="colorPrimary">@color/white_green</item>
-        <item name="colorSecondary">@color/dark_green</item>
-        <item name="android:windowBackground">@color/beige</item>
+    <!-- Base window theme. Compose draws all the UI with KaiFitTheme. -->
+    <style name="Theme.KaiFitPal" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Launch theme: splash screen on the brand background, then Theme.KaiFitPal. -->
+    <style name="Theme.KaiFitPal.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.KaiFitPal</item>
     </style>
 
-    <!-- Theme.KaiFitPal inherits from Base.Theme.KaiFitPal -->
-    <style name="Theme.KaiFitPal" parent="Base.Theme.KaiFitPal" />
-
-    <!-- Customizing toolbar -->
-    <style name="Theme.KaiFitPal.Toolbar" parent="Theme.KaiFitPal">
-        <item name="colorControlNormal">@color/white</item>
-    </style>
 </resources>
