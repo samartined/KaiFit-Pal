@@ -96,6 +96,32 @@ class KaiFitNavHostTest {
         composeRule.onNodeWithText(string(R.string.help_placeholder)).assertDoesNotExist()
     }
 
+    @Test
+    fun switchingTabsKeepsOnlyStartAndCurrentTabOnBackStack() {
+        listOf(
+            TopLevelDestination.PROFILE,
+            TopLevelDestination.HELP,
+            TopLevelDestination.SETTINGS,
+            // Reselecting the current tab must not add a second copy of it.
+            TopLevelDestination.SETTINGS,
+        ).forEach { destination ->
+            tab(destination).performClick()
+            composeRule.waitForIdle()
+        }
+        assertScreenShown(TopLevelDestination.SETTINGS)
+
+        composeRule.runOnUiThread {
+            composeRule.activity.onBackPressedDispatcher.onBackPressed()
+        }
+        composeRule.waitForIdle()
+
+        // A single back skips the tabs visited before and lands on the start destination.
+        assertScreenShown(TopLevelDestination.CALCULATOR)
+        assertOnlySelectedTab(TopLevelDestination.CALCULATOR)
+        composeRule.onNode(hasText(string(R.string.settings_title)) and !isSelectable()).assertDoesNotExist()
+        composeRule.onNodeWithText(string(R.string.settings_placeholder)).assertDoesNotExist()
+    }
+
     private fun string(@StringRes id: Int, vararg formatArgs: Any): String =
         composeRule.activity.getString(id, *formatArgs)
 
