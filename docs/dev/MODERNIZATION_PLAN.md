@@ -129,7 +129,7 @@ Tipografía: escala M3 por defecto (fuente del sistema); TDEE en `displayMedium`
   - Macros a 2500 kcal: Mantenimiento 188/69/282 g (2501 kcal), Déficit 219/69/251, Superávit 156/56/343; cada `Goal` suma 1,00; `withProteinGrams(250)` → carbs 220 g; carbs nunca negativos.
   - `GoalModifier` desde 2716: −20→2173, −15→2309 ("Déficit moderado-intenso"), −10→2444, −5→2580, 0→2716, +5→2852, +10→2988, +15→3123, +20→3259; clamp en ±20; `GoalModifier(7)` rechazado.
   - Además: un test por regla de validación, selección del método en `calculate()` (incluido que la edad cambia el resultado y que los datos inválidos dan `null`) y barridos de invariantes de los macros de 1000 a 5000 kcal para los tres objetivos.
-- Commits: `feat(domain): add body measurements model with validation`, `feat(domain): add US Navy body fat calculator`, `feat(domain): add TDEE calculator with Katch-McArdle and Mifflin-St Jeor`, `feat(domain): add goals and integer goal modifier`, `feat(domain): derive macro plan from target calories`, `docs(dev): document the domain model in the modernization plan`.
+- Commits: `feat(domain): add body measurements model with validation`, `feat(domain): add US Navy body fat calculator`, `feat(domain): add TDEE calculator with Katch-McArdle and Mifflin-St Jeor`, `feat(domain): add goals and integer goal modifier`, `feat(domain): derive macro plan from target calories`, `docs(dev): document the domain model in the modernization plan`, `refactor(domain): map goal intensity without integer division`.
 
 ### Fase 3 — Datos: perfil y ajustes
 - `ProfileRepository` / `SettingsRepository` sobre DataStore Preferences (claves tipadas, `Flow`s). Test con Robolectric o `TestScope` + `PreferenceDataStoreFactory` en directorio temporal.

@@ -28,7 +28,13 @@ value class GoalModifier(val percent: Int) {
 
     /** Size of the adjustment, from |[percent]|. */
     val intensity: GoalIntensity
-        get() = GoalIntensity.entries[abs(percent) / STEP]
+        get() = when (abs(percent)) {
+            0 -> GoalIntensity.NONE
+            5 -> GoalIntensity.LIGHT
+            10 -> GoalIntensity.MODERATE
+            15 -> GoalIntensity.MODERATE_HIGH
+            else -> GoalIntensity.HIGH
+        }
 
     /** The next step up, or this same value at [MAX_PERCENT]. */
     fun increment(): GoalModifier = GoalModifier((percent + STEP).coerceAtMost(MAX_PERCENT))
