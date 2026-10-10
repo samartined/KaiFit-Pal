@@ -31,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -39,6 +40,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -298,7 +300,14 @@ private fun InfoCard(title: String, content: @Composable () -> Unit) {
     }
 }
 
-/** A label and its value on one line, read together by TalkBack. */
+/**
+ * A label and its value on one line, read together by TalkBack.
+ *
+ * The label takes at most half of the row and the value takes the rest, aligned to the end. On a
+ * narrow screen or with large text, a long label wraps between words in its half, and a short
+ * label leaves more room to the value, so a long value such as a goal name also wraps between
+ * words.
+ */
 @Composable
 private fun InfoRow(label: String, value: String) {
     Row(
@@ -310,18 +319,34 @@ private fun InfoRow(label: String, value: String) {
         Text(
             text = label,
             modifier = Modifier
-                .weight(1f)
+                .atMostHalfOfRow(gap = Spacing.l)
                 .alignByBaseline(),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
             text = value,
-            modifier = Modifier.alignByBaseline(),
+            modifier = Modifier
+                .weight(1f)
+                .alignByBaseline(),
             style = MaterialTheme.typography.bodyLarge.withTabularFigures(),
             textAlign = TextAlign.End,
         )
     }
+}
+
+/**
+ * Measures the content with at most half of the width that its row offers, after the [gap]
+ * between the two halves.
+ */
+private fun Modifier.atMostHalfOfRow(gap: Dp): Modifier = layout { measurable, constraints ->
+    val maxWidth = if (constraints.hasBoundedWidth) {
+        ((constraints.maxWidth - gap.roundToPx()) / 2).coerceAtLeast(0)
+    } else {
+        constraints.maxWidth
+    }
+    val placeable = measurable.measure(constraints.copy(minWidth = 0, maxWidth = maxWidth))
+    layout(placeable.width, placeable.height) { placeable.place(0, 0) }
 }
 
 /** Fixed example states for previews and screenshots. */

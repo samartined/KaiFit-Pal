@@ -31,7 +31,8 @@ import org.robolectric.annotation.GraphicsMode
 /**
  * Screenshots of every screen in the light and dark themes, from fixed states, on a 411 × 891 dp
  * phone in Spanish. The `_full` variants use a 1600 dp tall screen to show whole screens that
- * scroll, and `shell_w360_light` shows the navigation bar on a narrow 360 dp phone.
+ * scroll, `shell_w360_light` shows the navigation bar on a narrow 360 dp phone, and
+ * `profile_saved_w360_light` shows the saved profile on that phone.
  *
  * The PNG files are written only by `./gradlew recordRoborazziDebug`, under
  * app/build/outputs/roborazzi/; a normal test run only draws the screens.
@@ -106,6 +107,12 @@ class ScreenScreenshotTest {
     @Config(qualifiers = TALL_PHONE)
     fun profileSavedFullDark() = capture("profile_saved_full", darkTheme = true) { Profile(ProfilePreviewStates.saved) }
 
+    /** The saved profile on a narrow phone: labels and values wrap between words. */
+    @Test
+    @Config(qualifiers = NARROW_TALL_PHONE)
+    fun profileSavedNarrowLight() =
+        capture("profile_saved_w360", darkTheme = false) { Profile(ProfilePreviewStates.saved) }
+
     @Test
     fun helpLight() = capture("help", darkTheme = false) { HelpContent(initiallyExpanded = setOf(FirstHelpQuestion)) }
 
@@ -148,6 +155,7 @@ class ScreenScreenshotTest {
 private const val PHONE = "es-rES-w411dp-h891dp-xxhdpi"
 private const val TALL_PHONE = "es-rES-w411dp-h1600dp-xxhdpi"
 private const val NARROW_PHONE = "es-rES-w360dp-h800dp-xxhdpi"
+private const val NARROW_TALL_PHONE = "es-rES-w360dp-h1600dp-xxhdpi"
 
 @Composable
 private fun Calculator(state: CalculatorUiState) {
