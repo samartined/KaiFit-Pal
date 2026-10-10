@@ -6,7 +6,7 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [2.0.0] - 2026-10-10
 
-Reescritura completa de la app. Conserva el `applicationId` (`com.tfg.kaifit_pal`), así que se instala como actualización de la 1.0.0.
+Reescritura completa de la app. Conserva el `applicationId` (`com.tfg.kaifit_pal`) y sube el `versionCode` de 1 a 2; para instalarse encima de la 1.0.0 debe firmarse con la misma clave.
 
 ### Añadido
 
@@ -14,7 +14,7 @@ Reescritura completa de la app. Conserva el `applicationId` (`com.tfg.kaifit_pal
 - Las cinco pestañas con contenido real: Perfil, Calculadora, Kai-Q, Ayuda (preguntas frecuentes) y Ajustes. Resultados es una pantalla de detalle con flecha atrás.
 - Cálculo con Mifflin-St Jeor (usa la edad) cuando no hay medidas para estimar la grasa corporal; con ellas, US Navy + Katch-McArdle como antes.
 - Validación de los datos mientras se escriben, con mensajes de error en cada campo y coma o punto decimal.
-- Resultados con objetivo de −20 % a +20 % en pasos de 5 % y macros ajustables: la proteína y la grasa se eligen y los carbohidratos son el resto, de modo que el total coincide con el objetivo.
+- Resultados con objetivo de −20 % a +20 % en pasos de 5 % y macros ajustables: la proteína y la grasa se eligen y los carbohidratos son el resto, de modo que el total coincide con el objetivo (salvo el redondeo a gramos enteros).
 - Perfil guardado (medición y resultado) y ajustes con DataStore, con opción de borrar los datos.
 - Kai-Q como asistente local: Gemma 4 E2B ejecutado en el dispositivo con LiteRT-LM 0.18.0, con descarga verificada desde Hugging Face (opción solo Wi-Fi) o importación de un fichero `.litertlm`, GPU con paso automático a CPU, respuesta en streaming, detener, nueva conversación, preguntas sugeridas y el perfil guardado como contexto.
 - Gestión del modelo en Ajustes: descargar, importar, cancelar, borrar, elegir procesador y descarga solo con Wi-Fi; licencias del modelo y del motor en «Acerca de».
