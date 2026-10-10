@@ -3,6 +3,7 @@ package com.tfg.kaifit_pal.ui.navigation
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
@@ -18,6 +19,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
@@ -281,6 +283,33 @@ class KaiFitNavHostTest {
         assertTrue(composeRule.activity.isFinishing)
     }
 
+    // NV2
+    @Test
+    fun savedMessageIsNotShownAgainWhenComingBackFromTheAssistant() {
+        setShell()
+        enterReferenceMan()
+        composeRule.onNodeWithText(string(R.string.calculator_calculate)).performScrollTo().performClick()
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText(string(R.string.results_save)).performScrollTo().performClick()
+        waitForText(R.string.results_saved)
+
+        // Asked while the snackbar is still shown. It covers the button on the default screen, so
+        // the click goes through the semantics action instead of a touch.
+        composeRule.onNodeWithText(string(R.string.results_ask_assistant))
+            .performScrollTo()
+            .performSemanticsAction(SemanticsActions.OnClick)
+        composeRule.waitForIdle()
+        assertScreenShown(TopLevelDestination.ASSISTANT)
+        composeRule.mainClock.advanceTimeBy(SNACKBAR_END_MILLIS)
+
+        tab(TopLevelDestination.CALCULATOR).performClick()
+        composeRule.waitForIdle()
+
+        // Back on the same Results, which no longer has anything to tell.
+        composeRule.onNode(hasText(string(R.string.results_title))).assertIsDisplayed()
+        composeRule.onNodeWithText(string(R.string.results_saved)).assertDoesNotExist()
+    }
+
     private fun string(@StringRes id: Int, vararg formatArgs: Any): String =
         composeRule.activity.getString(id, *formatArgs)
 
@@ -360,6 +389,9 @@ class KaiFitNavHostTest {
 
     private companion object {
         const val TIMEOUT_MILLIS = 5_000L
+
+        /** A short snackbar lasts 4 s; this also covers its exit animation. */
+        const val SNACKBAR_END_MILLIS = 6_000L
 
         val isTab = SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Tab)
     }

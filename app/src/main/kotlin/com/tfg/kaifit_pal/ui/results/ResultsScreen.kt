@@ -79,6 +79,9 @@ fun ResultsScreen(
     // The outcome of saving is shown once, and only marked as shown when its snackbar ends. A
     // rotation while the snackbar is visible cancels this effect before that, so the outcome is
     // still pending and the new screen shows it again. A new outcome replaces the snackbar.
+    // Asking Kai-Q leaves too, but the calculator tab keeps this entry and its ViewModel to come
+    // back to: the outcome counts as seen then, or it would show up again whenever the tab is
+    // opened, however long after.
     LaunchedEffect(saveStatus) {
         val message = when (saveStatus) {
             SaveStatus.Saved -> savedMessage
@@ -98,7 +101,10 @@ fun ResultsScreen(
         onProteinChange = viewModel::onProteinChange,
         onFatChange = viewModel::onFatChange,
         onSave = viewModel::onSave,
-        onAskAssistant = onAskAssistant,
+        onAskAssistant = {
+            viewModel.onSaveStatusShown()
+            onAskAssistant()
+        },
         modifier = modifier,
         snackbarHostState = snackbarHostState,
     )
