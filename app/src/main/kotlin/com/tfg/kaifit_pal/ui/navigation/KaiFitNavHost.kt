@@ -24,7 +24,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
+import com.tfg.kaifit_pal.domain.ActivityLevel
+import com.tfg.kaifit_pal.domain.Sex
 import com.tfg.kaifit_pal.ui.assistant.AssistantScreen
 import com.tfg.kaifit_pal.ui.calculator.CalculatorScreen
 import com.tfg.kaifit_pal.ui.help.HelpScreen
@@ -32,8 +33,16 @@ import com.tfg.kaifit_pal.ui.profile.ProfileScreen
 import com.tfg.kaifit_pal.ui.results.ResultsScreen
 import com.tfg.kaifit_pal.ui.settings.SettingsScreen
 
-/** Reference values of the plan (80 kg, 20 % body fat, activity factor 1.55). */
-private val SampleResults = ResultsRoute(tdee = 2716, bodyFatPercent = 20f, method = "KATCH_MCARDLE")
+/** Man of 30 years, 180 cm, 80 kg, neck 38 and waist 85 cm, moderately active: 2819 kcal/day. */
+private val SampleResults = ResultsRoute(
+    sex = Sex.MALE,
+    ageYears = 30,
+    heightCm = 180.0,
+    weightKg = 80.0,
+    neckCm = 38.0,
+    waistCm = 85.0,
+    activityLevel = ActivityLevel.MODERATE,
+)
 
 /**
  * App shell: a [NavigationBar] with the five tabs around the navigation graph.
@@ -94,10 +103,12 @@ fun KaiFitNavHost(
             composable<AssistantRoute> { AssistantScreen() }
             composable<HelpRoute> { HelpScreen() }
             composable<SettingsRoute> { SettingsScreen() }
-            composable<ResultsRoute> { backStackEntry ->
+            composable<ResultsRoute> {
                 ResultsScreen(
-                    route = backStackEntry.toRoute<ResultsRoute>(),
                     onBack = dropUnlessResumed { navController.popBackStack() },
+                    onAskAssistant = dropUnlessResumed {
+                        navController.navigateToTopLevel(TopLevelDestination.ASSISTANT)
+                    },
                 )
             }
         }

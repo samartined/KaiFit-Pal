@@ -1,5 +1,8 @@
 package com.tfg.kaifit_pal.ui.navigation
 
+import com.tfg.kaifit_pal.domain.ActivityLevel
+import com.tfg.kaifit_pal.domain.BodyMeasurements
+import com.tfg.kaifit_pal.domain.Sex
 import kotlinx.serialization.Serializable
 
 // Type-safe navigation routes. Top-level tabs carry no arguments.
@@ -20,15 +23,39 @@ data object HelpRoute
 data object SettingsRoute
 
 /**
- * Results detail destination.
+ * Results detail destination: the measurements and activity level entered in the calculator.
  *
- * @param tdee total daily energy expenditure, in kcal/day.
- * @param bodyFatPercent body fat percentage, when it could be estimated.
- * @param method name of the formula used to get [tdee].
+ * The results screen computes the TDEE again from them, so it needs nothing else and can save the
+ * whole profile. Being navigation arguments, they also survive process death. Units are those of
+ * [BodyMeasurements]; a `null` circumference was not entered.
  */
 @Serializable
 data class ResultsRoute(
-    val tdee: Int,
-    val bodyFatPercent: Float? = null,
-    val method: String,
-)
+    val sex: Sex,
+    val ageYears: Int,
+    val heightCm: Double,
+    val weightKg: Double,
+    val neckCm: Double? = null,
+    val waistCm: Double? = null,
+    val hipCm: Double? = null,
+    val activityLevel: ActivityLevel,
+) {
+
+    /** The measurements carried by this route. */
+    fun toMeasurements(): BodyMeasurements =
+        BodyMeasurements(sex, ageYears, heightCm, weightKg, neckCm, waistCm, hipCm)
+
+    companion object {
+        /** The route that shows the results of [measurements] with [activityLevel]. */
+        fun from(measurements: BodyMeasurements, activityLevel: ActivityLevel): ResultsRoute = ResultsRoute(
+            sex = measurements.sex,
+            ageYears = measurements.ageYears,
+            heightCm = measurements.heightCm,
+            weightKg = measurements.weightKg,
+            neckCm = measurements.neckCm,
+            waistCm = measurements.waistCm,
+            hipCm = measurements.hipCm,
+            activityLevel = activityLevel,
+        )
+    }
+}

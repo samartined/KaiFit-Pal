@@ -69,7 +69,7 @@ class KaiFitNavHostTest {
         composeRule.waitForIdle()
 
         composeRule.onNodeWithText(string(R.string.results_title)).assertIsDisplayed()
-        composeRule.onNodeWithText(string(R.string.results_tdee_value, 2716)).assertIsDisplayed()
+        composeRule.onNodeWithText("2819").assertIsDisplayed()
         composeRule.onAllNodes(isSelectable()).assertCountEquals(0)
 
         composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()

@@ -14,3 +14,9 @@
 -keepclasseswithmembers class com.tfg.kaifit_pal.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
+
+# Typed navigation decodes the enum arguments of a route (Sex and ActivityLevel in ResultsRoute)
+# by loading their class with Class.forName(serialName), where serialName is the original class
+# name. Keep both enums unrenamed, or opening Results fails with ClassNotFoundException.
+-keep enum com.tfg.kaifit_pal.domain.Sex { *; }
+-keep enum com.tfg.kaifit_pal.domain.ActivityLevel { *; }

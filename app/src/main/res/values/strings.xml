@@ -9,6 +9,32 @@
     <string name="nav_settings">Ajustes</string>
     <string name="action_back">Volver</string>
 
+    <!-- Shared values -->
+    <string name="value_kcal_per_day">%1$d kcal/día</string>
+    <string name="value_grams">%1$d g</string>
+    <string name="value_body_fat_percent">%1$.1f %%</string>
+    <string name="body_fat_not_estimated">Sin estimar</string>
+    <string name="method_katch_mcardle">Katch-McArdle</string>
+    <string name="method_mifflin_st_jeor">Mifflin-St Jeor</string>
+
+    <!-- Goals: GoalModifier from −20 % to +20 % -->
+    <string name="goal_deficit_high">Déficit intenso</string>
+    <string name="goal_deficit_moderate_high">Déficit moderado-intenso</string>
+    <string name="goal_deficit_moderate">Déficit moderado</string>
+    <string name="goal_deficit_light">Déficit ligero</string>
+    <string name="goal_maintenance">Mantenimiento</string>
+    <string name="goal_surplus_light">Volumen ligero</string>
+    <string name="goal_surplus_moderate">Volumen moderado</string>
+    <string name="goal_surplus_moderate_high">Volumen moderado-intenso</string>
+    <string name="goal_surplus_high">Volumen intenso</string>
+
+    <!-- Macronutrients -->
+    <string name="macro_protein">Proteína</string>
+    <string name="macro_fat">Grasa</string>
+    <string name="macro_carbs">Carbohidratos</string>
+    <!-- Share of the calorie target and calories of one macronutrient: "30 % · 844 kcal". -->
+    <string name="macro_share">%1$d %% · %2$d kcal</string>
+
     <!-- Profile -->
     <string name="profile_title">Perfil</string>
     <string name="profile_placeholder">Aquí verás tu última medición y el resultado que guardes desde la calculadora.</string>
@@ -20,8 +46,22 @@
 
     <!-- Results -->
     <string name="results_title">Resultados</string>
-    <string name="results_placeholder">Tu gasto energético diario estimado. Pronto podrás ajustar aquí tu objetivo y tu reparto de macronutrientes.</string>
-    <string name="results_tdee_value">%1$d kcal/día</string>
+    <string name="results_tdee_label">Tu gasto energético diario (TDEE)</string>
+    <string name="results_kcal_per_day">kcal/día</string>
+    <string name="results_method">Método: %1$s</string>
+    <string name="results_body_fat">Grasa corporal: %1$s</string>
+    <string name="results_goal_title">Objetivo</string>
+    <string name="results_goal_slider">Objetivo</string>
+    <!-- Spoken state of the goal slider: goal name and target calories. -->
+    <string name="results_goal_state">%1$s, %2$s</string>
+    <string name="results_goal_adjustment">Ajuste sobre tu TDEE: %1$s %%</string>
+    <string name="results_macros_title">Macronutrientes</string>
+    <string name="results_macro_total">Total: %1$d kcal · Objetivo: %2$d kcal</string>
+    <string name="results_save">Guardar en perfil</string>
+    <string name="results_ask_assistant">Preguntar a Kai-Q</string>
+    <string name="results_saved">Resultado guardado en tu perfil</string>
+    <string name="results_save_error">No se ha podido guardar. Inténtalo de nuevo.</string>
+    <string name="results_invalid_measurements">No se han podido calcular los resultados con estas medidas. Vuelve a la calculadora y revísalas.</string>
 
     <!-- Assistant -->
     <string name="assistant_title">Kai-Q</string>
