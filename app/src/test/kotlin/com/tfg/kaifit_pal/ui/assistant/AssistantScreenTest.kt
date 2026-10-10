@@ -70,7 +70,7 @@ class AssistantScreenTest {
     fun notDownloadedExplainsTheSizeAndDownloads() {
         setContent(AssistantPreviewStates.notDownloaded)
 
-        composeRule.onNodeWithText("2,6 GB", substring = true).assertIsDisplayed()
+        composeRule.onNodeWithText("(2,6\u00a0GB)", substring = true).assertIsDisplayed()
         composeRule.onNodeWithText(string(R.string.model_wifi_only_note)).assertExists()
         composeRule.onNodeWithText(string(R.string.model_import)).assertIsEnabled()
         composeRule.onNodeWithText(string(R.string.model_download)).assertIsEnabled().performClick()
@@ -85,8 +85,8 @@ class AssistantScreenTest {
 
         composeRule.onNodeWithText(string(R.string.model_download)).assertIsNotEnabled()
         composeRule.onNodeWithText(string(R.string.model_import)).assertIsEnabled()
-        composeRule.onNodeWithText(string(R.string.model_ram_low, "4,0 GB")).assertExists()
-        composeRule.onNodeWithText(string(R.string.model_free_space_missing, "1,1 GB")).assertExists()
+        composeRule.onNodeWithText(string(R.string.model_ram_low, "4,0\u00a0GB")).assertExists()
+        composeRule.onNodeWithText(string(R.string.model_free_space_missing, "1,1\u00a0GB")).assertExists()
         composeRule.onNodeWithText(string(R.string.model_metered_note)).assertExists()
     }
 
@@ -105,7 +105,7 @@ class AssistantScreenTest {
     fun downloadingShowsPercentSizesAndCancel() {
         setContent(AssistantPreviewStates.downloading)
 
-        composeRule.onNodeWithText("42 % · 1,1 de 2,6 GB").assertIsDisplayed()
+        composeRule.onNodeWithText("42\u00a0% · 1,1 de 2,6\u00a0GB").assertIsDisplayed()
         composeRule.onNodeWithText(string(R.string.model_cancel)).performClick()
 
         assertEquals(listOf("cancel"), events)
@@ -116,7 +116,7 @@ class AssistantScreenTest {
     fun downloadWaitingForWifiSaysSo() {
         setContent(AssistantPreviewStates.waitingForWifi)
 
-        composeRule.onNodeWithText("10 %", substring = true).assertIsDisplayed()
+        composeRule.onNodeWithText("10\u00a0%", substring = true).assertIsDisplayed()
         composeRule.onNodeWithText(string(R.string.model_waiting_wifi)).assertIsDisplayed()
     }
 

@@ -9,8 +9,11 @@ private const val BYTES_PER_GIGABYTE = 1_000_000_000.0
 fun formatGigabytesValue(bytes: Long, locale: Locale): String =
     String.format(locale, "%.1f", bytes / BYTES_PER_GIGABYTE)
 
-/** [bytes] in decimal gigabytes with one decimal and the unit: 2.588.147.712 → "2,6 GB" in Spanish. */
-fun formatGigabytes(bytes: Long, locale: Locale): String = formatGigabytesValue(bytes, locale) + " GB"
+/**
+ * [bytes] in decimal gigabytes with one decimal and the unit: 2.588.147.712 → "2,6 GB" in Spanish.
+ * A no-break space joins the number and the unit, so a line never ends between them.
+ */
+fun formatGigabytes(bytes: Long, locale: Locale): String = formatGigabytesValue(bytes, locale) + "\u00A0GB"
 
 /** Whole percentage of [done] over [total], from 0 to 100; 0 when [total] is not positive. */
 fun progressPercent(done: Long, total: Long): Int =

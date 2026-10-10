@@ -25,6 +25,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -402,7 +403,14 @@ private fun ContextFullBanner(onNewConversation: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(Spacing.s),
         ) {
             Text(text = stringResource(R.string.assistant_context_full), style = MaterialTheme.typography.bodyMedium)
-            Button(onClick = onNewConversation, modifier = Modifier.heightIn(min = 48.dp)) {
+            Button(
+                onClick = onNewConversation,
+                modifier = Modifier.heightIn(min = 48.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
+                    contentColor = MaterialTheme.colorScheme.onTertiary,
+                ),
+            ) {
                 Text(stringResource(R.string.assistant_new_conversation))
             }
         }

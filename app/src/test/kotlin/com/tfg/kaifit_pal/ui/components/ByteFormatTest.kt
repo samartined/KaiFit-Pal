@@ -11,9 +11,10 @@ class ByteFormatTest {
     // BY1
     @Test
     fun gigabytesAreDecimalWithOneDecimalAndTheLocaleSeparator() {
-        assertEquals("2,6 GB", formatGigabytes(2_588_147_712, spanish))
-        assertEquals("1,1 GB", formatGigabytes(1_100_000_000, spanish))
-        assertEquals("2.6 GB", formatGigabytes(2_588_147_712, Locale.US))
+        // The space before the unit is a no-break space.
+        assertEquals("2,6\u00a0GB", formatGigabytes(2_588_147_712, spanish))
+        assertEquals("1,1\u00a0GB", formatGigabytes(1_100_000_000, spanish))
+        assertEquals("2.6\u00a0GB", formatGigabytes(2_588_147_712, Locale.US))
         assertEquals("1,1", formatGigabytesValue(1_090_000_000, spanish))
     }
 

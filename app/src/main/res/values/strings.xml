@@ -179,7 +179,7 @@
     <string name="model_checking">Comprobando el modelo</string>
     <!-- Size of the model, for example "2,6 GB". -->
     <string name="model_intro">Kai-Q usa Gemma 4 E2B, un modelo de lenguaje que se ejecuta en tu propio dispositivo. Se descarga una sola vez (%1$s) y después funciona sin conexión.</string>
-    <string name="model_ram_recommended">Se recomiendan 6 GB de RAM o más.</string>
+    <string name="model_ram_recommended">Se recomiendan 6 GB de RAM o más.</string>
     <string name="model_ram_low">Tu dispositivo tiene %1$s de RAM; Kai-Q puede ir lento o cerrarse.</string>
     <string name="model_free_space">Espacio libre: %1$s</string>
     <string name="model_free_space_missing">Falta espacio: libera %1$s más para descargarlo.</string>
@@ -187,7 +187,7 @@
     <string name="model_metered_note">Se descargará también con datos móviles.</string>
     <string name="model_download">Descargar</string>
     <string name="model_import">Importar archivo</string>
-    <string name="model_unsupported_device">Este dispositivo no es compatible con el modelo local (requiere un procesador de 64 bits).</string>
+    <string name="model_unsupported_device">Este dispositivo no es compatible con el modelo local (requiere un procesador de 64 bits).</string>
     <string name="model_downloading_title">Descargando el modelo</string>
     <!-- Percentage, part done and total: "42 % · 1,1 de 2,6 GB". -->
     <string name="model_progress">%1$d %% · %2$s de %3$s</string>
@@ -204,7 +204,7 @@
     <string name="model_error_verification_failed">El archivo descargado no es válido. Vuelve a descargarlo.</string>
     <string name="model_error_invalid_file">El archivo elegido no es un modelo .litertlm válido</string>
     <string name="model_error_import_failed">No se ha podido copiar el archivo</string>
-    <string name="model_error_unsupported_device">Dispositivo no compatible: el modelo local necesita un procesador de 64 bits.</string>
+    <string name="model_error_unsupported_device">Dispositivo no compatible: el modelo local necesita un procesador de 64 bits.</string>
     <string name="model_ok">Aceptar</string>
 
     <!-- Help -->
@@ -222,7 +222,7 @@
     <string name="help_q_macros">¿Cómo se reparten los macronutrientes?</string>
     <string name="help_a_macros" formatted="false">Las calorías objetivo se reparten según tu objetivo: con déficit, 35 % de proteína, 25 % de grasa y 40 % de carbohidratos; en mantenimiento, 30 %, 25 % y 45 %; con volumen, 25 %, 20 % y 55 %. Cada gramo de proteína o de carbohidratos aporta 4 kcal, y cada gramo de grasa, 9 kcal. Puedes ajustar la proteína y la grasa; los carbohidratos son el resto, para que el total coincida con tu objetivo.</string>
     <string name="help_q_assistant">¿Cómo funciona Kai-Q sin conexión?</string>
-    <string name="help_a_assistant">Kai-Q usa Gemma 4 E2B, un modelo de lenguaje que se ejecuta en tu propio dispositivo. Se descarga una sola vez desde Hugging Face (unos 2,6 GB), o puedes importar un archivo .litertlm; después funciona sin conexión a internet. Tus conversaciones no salen del dispositivo y no se guardan al cerrar la app. Sus respuestas son orientativas y no sustituyen el consejo de un profesional.</string>
+    <string name="help_a_assistant">Kai-Q usa Gemma 4 E2B, un modelo de lenguaje que se ejecuta en tu propio dispositivo. Se descarga una sola vez desde Hugging Face (unos 2,6 GB), o puedes importar un archivo .litertlm; después funciona sin conexión a internet. Tus conversaciones no salen del dispositivo y no se guardan al cerrar la app. Sus respuestas son orientativas y no sustituyen el consejo de un profesional.</string>
     <string name="help_q_privacy">¿Dónde se guardan mis datos?</string>
     <!-- Describes the current backup rules only: it depends on the pending decision about
          including the profile in Android backups, so it must not claim more than that. -->

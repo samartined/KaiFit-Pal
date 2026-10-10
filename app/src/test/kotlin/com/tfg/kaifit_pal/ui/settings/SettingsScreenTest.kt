@@ -123,11 +123,11 @@ class SettingsScreenTest {
     fun downloadedModelShowsItsSizeAndIsDeletedAfterConfirming() {
         setContent(SettingsPreviewStates.modelDownloaded)
 
-        composeRule.onNodeWithText(string(R.string.model_downloaded, "2,6 GB")).performScrollTo().assertIsDisplayed()
-        composeRule.onNodeWithText(string(R.string.model_free_space, "20,0 GB")).assertExists()
+        composeRule.onNodeWithText(string(R.string.model_downloaded, "2,6\u00a0GB")).performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText(string(R.string.model_free_space, "20,0\u00a0GB")).assertExists()
         composeRule.onNodeWithText(string(R.string.settings_model_delete)).performScrollTo().performClick()
         composeRule.onNodeWithText(string(R.string.settings_model_delete_title)).assertIsDisplayed()
-        composeRule.onNodeWithText(string(R.string.settings_model_delete_message, "2,6 GB")).assertIsDisplayed()
+        composeRule.onNodeWithText(string(R.string.settings_model_delete_message, "2,6\u00a0GB")).assertIsDisplayed()
         assertTrue(events.isEmpty())
         composeRule.onNodeWithText(string(R.string.settings_model_delete_confirm)).performClick()
 
@@ -179,7 +179,7 @@ class SettingsScreenTest {
     fun downloadInProgressShowsItsPercentAndCancels() {
         setContent(SettingsPreviewStates.modelDownloading)
 
-        composeRule.onNodeWithText("Descargando 42 %").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("Descargando 42\u00a0%").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText(string(R.string.model_cancel)).performScrollTo().performClick()
 
         assertEquals(listOf("cancel"), events)
