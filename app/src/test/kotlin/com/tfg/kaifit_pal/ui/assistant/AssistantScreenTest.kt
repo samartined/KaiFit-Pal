@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertCountEquals
@@ -20,6 +21,7 @@ import androidx.compose.ui.test.getBoundsInRoot
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -47,6 +49,8 @@ class AssistantScreenTest {
     val composeRule = createAndroidComposeRule<ComponentActivity>()
 
     private val events = mutableListOf<String>()
+
+    private val isLiveRegion = SemanticsMatcher.keyIsDefined(SemanticsProperties.LiveRegion)
 
     private fun setContent(state: AssistantUiState) {
         composeRule.setContent {
@@ -285,30 +289,95 @@ class AssistantScreenTest {
                 Content(state)
             }
         }
-        val liveRegions = SemanticsMatcher.keyIsDefined(SemanticsProperties.LiveRegion)
 
         // While the reply streams, nothing is announced.
-        composeRule.onAllNodes(liveRegions, useUnmergedTree = true).assertCountEquals(0)
+        liveRegionNodes().assertCountEquals(0)
 
-        state = state.copy(
-            chat = state.chat.copy(
-                messages = state.chat.messages.map { message ->
-                    if (message.status == MessageStatus.STREAMING) {
-                        message.copy(text = message.text + " un yogur.", status = MessageStatus.DONE)
-                    } else {
-                        message
-                    }
-                },
-                isGenerating = false,
-            ),
-        )
+        state = finished(state)
         composeRule.waitForIdle()
 
-        composeRule.onAllNodes(liveRegions, useUnmergedTree = true).assertCountEquals(1)
-        composeRule.onNode(liveRegions, useUnmergedTree = true)
+        liveRegionNodes().assertCountEquals(1)
+        composeRule.onNode(isLiveRegion, useUnmergedTree = true)
             .assertContentDescriptionEquals(string(R.string.assistant_reply_ready))
             .assert(SemanticsMatcher.expectValue(SemanticsProperties.LiveRegion, LiveRegionMode.Polite))
     }
+
+    // AX4: only the change to done is announced, not a reply that was already done.
+    @Test
+    fun chatShownWithItsLastReplyDoneAnnouncesNothing() {
+        setContent(finished(AssistantPreviewStates.chatStreaming))
+
+        liveRegionNodes().assertCountEquals(0)
+    }
+
+    // AX4: like a rotation or a recreated activity after the reply finished.
+    @Test
+    fun finishedReplyIsNotAnnouncedAgainWhenTheChatIsRestored() {
+        var state by mutableStateOf(AssistantPreviewStates.chatStreaming)
+        val restorationTester = StateRestorationTester(composeRule)
+        restorationTester.setContent {
+            KaiFitTheme {
+                Content(state)
+            }
+        }
+        liveRegionNodes().assertCountEquals(0)
+        state = finished(state)
+        composeRule.waitForIdle()
+        liveRegionNodes().assertCountEquals(1)
+
+        restorationTester.emulateSavedInstanceStateRestore()
+        composeRule.waitForIdle()
+
+        liveRegionNodes().assertCountEquals(0)
+    }
+
+    // AX4: one announcement per reply.
+    @Test
+    fun eachReplyIsAnnouncedWhenItFinishes() {
+        var state by mutableStateOf(AssistantPreviewStates.chatStreaming)
+        composeRule.setContent {
+            KaiFitTheme {
+                Content(state)
+            }
+        }
+        liveRegionNodes().assertCountEquals(0)
+        state = finished(state)
+        composeRule.waitForIdle()
+        liveRegionNodes().assertCountEquals(1)
+
+        state = state.copy(
+            chat = state.chat.copy(
+                messages = state.chat.messages + listOf(
+                    ChatMessage(6, ChatRole.USER, "¿Y después de entrenar?", MessageStatus.DONE),
+                    ChatMessage(7, ChatRole.ASSISTANT, "Después, toma", MessageStatus.STREAMING),
+                ),
+                isGenerating = true,
+            ),
+        )
+        composeRule.waitForIdle()
+        liveRegionNodes().assertCountEquals(0)
+
+        state = finished(state)
+        composeRule.waitForIdle()
+        liveRegionNodes().assertCountEquals(1)
+    }
+
+    /** [state] with its streaming reply finished, as when Kai-Q stops writing. */
+    private fun finished(state: AssistantUiState): AssistantUiState = state.copy(
+        chat = state.chat.copy(
+            messages = state.chat.messages.map { message ->
+                if (message.status == MessageStatus.STREAMING) {
+                    message.copy(text = message.text + " un yogur.", status = MessageStatus.DONE)
+                } else {
+                    message
+                }
+            },
+            isGenerating = false,
+        ),
+    )
+
+    private fun liveRegionNodes(): SemanticsNodeInteractionCollection =
+        composeRule.onAllNodes(isLiveRegion, useUnmergedTree = true)
 
     // U22
     @Test

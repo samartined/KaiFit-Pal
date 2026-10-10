@@ -44,7 +44,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -360,13 +362,23 @@ private fun Messages(chat: ChatState, modifier: Modifier = Modifier) {
 
 /**
  * Tells TalkBack once that Kai-Q has finished its reply, instead of reading every piece of it as
- * it streams: a polite live region that only exists while the last message is a finished reply.
- * It is 1 dp, because accessibility services skip nodes without size.
+ * it streams: a polite live region that only exists once the last reply goes from streaming to
+ * done while the chat is shown. It is 1 dp, because accessibility services skip nodes without size.
  */
 @Composable
 private fun ReplyFinishedAnnouncement(messages: List<ChatMessage>) {
     val last = messages.lastOrNull()
+    // The last reply this composition saw streaming. A plain remember, not a saveable one: a reply
+    // that was already done when the chat was composed (back to the tab, a rotation, a recreated
+    // activity) is not announced again.
+    val streamingReplyId = remember { mutableStateOf<Long?>(null) }
+    SideEffect {
+        if (last?.role == ChatRole.ASSISTANT && last.status == MessageStatus.STREAMING) {
+            streamingReplyId.value = last.id
+        }
+    }
     if (last?.role != ChatRole.ASSISTANT || last.status != MessageStatus.DONE) return
+    if (last.id != streamingReplyId.value) return
     val announcement = stringResource(R.string.assistant_reply_ready)
     Box(
         modifier = Modifier
