@@ -498,6 +498,80 @@ class DownloadModelManagerTest {
         assertEquals(ModelState.Downloaded(modelFile, 108), manager.state.value)
     }
 
+    // MM19
+    @Test
+    fun copyLeftByAnImportThatDiedWithTheProcessIsDeletedOnRefresh() = runTest {
+        importFile.writeBytes(FakeImportSource.modelBytes(1_000))
+        val manager = newManager()
+
+        manager.refresh()
+
+        assertEquals(ModelState.NotDownloaded, manager.state.value)
+        assertFalse(importFile.exists())
+    }
+
+    // MM19
+    @Test
+    fun copyLeftNextToTheModelIsDeletedToo() = runTest {
+        modelFile.writeBytes(FakeImportSource.modelBytes(100))
+        importFile.writeBytes(FakeImportSource.modelBytes(1_000))
+        val manager = newManager()
+
+        manager.refresh()
+
+        assertEquals(ModelState.Downloaded(modelFile, 108), manager.state.value)
+        assertFalse(importFile.exists())
+    }
+
+    // MM19: the copy of a running import is not a leftover
+    @Test
+    fun refreshDuringAnImportKeepsItsCopy() = runTest {
+        val io = StandardTestDispatcher(testScheduler)
+        val manager = newManager(io)
+        manager.refresh()
+        val content = FakeImportSource.modelBytes(3 * 1024 * 1024)
+        var copyExistedOnRefresh: Boolean? = null
+        val source = FakeImportSource(content) { readSoFar ->
+            if (copyExistedOnRefresh == null && readSoFar >= 1024 * 1024) {
+                // Runs refresh() right away, inside the read, as the screen coming back would.
+                backgroundScope.launch(io, start = CoroutineStart.UNDISPATCHED) { manager.refresh() }
+                copyExistedOnRefresh = importFile.exists()
+            }
+        }
+
+        manager.importModel(source)
+
+        assertEquals(true, copyExistedOnRefresh)
+        assertEquals(ModelState.Downloaded(modelFile, content.size.toLong()), manager.state.value)
+        assertArrayEquals(content, modelFile.readBytes())
+    }
+
+    // MM20
+    @Test
+    fun partialFileWithoutADownloadInTheSystemIsDeletedOnRefresh() = runTest {
+        partialFile.writeBytes(ByteArray(1_000))
+        val manager = newManager()
+
+        manager.refresh()
+
+        assertEquals(ModelState.NotDownloaded, manager.state.value)
+        assertFalse(partialFile.exists())
+    }
+
+    // MM20: the partial file of a running download is not a leftover
+    @Test
+    fun partialFileOfARunningDownloadIsKept() = runTest {
+        downloads.addModelDownload(DownloadStatus.RUNNING, 1_000, totalBytes = 2_588_147_712)
+        partialFile.writeBytes(ByteArray(1_000))
+        val manager = newManager()
+
+        manager.refresh()
+        runCurrent()
+
+        assertEquals(ModelState.Downloading(1_000, 2_588_147_712, null), manager.state.value)
+        assertTrue(partialFile.exists())
+    }
+
     @Test
     fun deviceCheckReportsTheDevice() = runTest {
         device.ramBytes = 4_000_000_000

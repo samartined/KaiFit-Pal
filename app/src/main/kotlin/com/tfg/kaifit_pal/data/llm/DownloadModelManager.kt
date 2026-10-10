@@ -173,9 +173,14 @@ class DownloadModelManager(
     /**
      * Sets the state from what exists now: an import of this process, the model file, the
      * system download of the model, or nothing.
+     *
+     * A copy or a partial download that nothing is writing any more (the process died during an
+     * import, or while a download was being cancelled) is deleted here: it would take up to the
+     * size of the model and count against the free space forever.
      */
     private fun deriveStateLocked() {
         if (importJob?.isActive == true) return
+        importFile.delete()
         if (modelFile.isFile) {
             stopWatchingLocked()
             _state.value = ModelState.Downloaded(modelFile, modelFile.length())
@@ -184,16 +189,22 @@ class DownloadModelManager(
         val snapshot = try {
             downloads.findByUrl(ModelSpec.DOWNLOAD_URL)
         } catch (e: SecurityException) {
-            null
+            // The system cannot be asked now: its download, if any, may still be writing.
+            return setNotDownloadedLocked(deletePartialFile = false)
         } catch (e: IllegalArgumentException) {
-            null
+            return setNotDownloadedLocked(deletePartialFile = false)
         }
         if (snapshot == null) {
-            stopWatchingLocked()
-            _state.value = ModelState.NotDownloaded
+            setNotDownloadedLocked(deletePartialFile = true)
         } else {
             applySnapshotLocked(snapshot)
         }
+    }
+
+    private fun setNotDownloadedLocked(deletePartialFile: Boolean) {
+        stopWatchingLocked()
+        if (deletePartialFile) partialFile.delete()
+        _state.value = ModelState.NotDownloaded
     }
 
     private fun enqueueLocked(wifiOnly: Boolean) {
