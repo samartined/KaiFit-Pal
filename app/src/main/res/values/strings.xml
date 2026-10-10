@@ -143,7 +143,69 @@
     <!-- System notification of the model download. -->
     <string name="model_download_title">Modelo de Kai-Q</string>
     <string name="model_download_description">Gemma 4 E2B, para usar Kai-Q sin conexión</string>
-    <string name="assistant_placeholder">Kai-Q, tu asistente de nutrición, funcionará sin conexión con un modelo que se ejecuta en tu propio dispositivo.</string>
+    <string name="assistant_new_conversation">Nueva conversación</string>
+    <string name="assistant_preparing">Preparando Kai-Q…</string>
+    <string name="assistant_preparing_hint">Puede tardar unos segundos.</string>
+    <string name="assistant_engine_error_title">No se ha podido iniciar Kai-Q</string>
+    <string name="assistant_engine_error_message">Puede ser un fallo puntual o falta de memoria. Cierra otras apps y vuelve a intentarlo.</string>
+    <string name="assistant_engine_error_cpu_hint">También puedes usar la CPU: es más lenta, pero funciona en más dispositivos.</string>
+    <string name="assistant_engine_unsupported">Este dispositivo no puede ejecutar el modelo de Kai-Q.</string>
+    <string name="assistant_retry">Reintentar</string>
+    <string name="assistant_use_cpu">Usar CPU</string>
+    <string name="assistant_empty_title">Hola, soy Kai-Q</string>
+    <string name="assistant_empty_message">Pregúntame sobre alimentación, macronutrientes o entrenamiento. Funciono en tu dispositivo, sin conexión, y nuestra conversación no sale de él.</string>
+    <string name="assistant_uses_profile">Tendré en cuenta los datos de tu perfil guardado.</string>
+    <string name="assistant_no_profile">Aún no has guardado tu perfil. Si guardas un resultado desde la calculadora, lo tendré en cuenta.</string>
+    <string name="assistant_suggestion_protein">¿Cuánta proteína debería tomar al día?</string>
+    <string name="assistant_suggestion_breakfast">Ideas de desayunos con mucha proteína</string>
+    <string name="assistant_suggestion_meals">¿Cómo reparto mis macros entre las comidas?</string>
+    <string name="assistant_suggestion_training">Una rutina de fuerza para empezar</string>
+    <string name="assistant_disclaimer">Kai-Q puede equivocarse. Sus respuestas son orientativas y no sustituyen el consejo de un médico ni de un dietista-nutricionista.</string>
+    <string name="assistant_cpu_fallback">Se está usando la CPU porque la GPU no está disponible</string>
+    <string name="assistant_input_placeholder">Escribe tu pregunta</string>
+    <string name="assistant_send">Enviar</string>
+    <string name="assistant_stop">Detener</string>
+    <string name="assistant_context_full">La conversación es demasiado larga. Empieza una nueva para seguir.</string>
+    <string name="assistant_message_stopped">Respuesta detenida</string>
+    <string name="assistant_message_failed">No se ha podido generar la respuesta</string>
+    <!-- Spoken description of a chat message: who wrote it and its text. -->
+    <string name="assistant_message_from_user">Tú: %1$s</string>
+    <string name="assistant_message_from_assistant">Kai-Q: %1$s</string>
+    <string name="assistant_typing">Kai-Q está escribiendo</string>
+    <string name="assistant_notice_engine_released">Se ha cerrado Kai-Q y se ha borrado la conversación.</string>
+
+    <!-- On-device model -->
+    <string name="model_card_title">Kai-Q en tu dispositivo</string>
+    <string name="model_checking">Comprobando el modelo</string>
+    <!-- Size of the model, for example "2,6 GB". -->
+    <string name="model_intro">Kai-Q usa Gemma 4 E2B, un modelo de lenguaje que se ejecuta en tu propio dispositivo. Se descarga una sola vez (%1$s) y después funciona sin conexión.</string>
+    <string name="model_ram_recommended">Se recomiendan 6 GB de RAM o más.</string>
+    <string name="model_ram_low">Tu dispositivo tiene %1$s de RAM; Kai-Q puede ir lento o cerrarse.</string>
+    <string name="model_free_space">Espacio libre: %1$s</string>
+    <string name="model_free_space_missing">Falta espacio: libera %1$s más para descargarlo.</string>
+    <string name="model_wifi_only_note">La descarga empezará cuando haya Wi-Fi.</string>
+    <string name="model_metered_note">Se descargará también con datos móviles.</string>
+    <string name="model_download">Descargar</string>
+    <string name="model_import">Importar archivo</string>
+    <string name="model_unsupported_device">Este dispositivo no es compatible con el modelo local (requiere un procesador de 64 bits).</string>
+    <string name="model_downloading_title">Descargando el modelo</string>
+    <!-- Percentage, part done and total: "42 % · 1,1 de 2,6 GB". -->
+    <string name="model_progress">%1$d %% · %2$s de %3$s</string>
+    <string name="model_waiting_wifi">Esperando a una red Wi-Fi</string>
+    <string name="model_waiting_network">Esperando conexión</string>
+    <string name="model_waiting_retry">Reintentando</string>
+    <string name="model_cancel">Cancelar</string>
+    <string name="model_importing_title">Importando el modelo</string>
+    <string name="model_imported_bytes">%1$s copiados</string>
+    <string name="model_downloaded">Descargado · %1$s</string>
+    <string name="model_error_title">No se ha podido preparar el modelo</string>
+    <string name="model_error_insufficient_storage">No hay espacio suficiente para el modelo. Libera espacio y vuelve a intentarlo.</string>
+    <string name="model_error_download_failed">La descarga ha fallado. Comprueba tu conexión y vuelve a intentarlo.</string>
+    <string name="model_error_verification_failed">El archivo descargado no es válido. Vuelve a descargarlo.</string>
+    <string name="model_error_invalid_file">El archivo elegido no es un modelo .litertlm válido</string>
+    <string name="model_error_import_failed">No se ha podido copiar el archivo</string>
+    <string name="model_error_unsupported_device">Dispositivo no compatible: el modelo local necesita un procesador de 64 bits.</string>
+    <string name="model_ok">Aceptar</string>
 
     <!-- Help -->
     <string name="help_title">Ayuda</string>
@@ -159,8 +221,8 @@
     <string name="help_a_formulas">El porcentaje de grasa corporal se estima con la fórmula US Navy, a partir de la altura y de las circunferencias del cuello, la cintura y, en las mujeres, la cadera. Cuando se puede estimar, el metabolismo basal se calcula con Katch-McArdle, que usa tu masa magra. Si no introduces esas medidas, se usa Mifflin-St Jeor, que tiene en cuenta el sexo, el peso, la altura y la edad: por eso se pide la edad.</string>
     <string name="help_q_macros">¿Cómo se reparten los macronutrientes?</string>
     <string name="help_a_macros" formatted="false">Las calorías objetivo se reparten según tu objetivo: con déficit, 35 % de proteína, 25 % de grasa y 40 % de carbohidratos; en mantenimiento, 30 %, 25 % y 45 %; con volumen, 25 %, 20 % y 55 %. Cada gramo de proteína o de carbohidratos aporta 4 kcal, y cada gramo de grasa, 9 kcal. Puedes ajustar la proteína y la grasa; los carbohidratos son el resto, para que el total coincida con tu objetivo.</string>
-    <string name="help_q_assistant">¿Cómo funcionará Kai-Q sin conexión?</string>
-    <string name="help_a_assistant">Kai-Q usará un modelo de lenguaje que se ejecutará en tu propio dispositivo. Habrá que descargarlo una sola vez (ocupa unos 2,6 GB); después podrá responderte sin conexión a internet.</string>
+    <string name="help_q_assistant">¿Cómo funciona Kai-Q sin conexión?</string>
+    <string name="help_a_assistant">Kai-Q usa Gemma 4 E2B, un modelo de lenguaje que se ejecuta en tu propio dispositivo. Se descarga una sola vez desde Hugging Face (unos 2,6 GB), o puedes importar un archivo .litertlm; después funciona sin conexión a internet. Tus conversaciones no salen del dispositivo y no se guardan al cerrar la app. Sus respuestas son orientativas y no sustituyen el consejo de un profesional.</string>
     <string name="help_q_privacy">¿Dónde se guardan mis datos?</string>
     <!-- Describes the current backup rules only: it depends on the pending decision about
          including the profile in Android backups, so it must not claim more than that. -->

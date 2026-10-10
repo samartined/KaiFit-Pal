@@ -7,7 +7,8 @@ import androidx.compose.ui.test.onRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.tfg.kaifit_pal.data.settings.AppSettings
-import com.tfg.kaifit_pal.ui.assistant.AssistantScreen
+import com.tfg.kaifit_pal.ui.assistant.AssistantPreview
+import com.tfg.kaifit_pal.ui.assistant.AssistantPreviewStates
 import com.tfg.kaifit_pal.ui.calculator.CalculatorContent
 import com.tfg.kaifit_pal.ui.calculator.CalculatorPreviewStates
 import com.tfg.kaifit_pal.ui.calculator.CalculatorUiState
@@ -132,10 +133,10 @@ class ScreenScreenshotTest {
     fun settingsDark() = capture("settings", darkTheme = true) { Settings() }
 
     @Test
-    fun assistantLight() = capture("assistant", darkTheme = false) { AssistantScreen() }
+    fun assistantLight() = capture("assistant", darkTheme = false) { AssistantPreview(AssistantPreviewStates.chatStreaming) }
 
     @Test
-    fun assistantDark() = capture("assistant", darkTheme = true) { AssistantScreen() }
+    fun assistantDark() = capture("assistant", darkTheme = true) { AssistantPreview(AssistantPreviewStates.chatStreaming) }
 
     /** The whole shell on a narrow phone, to check how the tab labels fit. */
     @Test

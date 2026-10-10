@@ -45,7 +45,7 @@ class KaiFitNavHostTest {
     private val screenTexts = mapOf(
         TopLevelDestination.PROFILE to (R.string.profile_title to R.string.profile_go_to_calculator),
         TopLevelDestination.CALCULATOR to (R.string.calculator_title to R.string.calculator_sex),
-        TopLevelDestination.ASSISTANT to (R.string.assistant_title to R.string.assistant_placeholder),
+        TopLevelDestination.ASSISTANT to (R.string.assistant_title to R.string.model_card_title),
         TopLevelDestination.HELP to (R.string.help_title to R.string.help_q_waist),
         TopLevelDestination.SETTINGS to (R.string.settings_title to R.string.settings_section_appearance),
     )
