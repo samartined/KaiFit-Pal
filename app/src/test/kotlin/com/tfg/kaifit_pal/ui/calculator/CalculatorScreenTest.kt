@@ -20,12 +20,15 @@ import androidx.compose.ui.test.performTextReplacement
 import androidx.lifecycle.SavedStateHandle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tfg.kaifit_pal.R
+import com.tfg.kaifit_pal.data.FailingDataStore
+import com.tfg.kaifit_pal.data.profile.ProfileRepository
 import com.tfg.kaifit_pal.ui.theme.KaiFitTheme
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 @Config(qualifiers = "es-rES")
@@ -36,7 +39,8 @@ class CalculatorScreenTest {
 
     @Before
     fun setUp() {
-        val viewModel = CalculatorViewModel(SavedStateHandle())
+        // The form never reads the profile here: only "Recalcular" does.
+        val viewModel = CalculatorViewModel(SavedStateHandle(), ProfileRepository(FailingDataStore(IOException("not used"))))
         composeRule.setContent {
             KaiFitTheme {
                 CalculatorScreen(onCalculate = {}, viewModel = viewModel)

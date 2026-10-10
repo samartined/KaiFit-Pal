@@ -12,6 +12,8 @@
     <!-- Shared values -->
     <string name="unit_cm">cm</string>
     <string name="unit_kg">kg</string>
+    <string name="value_cm">%1$s cm</string>
+    <string name="value_kg">%1$s kg</string>
     <string name="value_kcal_per_day">%1$d kcal/día</string>
     <string name="value_grams">%1$d g</string>
     <string name="value_body_fat_percent">%1$.1f %%</string>
@@ -60,7 +62,26 @@
 
     <!-- Profile -->
     <string name="profile_title">Perfil</string>
-    <string name="profile_placeholder">Aquí verás tu última medición y el resultado que guardes desde la calculadora.</string>
+    <string name="profile_loading">Cargando el perfil</string>
+    <string name="profile_empty_title">Todavía no has guardado ningún resultado</string>
+    <string name="profile_empty_message">Calcula tu gasto energético en la calculadora y pulsa «Guardar en perfil» para verlo aquí.</string>
+    <string name="profile_go_to_calculator">Ir a la calculadora</string>
+    <string name="profile_measurement_title">Última medición</string>
+    <string name="profile_result_title">Resultado guardado</string>
+    <string name="profile_tdee">TDEE</string>
+    <string name="profile_method">Método</string>
+    <string name="profile_body_fat">Grasa corporal</string>
+    <string name="profile_goal">Objetivo</string>
+    <!-- Goal name and its adjustment: "Déficit moderado-intenso (−15 %)". -->
+    <string name="profile_goal_value">%1$s (%2$s %%)</string>
+    <string name="profile_target">Calorías objetivo</string>
+    <string name="profile_saved_at">Guardado el %1$s</string>
+    <string name="profile_recalculate">Recalcular</string>
+    <string name="profile_clear">Borrar datos</string>
+    <string name="profile_clear_title">¿Borrar tus datos?</string>
+    <string name="profile_clear_message">Se borrarán la última medición y el resultado guardados. Tus ajustes no cambian.</string>
+    <string name="profile_clear_confirm">Borrar</string>
+    <string name="profile_clear_cancel">Cancelar</string>
 
     <!-- Calculator -->
     <string name="calculator_title">Calculadora</string>

@@ -9,11 +9,14 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination
@@ -84,9 +87,35 @@ fun KaiFitNavHost(
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding),
         ) {
-            composable<ProfileRoute> { ProfileScreen() }
-            composable<CalculatorRoute> {
+            composable<ProfileRoute> {
+                ProfileScreen(
+                    onGoToCalculator = dropUnlessResumed {
+                        navController.navigateToTopLevel(TopLevelDestination.CALCULATOR)
+                    },
+                    onRecalculate = dropUnlessResumed {
+                        // The calculator is the start destination, so its entry is always on the
+                        // back stack. The request is consumed by the calculator below.
+                        navController.getBackStackEntry<CalculatorRoute>()
+                            .savedStateHandle[CalculatorViewModel.PREFILL_FROM_PROFILE_KEY] = true
+                        navController.navigateToTopLevel(TopLevelDestination.CALCULATOR)
+                        // The calculator tab comes back with its own back stack, which may end on
+                        // Results; the form is what was asked for.
+                        navController.popBackStack<CalculatorRoute>(inclusive = false)
+                    },
+                )
+            }
+            composable<CalculatorRoute> { entry ->
                 val calculatorViewModel: CalculatorViewModel = viewModel(factory = CalculatorViewModel.Factory)
+                val prefillRequestFlow = remember(entry) {
+                    entry.savedStateHandle.getStateFlow(CalculatorViewModel.PREFILL_FROM_PROFILE_KEY, false)
+                }
+                val prefillRequested by prefillRequestFlow.collectAsStateWithLifecycle()
+                LaunchedEffect(prefillRequested) {
+                    if (prefillRequested) {
+                        calculatorViewModel.prefillFromSavedProfile()
+                        entry.savedStateHandle[CalculatorViewModel.PREFILL_FROM_PROFILE_KEY] = false
+                    }
+                }
                 CalculatorScreen(
                     onCalculate = dropUnlessResumed {
                         calculatorViewModel.onCalculate()?.let { route -> navController.navigate(route) }

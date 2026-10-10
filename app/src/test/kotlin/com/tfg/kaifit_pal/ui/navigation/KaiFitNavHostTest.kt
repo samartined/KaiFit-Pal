@@ -20,9 +20,15 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.tfg.kaifit_pal.KaiFitApp
 import com.tfg.kaifit_pal.R
 import com.tfg.kaifit_pal.domain.ActivityLevel
+import com.tfg.kaifit_pal.domain.GoalModifier
+import com.tfg.kaifit_pal.domain.MacroPlan
+import com.tfg.kaifit_pal.domain.TdeeCalculator
+import com.tfg.kaifit_pal.testing.ReferenceData
 import com.tfg.kaifit_pal.ui.theme.KaiFitTheme
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,7 +43,7 @@ class KaiFitNavHostTest {
 
     /** Title of the screen of each tab, and a text near its top that only that screen shows. */
     private val screenTexts = mapOf(
-        TopLevelDestination.PROFILE to (R.string.profile_title to R.string.profile_placeholder),
+        TopLevelDestination.PROFILE to (R.string.profile_title to R.string.profile_go_to_calculator),
         TopLevelDestination.CALCULATOR to (R.string.calculator_title to R.string.calculator_sex),
         TopLevelDestination.ASSISTANT to (R.string.assistant_title to R.string.assistant_placeholder),
         TopLevelDestination.HELP to (R.string.help_title to R.string.help_placeholder),
@@ -144,6 +150,47 @@ class KaiFitNavHostTest {
     }
 
     @Test
+    fun recalculateFromProfileOpensCalculatorFilledWithTheSavedProfile() {
+        saveReferenceManInAppProfile()
+        setShell()
+
+        tab(TopLevelDestination.PROFILE).performClick()
+        waitForText(R.string.profile_recalculate)
+        composeRule.onNodeWithText(string(R.string.profile_recalculate)).performScrollTo().performClick()
+        composeRule.waitForIdle()
+
+        assertOnlySelectedTab(TopLevelDestination.CALCULATOR)
+        waitForHeight("180")
+        field(R.string.calculator_height).assertTextContains("180")
+        field(R.string.calculator_weight).assertTextContains("80")
+    }
+
+    @Test
+    fun recalculateAfterAskingTheAssistantFromResultsShowsTheForm() {
+        saveReferenceManInAppProfile()
+        setShell()
+        composeRule.onNodeWithText(string(R.string.sex_male)).performScrollTo().performClick()
+        field(R.string.calculator_height).performTextInput("175")
+        field(R.string.calculator_weight).performTextInput("70")
+        composeRule.onNodeWithText(string(R.string.calculator_calculate)).performScrollTo().performClick()
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText(string(R.string.results_ask_assistant)).performScrollTo().performClick()
+        composeRule.waitForIdle()
+
+        tab(TopLevelDestination.PROFILE).performClick()
+        waitForText(R.string.profile_recalculate)
+        composeRule.onNodeWithText(string(R.string.profile_recalculate)).performScrollTo().performClick()
+        composeRule.waitForIdle()
+
+        // The calculator tab would come back on Results; "Recalcular" asks for the form instead.
+        assertScreenShown(TopLevelDestination.CALCULATOR)
+        assertOnlySelectedTab(TopLevelDestination.CALCULATOR)
+        composeRule.onNodeWithText(string(R.string.results_title)).assertDoesNotExist()
+        waitForHeight("180")
+        field(R.string.calculator_weight).assertTextContains("80")
+    }
+
+    @Test
     fun systemBackFromHelpReturnsToCalculator() {
         setShell()
         tab(TopLevelDestination.HELP).performClick()
@@ -210,6 +257,30 @@ class KaiFitNavHostTest {
         composeRule.waitForIdle()
     }
 
+    /** Saves the reference man at −15 % as the profile of the app, before the shell is shown. */
+    private fun saveReferenceManInAppProfile() {
+        val profiles = (composeRule.activity.application as KaiFitApp).container.profileRepository
+        val tdee = checkNotNull(TdeeCalculator.calculate(ReferenceData.man, ReferenceData.manActivity))
+        val modifier = GoalModifier(-15)
+        runBlocking {
+            profiles.save(
+                ReferenceData.man,
+                ReferenceData.manActivity,
+                tdee,
+                modifier,
+                MacroPlan.forGoal(modifier.applyTo(tdee.tdeeKcal), modifier.goal),
+            )
+        }
+    }
+
+    /** Waits until the height field shows [text]; the saved profile is read from disk first. */
+    private fun waitForHeight(text: String) {
+        composeRule.waitUntil(TIMEOUT_MILLIS) {
+            composeRule.onAllNodes(hasSetTextAction() and hasText(string(R.string.calculator_height)) and hasText(text))
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+    }
+
     private fun waitForText(@StringRes id: Int) {
         composeRule.waitUntil(TIMEOUT_MILLIS) {
             composeRule.onAllNodes(hasText(string(id))).fetchSemanticsNodes().isNotEmpty()
@@ -224,7 +295,8 @@ class KaiFitNavHostTest {
         val (titleRes, markerRes) = screenTexts.getValue(destination)
         // The top app bar title is the only node with that text that is not a tab.
         composeRule.onNode(hasText(string(titleRes)) and !isTab).assertIsDisplayed()
-        // The marker may be scrolled out of view when a screen keeps its scroll position.
+        // The profile is read from disk first, so its content may take a moment. The marker may be
+        // scrolled out of view when a screen keeps its scroll position.
         waitForText(markerRes)
         composeRule.onNodeWithText(string(markerRes)).assertExists()
     }

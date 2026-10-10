@@ -1,10 +1,20 @@
 package com.tfg.kaifit_pal.ui.calculator
 
 import androidx.lifecycle.SavedStateHandle
+import com.tfg.kaifit_pal.data.FailingDataStore
+import com.tfg.kaifit_pal.data.newPreferencesFile
+import com.tfg.kaifit_pal.data.preferencesDataStoreOn
+import com.tfg.kaifit_pal.data.profile.ProfileRepository
 import com.tfg.kaifit_pal.domain.ActivityLevel
+import com.tfg.kaifit_pal.domain.GoalModifier
+import com.tfg.kaifit_pal.domain.MacroPlan
 import com.tfg.kaifit_pal.domain.MeasurementField
 import com.tfg.kaifit_pal.domain.Sex
+import com.tfg.kaifit_pal.domain.TdeeCalculator
 import com.tfg.kaifit_pal.testing.MainDispatcherRule
+import com.tfg.kaifit_pal.testing.ReferenceData
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -12,13 +22,21 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
+import java.io.IOException
 
 class CalculatorViewModelTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private fun newViewModel(handle: SavedStateHandle = SavedStateHandle()) = CalculatorViewModel(handle)
+    @get:Rule
+    val tmp = TemporaryFolder()
+
+    /** A repository that is never read; only the prefill test needs a real one. */
+    private val unusedProfiles = ProfileRepository(FailingDataStore(IOException("not used")))
+
+    private fun newViewModel(handle: SavedStateHandle = SavedStateHandle()) = CalculatorViewModel(handle, unusedProfiles)
 
     private fun CalculatorViewModel.enterReferenceMan() {
         onSexChange(Sex.MALE)
@@ -174,6 +192,30 @@ class CalculatorViewModelTest {
         assertEquals(Sex.MALE, state.sex)
         assertEquals(45, state.ageYears)
         assertEquals(listOf("180", "80", "38", "85"), listOf(state.height, state.weight, state.neck, state.waist))
+        assertEquals(ActivityLevel.MODERATE, state.activityLevel)
+        assertTrue(state.canCalculate)
+    }
+
+    @Test
+    fun prefillFromSavedProfileFillsTheForm() = runTest {
+        val profiles = ProfileRepository(backgroundScope.preferencesDataStoreOn(tmp.newPreferencesFile()))
+        val tdee = TdeeCalculator.calculate(ReferenceData.man, ReferenceData.manActivity)!!
+        val modifier = GoalModifier(-15)
+        profiles.save(
+            ReferenceData.man,
+            ReferenceData.manActivity,
+            tdee,
+            modifier,
+            MacroPlan.forGoal(modifier.applyTo(tdee.tdeeKcal), modifier.goal),
+        )
+        val viewModel = CalculatorViewModel(SavedStateHandle(), profiles)
+
+        viewModel.prefillFromSavedProfile()
+        val state = viewModel.uiState.first { it.height.isNotEmpty() }
+
+        assertEquals(Sex.MALE, state.sex)
+        assertEquals(30, state.ageYears)
+        assertEquals(listOf("180", "80", "38", "85", ""), listOf(state.height, state.weight, state.neck, state.waist, state.hip))
         assertEquals(ActivityLevel.MODERATE, state.activityLevel)
         assertTrue(state.canCalculate)
     }
