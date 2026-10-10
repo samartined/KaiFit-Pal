@@ -4,7 +4,13 @@ Estado al cierre de la sesión del 9 y 10 de octubre de 2026. Este documento es 
 
 ## Resumen
 
-La app original (Java + XML, del TFG) se ha reescrito entera en Kotlin + Jetpack Compose + Material 3. Kai-Q ya no usa OpenAI: ejecuta Gemma 4 E2B en el móvil con LiteRT-LM 0.18.0. Todo está publicado en la rama `feat/ui-modernization` y la CI de GitHub pasa. Falta probarlo en un dispositivo real, que el operador tome las decisiones pendientes y fusionar en `main`.
+La app original (Java + XML, del TFG) se ha reescrito entera en Kotlin + Jetpack Compose + Material 3. Kai-Q ya no usa OpenAI: ejecuta Gemma 4 E2B en el móvil con LiteRT-LM 0.18.0. Todo está publicado en la rama `feat/ui-modernization` y la CI de GitHub pasa.
+
+Falta:
+- probarlo en un dispositivo real;
+- corregir los dos hallazgos «mayor» de la revisión del asesor (ver al final);
+- que el operador tome las decisiones pendientes;
+- fusionar en `main`.
 
 ## Estado del repositorio
 
@@ -53,6 +59,9 @@ Prioridad de arriba abajo. Usa un móvil arm64 con 6 GB de RAM o más.
 6. TalkBack: encabezados, sliders y el aviso «Kai-Q ha terminado de responder». Compose no emite un evento propio cuando aparece un nodo `liveRegion` nuevo. Si TalkBack no lo lee, cambia `ReplyFinishedAnnouncement` (en `ui/assistant/AssistantScreen.kt`) por un nodo persistente cuyo texto cambie al terminar, y ajusta su test.
 7. APK de release firmado: navegación tipada y Kai-Q funcionan con R8.
 8. En un móvil de 32 bits, Kai-Q muestra «no compatible» sin cerrarse.
+9. Hallazgo M1 del asesor: «Detener» e inmediatamente «Nueva conversación»; cambiar de procesador, borrar el modelo o pasar a segundo plano con una respuesta en curso. Buscar cierres nativos en logcat (`SIGSEGV`, `litertlm`).
+10. Hallazgo M2 del asesor: en Android 14 o superior, salir a otra app 10–30 segundos y volver a Kai-Q. ¿Se vacía el chat y recarga el motor?
+11. Tocar la notificación del sistema «Descarga completada» al terminar la descarga (hallazgo m8).
 
 ## Decisiones pendientes del operador
 
@@ -78,10 +87,11 @@ No se ha aplicado ninguna. El detalle con opciones y propuestas está en [`docs/
 ## Siguientes pasos sugeridos
 
 1. El operador revisa las decisiones pendientes y prueba el APK con la checklist de dispositivo.
-2. Aplicar las decisiones que tome en una rama nueva (por ejemplo `chore/operator-decisions`) o en esta misma rama antes de fusionar.
-3. Corregir lo que salga de la prueba en dispositivo.
-4. Abrir la pull request de `feat/ui-modernization` a `main` cuando el operador lo pida.
-5. Después, el pase de identidad visual (icono y personalidad) que quedó fuera de esta versión.
+2. Una fase de corrección con la misma arquitectura para M1 y M2, y de paso los menores baratos: m4 (`assembleRelease` y caché básica en la CI), m7, m8 y la sugerencia de borrar el modelo de m1.
+3. Aplicar las decisiones que tome el operador en esta misma rama antes de fusionar, o en una rama nueva (por ejemplo `chore/operator-decisions`).
+4. Corregir lo que salga de la prueba en dispositivo.
+5. Abrir la pull request de `feat/ui-modernization` a `main` cuando el operador lo pida.
+6. Después, el pase de identidad visual (icono y personalidad) que quedó fuera de esta versión.
 
 ## Cómo retomar
 
@@ -98,4 +108,25 @@ No se ha aplicado ninguna. El detalle con opciones y propuestas está en [`docs/
 
 ## Revisión del asesor experto
 
-Pendiente de completar con el resultado de la revisión independiente de Fable lanzada al cierre de la sesión.
+Al cierre, el operador pidió una verificación independiente al asesor experto (Claude Fable, esfuerzo `xhigh`, solo lectura). El informe completo está en [`docs/dev/agent-workflow/final-advisor-review.md`](docs/dev/agent-workflow/final-advisor-review.md).
+
+**Veredicto**: trabajo sólido. El dominio, recalculado de forma independiente, es correcto. Los tests prueban lo que dicen y no hay nada bloqueante. Listo para probar en dispositivo. Para fusionar en `main` recomienda antes la primera prueba real de Kai-Q y corregir M1 y M2.
+
+**Hallazgos abiertos** (ninguno corregido todavía; los dos primeros se confirmaron leyendo el código):
+
+| Id | Severidad | Resumen | Dónde |
+|---|---|---|---|
+| M1 | Mayor | Se cierra la conversación nativa justo después de `cancelProcess()`, que es asíncrono: posible uso tras liberar si se pulsa «Nueva conversación», se cambia de procesador o se borra el modelo durante una respuesta | `data/llm/LiteRtLmRepository.kt`, `closeConversationLocked` |
+| M2 | Mayor | En Android 14+ llega `TRIM_MEMORY_BACKGROUND` poco después de salir de la app: se libera el motor y se borra el chat casi siempre | `KaiFitApp.kt`, `ui/assistant/AssistantViewModel.kt` |
+| m1 | Menor | Sin SHA-256 del modelo; ante un modelo corrupto, Kai-Q no sugiere borrarlo | `data/llm/DownloadModelManager.kt` |
+| m2 | Menor | 6 GB de RAM recomendados frente a los 8 GB de AI Edge Gallery | `data/llm/ModelSpec.kt` |
+| m3 | Menor | El APK de release incluye la librería `x86_64` (26 MB, solo emuladores) | `app/build.gradle.kts` |
+| m4 | Menor | La CI no compila release; caché comercial por defecto; acciones por tag mayor | `.github/workflows/android.yml` |
+| m5 | Menor | Sin `signingConfig`: el APK de la CI no se instala encima de una 1.0.0 firmada con otra clave | documentación |
+| m6 | Menor | Sin tests de los adaptadores Android reales (descargas, importación, dispositivo) | `data/llm/SystemDownloads.kt`, `ImportSources.kt`, `DeviceInfo.kt` |
+| m7 | Menor | Cambiar de procesador mientras carga encadena dos cargas completas | `ui/assistant/AssistantViewModel.kt` |
+| m8 | Menor | Tocar la notificación «Descarga completada» intenta abrir el `.part` | `data/llm/SystemDownloads.kt` |
+
+Las cinco notas menores (aviso duplicado al borrar el modelo, Markdown en las respuestas, mensaje genérico sin gestor de descargas, etc.) están en el informe.
+
+**Lección de proceso**: M1 venía del ejemplo de la investigación y los revisores comprobaron la conformidad con la orden, no la semántica nativa. En trabajo futuro, una lente de revisión debe preguntarse si la orden misma es correcta.

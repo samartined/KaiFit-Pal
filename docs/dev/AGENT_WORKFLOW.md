@@ -96,4 +96,9 @@ Lo que debe sobrevivir a la sesión ya está en el repositorio: los hechos de in
 - **El paralelismo real es limitado** por el número de CPU: los revisores a veces arrancan en serie.
 - **Entorno de la nube**: el proxy rechaza el push de tags (403, no reintentar); Maven Central responde 429 a ratos (usar el espejo de `env/` con `-I`); la herramienta de envío de ficheros al operador limita a 30 MB (el APK completo pesa 61 MB: se envió una copia solo arm64 comprimida).
 - **El hook de parada avisa de commits sin push** mientras una fase está en revisión. Es esperado: el push lo hace el publicador tras `ACCEPT`.
-- **Revisión final con el asesor**: al terminar todas las fases, el operador pidió una verificación independiente de Fable. Su resultado está en `HANDOFF.md`.
+- **Revisión final con el asesor**: al terminar todas las fases, el operador pidió una verificación independiente de Fable con esfuerzo `xhigh`. Tardó unos 14 minutos y unos 0,4 M tokens. Informe completo en [`agent-workflow/final-advisor-review.md`](agent-workflow/final-advisor-review.md); estado de los hallazgos en `HANDOFF.md`.
+- **Hace falta una lente que cuestione la orden.** Los dos hallazgos «mayor» del asesor se escaparon a todas las rondas por motivos distintos:
+  - el error de cierre nativo venía del ejemplo de la investigación, y los revisores comprobaron la conformidad con la orden, no con la semántica de la librería;
+  - el de `onTrimMemory` venía de suponer el comportamiento clásico de Android sin contrastarlo con Android 14+.
+
+  En trabajo futuro, al menos un revisor debe preguntarse si la orden misma es correcta frente a la documentación y el código fuente reales.

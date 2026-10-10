@@ -17,13 +17,16 @@ Decisiones de la modernización 2.0.0, con su motivo. Las del operador mandan so
 
 ## Decisiones pendientes del operador (no aplicadas)
 
-1. **Tag `v1.0.0`.** Existe solo en el clon local: el proxy del entorno en la nube rechaza el push de tags (HTTP 403). Opciones: crearlo en GitHub sobre `50e5e23` o subirlo desde otra máquina.
-2. **Etiqueta de la pestaña Calculadora.** A 360 dp de ancho se trunca como «Calculad…». Propuesta: «Calcular» en la pestaña y «Calculadora» como título de pantalla. Hoy sigue «Calculadora» (`nav_calculator`).
-3. **Copia de seguridad del perfil.** Con `allowBackup="true"`, el perfil y los ajustes (DataStore) entran en la copia en la nube de Google y en la transferencia entre dispositivos. Opciones: (a) dejarlo; (b) excluir el perfil de la nube y mantener la transferencia; (c) excluir ambos. Propuesta: (b). Solo el modelo (`external/models/`) está excluido hoy. La FAQ de privacidad describe el estado vigente.
-4. **Autoría de los commits.** Los commits de la rama de trabajo llevan la identidad de git del entorno en la nube. Cambiarla exige reescribir la historia publicada de la rama antes de fusionar.
-5. **Licencia del proyecto.** No hay fichero `LICENSE`. Propuesta: Apache-2.0, como Gemma y LiteRT-LM.
-6. **Icono propio.** El icono es el robot de la plantilla de Android Studio con los colores de la marca. Propuesta: diseñar uno en un pase de identidad visual aparte.
-7. **Caché de la CI.** `gradle/actions/setup-gradle@v6` sin parámetros usa `cache-provider: enhanced`, el servicio comercial de Gradle. Propuesta: fijar `cache-provider: basic`, el de código abierto.
+Cada punto incluye la recomendación del asesor experto en su revisión final ([informe](agent-workflow/final-advisor-review.md)).
+
+
+1. **Tag `v1.0.0`.** Existe solo en el clon local: el proxy del entorno en la nube rechaza el push de tags (HTTP 403). Opciones: crearlo en GitHub sobre `50e5e23` o subirlo desde otra máquina. Asesor: crearlo en GitHub (API o una release).
+2. **Etiqueta de la pestaña Calculadora.** A 360 dp de ancho se trunca como «Calculad…». Propuesta: «Calcular» en la pestaña y «Calculadora» como título de pantalla. Hoy sigue «Calculadora» (`nav_calculator`). Asesor: mejor un sustantivo corto, «Cálculo», que encaja con Perfil, Ayuda y Ajustes, y una comprobación a 360 dp.
+3. **Copia de seguridad del perfil.** Con `allowBackup="true"`, el perfil y los ajustes (DataStore) entran en la copia en la nube de Google y en la transferencia entre dispositivos. Opciones: (a) dejarlo; (b) excluir el perfil de la nube y mantener la transferencia; (c) excluir ambos. Propuesta: (b). Solo el modelo (`external/models/`) está excluido hoy. La FAQ de privacidad describe el estado vigente. Asesor: (b), actualizando la FAQ de privacidad y el README.
+4. **Autoría de los commits.** Los commits de la rama de trabajo llevan la identidad de git del entorno en la nube. Cambiarla exige reescribir la historia publicada de la rama antes de fusionar. Asesor: dejarla, porque es veraz; si hiciera falta otra autoría, «Squash and merge» en GitHub la cambia sin reescribir la rama.
+5. **Licencia del proyecto.** No hay fichero `LICENSE`. Propuesta: Apache-2.0, como Gemma y LiteRT-LM. Asesor: de acuerdo.
+6. **Icono propio.** El icono es el robot de la plantilla de Android Studio con los colores de la marca. Propuesta: diseñar uno en un pase de identidad visual aparte. Asesor: de acuerdo; el actual es aceptable para entregar.
+7. **Caché de la CI.** `gradle/actions/setup-gradle@v6` sin parámetros usa `cache-provider: enhanced`, el servicio comercial de Gradle. Propuesta: fijar `cache-provider: basic`, el de código abierto. Asesor: de acuerdo; confirmó en el `action.yml` que el valor por defecto es el comercial.
 
 ## Toolchain y build
 

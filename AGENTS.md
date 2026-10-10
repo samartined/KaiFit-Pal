@@ -17,6 +17,7 @@ KaiFit-Pal es una app Android, nacida como Trabajo de Fin de Grado, que calcula 
 3. [`docs/dev/MODERNIZATION_PLAN.md`](docs/dev/MODERNIZATION_PLAN.md): plan técnico, diagnóstico de la versión original y lista de commits por fase.
 4. [`docs/dev/reference/litertlm-0.18.0.md`](docs/dev/reference/litertlm-0.18.0.md) antes de tocar Kai-Q; [`docs/dev/reference/toolchain.md`](docs/dev/reference/toolchain.md) antes de tocar el build.
 5. [`docs/dev/AGENT_WORKFLOW.md`](docs/dev/AGENT_WORKFLOW.md) si el trabajo es grande.
+6. [`docs/dev/agent-workflow/final-advisor-review.md`](docs/dev/agent-workflow/final-advisor-review.md): revisión independiente del asesor al cierre de la 2.0.0, con hallazgos abiertos.
 
 ## Cómo trabaja el operador
 
@@ -91,6 +92,8 @@ Los tests están en `app/src/test/kotlin/...` con la misma estructura; los fakes
 
 - **API real 0.18.0** en `docs/dev/reference/litertlm-0.18.0.md`. Nada es `suspend`; `Backend.GPU()` es una clase; no existe `Conversation.stop()`.
 - **`Engine.initialize()`** es bloqueante (hasta unos 10 s): siempre fuera del hilo principal. Cierra primero la conversación y después el motor, y protégete de los cierres dobles.
+- **`cancelProcess()` es asíncrono**: el fin real llega en `onError(java.util.concurrent.CancellationException)` o en `onDone`. No cierres la conversación ni el motor, ni llames a `getTokenCount()`, hasta recibirlo. El código actual todavía no lo cumple: es el hallazgo M1 de `HANDOFF.md`.
+- **`onTrimMemory` en Android 14+** solo entrega `TRIM_MEMORY_UI_HIDDEN` y `TRIM_MEMORY_BACKGROUND`, y este último llega poco después de salir de la app. Liberar el motor con él vacía el chat casi siempre: es el hallazgo M2 de `HANDOFF.md`.
 - **Cancelación**: cancelar el colector del Flow de la librería **no** detiene la generación nativa. Por eso `LiteRtLmRepository` usa un `callbackFlow` propio con `cancelProcess()`. No lo sustituyas por el Flow de la librería.
 - **Solo hay librerías nativas para `arm64-v8a` y `x86_64`**. En 32 bits la app muestra «no compatible».
 - **Release**: el AAR no trae reglas de R8; las de `proguard-rules.pro` son imprescindibles.
