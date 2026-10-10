@@ -112,6 +112,24 @@ class CalculatorViewModelTest {
     }
 
     @Test
+    fun missingCircumferencesAreAskedForBeforeOtherErrors() {
+        val viewModel = newViewModel()
+        viewModel.onSexChange(Sex.MALE)
+        viewModel.onWeightChange("80")
+
+        viewModel.onHeightChange("20")
+
+        val state = viewModel.uiState.value
+        assertEquals(mapOf(MeasurementField.HEIGHT to FieldError.OUT_OF_RANGE), state.fieldErrors)
+        assertEquals(BodyFatNote.NEEDS_NECK_AND_WAIST, state.bodyFatNote)
+
+        viewModel.onNeckChange("38")
+        viewModel.onWaistChange("85")
+
+        assertEquals(BodyFatNote.FIX_ERRORS, viewModel.uiState.value.bodyFatNote)
+    }
+
+    @Test
     fun bodyFatIsEstimatedLiveFromTheCircumferences() {
         val man = newViewModel()
         man.enterReferenceMan()

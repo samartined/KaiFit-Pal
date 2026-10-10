@@ -28,7 +28,7 @@ enum class BodyFatNote {
     /** No sex chosen yet; the formula depends on it. */
     SELECT_SEX,
 
-    /** Some field has an error to fix first. */
+    /** The circumferences are there, but some field has an error to fix first. */
     FIX_ERRORS,
 
     /** A man without neck or waist: US Navy needs both. */
@@ -166,10 +166,11 @@ private fun CalculatorUiState.bodyFatEstimate(
     val hasNeckAndWaist = neck.isNotBlank() && waist.isNotBlank()
     return when {
         sex == null -> null to BodyFatNote.SELECT_SEX
-        hasErrors -> null to BodyFatNote.FIX_ERRORS
+        // A missing circumference comes before errors: fixing another field would not be enough.
         sex == Sex.MALE && !hasNeckAndWaist -> null to BodyFatNote.NEEDS_NECK_AND_WAIST
         sex == Sex.FEMALE && !hasNeckAndWaist -> null to BodyFatNote.NEEDS_NECK_WAIST_AND_HIP
         sex == Sex.FEMALE && hip.isBlank() -> null to BodyFatNote.NEEDS_HIP
+        hasErrors -> null to BodyFatNote.FIX_ERRORS
         measurements != null -> {
             val percent = BodyFatCalculator.usNavy(measurements)
             percent to if (percent != null) BodyFatNote.US_NAVY else BodyFatNote.NOT_ESTIMABLE
