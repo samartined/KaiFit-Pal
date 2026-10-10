@@ -4,7 +4,6 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.semantics.SemanticsActions
-import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
@@ -15,10 +14,11 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tfg.kaifit_pal.R
+import com.tfg.kaifit_pal.testing.MinTouchTarget
+import com.tfg.kaifit_pal.testing.describeTouchTarget
+import com.tfg.kaifit_pal.testing.hasMinimumTouchTarget
 import com.tfg.kaifit_pal.ui.assistant.AssistantPreview
 import com.tfg.kaifit_pal.ui.assistant.AssistantPreviewStates
 import com.tfg.kaifit_pal.ui.calculator.CalculatorContent
@@ -45,8 +45,8 @@ import org.robolectric.annotation.Config
 
 /**
  * Accessibility of every screen, in the fixed states of the screenshots, in Spanish and in the
- * light theme: everything that can be tapped or dragged has a touch target of at least 48 × 48 dp
- * (AX6), each screen has headings and its title is one (AX7), the sliders say what they are set to
+ * light theme: everything that can be tapped or dragged has a touch target of at least 48 × 48 dp,
+ * both in what accessibility services get and in the room it takes on screen (AX6), each screen has headings and its title is one (AX7), the sliders say what they are set to
  * (AX8), the questions of Help say whether their answer is shown (AX9) and a wrong field says so
  * with its message (AX10).
  *
@@ -202,15 +202,8 @@ class AccessibilityTest {
         setContent(content)
         val targets = composeRule.onAllNodes(hasClickAction() or hasSetProgressAction()).fetchSemanticsNodes()
         assertTrue("no node can be tapped", targets.isNotEmpty())
-        val tooSmall = targets.filter { node ->
-            val (width, height) = node.touchSize()
-            width < MIN_TOUCH_TARGET - TOLERANCE || height < MIN_TOUCH_TARGET - TOLERANCE
-        }
-        assertEquals(
-            "touch targets under $MIN_TOUCH_TARGET:\n" + tooSmall.joinToString("\n") { it.describe() },
-            emptyList<String>(),
-            tooSmall.map { it.describe() },
-        )
+        val tooSmall = targets.filterNot { it.hasMinimumTouchTarget() }.map { it.describeTouchTarget() }
+        assertEquals("touch targets under $MinTouchTarget", emptyList<String>(), tooSmall)
     }
 
     /** The screen has headings, among them its title and every one of [otherHeadings]. */
@@ -225,23 +218,7 @@ class AccessibilityTest {
 
     private fun string(@StringRes id: Int, vararg args: Any): String = composeRule.activity.getString(id, *args)
 
-    private fun SemanticsNode.touchSize(): Pair<Dp, Dp> = with(layoutInfo.density) {
-        touchBoundsInRoot.width.toDp() to touchBoundsInRoot.height.toDp()
-    }
-
-    private fun SemanticsNode.describe(): String {
-        val (width, height) = touchSize()
-        val text = config.getOrElse(SemanticsProperties.Text) { emptyList() }.joinToString()
-        val description = config.getOrElse(SemanticsProperties.ContentDescription) { emptyList() }.joinToString()
-        return "$width × $height: text=\"$text\" description=\"$description\""
-    }
-
     private companion object {
-        val MIN_TOUCH_TARGET = 48.dp
-
-        /** Rounding allowance, as in the `assertTouch…IsEqualTo` assertions of Compose. */
-        val TOLERANCE = 0.5.dp
-
         val isHeading = SemanticsMatcher.keyIsDefined(SemanticsProperties.Heading)
 
         /** Sliders and other nodes whose value can be dragged; ui-test has no such matcher. */
