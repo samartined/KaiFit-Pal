@@ -45,10 +45,13 @@ import org.robolectric.annotation.Config
 
 /**
  * Accessibility of every screen, in the fixed states of the screenshots, in Spanish and in the
- * light theme: everything that can be tapped or dragged has a touch target of at least 48 × 48 dp,
- * both in what accessibility services get and in the room it takes on screen (AX6), each screen has headings and its title is one (AX7), the sliders say what they are set to
- * (AX8), the questions of Help say whether their answer is shown (AX9) and a wrong field says so
- * with its message (AX10).
+ * light theme:
+ * - everything that can be tapped or dragged has a touch target of at least 48 × 48 dp, both in
+ *   what accessibility services get and in the room it takes on screen (AX6);
+ * - each screen has headings, and its title is one (AX7);
+ * - the sliders say what they are set to (AX8);
+ * - the questions of Help say whether their answer is shown (AX9);
+ * - a wrong field says so, with its message (AX10).
  *
  * The screen is 1600 dp tall, so whole screens fit without scrolling and no target is measured
  * cut by the edge of a scrolling container.
