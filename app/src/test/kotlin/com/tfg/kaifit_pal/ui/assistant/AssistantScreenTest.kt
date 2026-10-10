@@ -6,19 +6,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertContentDescriptionEquals
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.getBoundsInRoot
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasSetTextAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tfg.kaifit_pal.R
+import com.tfg.kaifit_pal.testing.assertTouchHeightIsAtLeast
+import com.tfg.kaifit_pal.testing.assertTouchWidthIsAtLeast
 import com.tfg.kaifit_pal.ui.theme.KaiFitTheme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -182,6 +193,91 @@ class AssistantScreenTest {
         composeRule.onNodeWithText(suggestions[0]).performClick()
 
         assertEquals(listOf("suggestion:¿Cuánta proteína debería tomar al día?"), events)
+    }
+
+    // AX1
+    @Test
+    fun eachSuggestionHasATouchTargetOfAtLeast48Dp() {
+        setContent(AssistantPreviewStates.chatEmpty)
+
+        listOf(
+            R.string.assistant_suggestion_protein,
+            R.string.assistant_suggestion_breakfast,
+            R.string.assistant_suggestion_meals,
+            R.string.assistant_suggestion_training,
+        ).forEach { id ->
+            composeRule.onNode(hasClickAction() and hasText(string(id)))
+                .assertTouchHeightIsAtLeast(48.dp)
+                .assertTouchWidthIsAtLeast(48.dp)
+        }
+    }
+
+    // AX2
+    @Test
+    fun chatFieldKeepsItsLabelWhileTyping() {
+        var state by mutableStateOf(AssistantPreviewStates.chatEmpty)
+        composeRule.setContent {
+            KaiFitTheme {
+                AssistantContent(
+                    state = state,
+                    onDownload = {},
+                    onImport = {},
+                    onCancelModelTransfer = {},
+                    onDismissModelError = {},
+                    onRetry = {},
+                    onUseCpu = {},
+                    onInputChange = { state = state.copy(chat = state.chat.copy(input = it)) },
+                    onSend = {},
+                    onStop = {},
+                    onSuggestionClick = {},
+                    onNewConversation = {},
+                    onNoticeShown = {},
+                )
+            }
+        }
+        val label = string(R.string.assistant_input_label)
+        composeRule.onNode(hasSetTextAction()).assert(hasText(label))
+
+        composeRule.onNode(hasSetTextAction()).performTextInput("Hola")
+        composeRule.waitForIdle()
+
+        composeRule.onNode(hasSetTextAction())
+            .assertTextContains("Hola")
+            .assert(hasText(label))
+    }
+
+    // AX4
+    @Test
+    fun finishedReplyIsAnnouncedOnceByASingleLiveRegion() {
+        var state by mutableStateOf(AssistantPreviewStates.chatStreaming)
+        composeRule.setContent {
+            KaiFitTheme {
+                Content(state)
+            }
+        }
+        val liveRegions = SemanticsMatcher.keyIsDefined(SemanticsProperties.LiveRegion)
+
+        // While the reply streams, nothing is announced.
+        composeRule.onAllNodes(liveRegions, useUnmergedTree = true).assertCountEquals(0)
+
+        state = state.copy(
+            chat = state.chat.copy(
+                messages = state.chat.messages.map { message ->
+                    if (message.status == MessageStatus.STREAMING) {
+                        message.copy(text = message.text + " un yogur.", status = MessageStatus.DONE)
+                    } else {
+                        message
+                    }
+                },
+                isGenerating = false,
+            ),
+        )
+        composeRule.waitForIdle()
+
+        composeRule.onAllNodes(liveRegions, useUnmergedTree = true).assertCountEquals(1)
+        composeRule.onNode(liveRegions, useUnmergedTree = true)
+            .assertContentDescriptionEquals(string(R.string.assistant_reply_ready))
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.LiveRegion, LiveRegionMode.Polite))
     }
 
     // U22

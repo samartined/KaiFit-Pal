@@ -162,6 +162,7 @@
     <string name="assistant_suggestion_training">Una rutina de fuerza para empezar</string>
     <string name="assistant_disclaimer">Kai-Q puede equivocarse. Sus respuestas son orientativas y no sustituyen el consejo de un médico ni de un dietista-nutricionista.</string>
     <string name="assistant_cpu_fallback">Se está usando la CPU porque la GPU no está disponible</string>
+    <string name="assistant_input_label">Mensaje para Kai-Q</string>
     <string name="assistant_input_hint">Escribe tu pregunta</string>
     <string name="assistant_send">Enviar</string>
     <string name="assistant_stop">Detener</string>
@@ -172,6 +173,7 @@
     <string name="assistant_message_from_user">Tú: %1$s</string>
     <string name="assistant_message_from_assistant">Kai-Q: %1$s</string>
     <string name="assistant_typing">Kai-Q está escribiendo</string>
+    <string name="assistant_reply_ready">Kai-Q ha terminado de responder</string>
     <string name="assistant_notice_engine_released">Se ha cerrado Kai-Q y se ha borrado la conversación.</string>
 
     <!-- On-device model -->

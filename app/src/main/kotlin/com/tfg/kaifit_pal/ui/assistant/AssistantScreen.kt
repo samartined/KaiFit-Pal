@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -50,7 +51,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -315,6 +319,7 @@ private fun Chat(
                     .weight(1f)
                     .fillMaxWidth(),
             )
+            ReplyFinishedAnnouncement(chat.messages)
         }
         if (chat.contextFull) ContextFullBanner(onNewConversation)
         Text(
@@ -352,6 +357,26 @@ private fun Messages(chat: ChatState, modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Tells TalkBack once that Kai-Q has finished its reply, instead of reading every piece of it as
+ * it streams: a polite live region that only exists while the last message is a finished reply.
+ * It is 1 dp, because accessibility services skip nodes without size.
+ */
+@Composable
+private fun ReplyFinishedAnnouncement(messages: List<ChatMessage>) {
+    val last = messages.lastOrNull()
+    if (last?.role != ChatRole.ASSISTANT || last.status != MessageStatus.DONE) return
+    val announcement = stringResource(R.string.assistant_reply_ready)
+    Box(
+        modifier = Modifier
+            .size(1.dp)
+            .semantics {
+                contentDescription = announcement
+                liveRegion = LiveRegionMode.Polite
+            },
+    )
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun EmptyChat(hasProfile: Boolean, onSuggestionClick: (String) -> Unit, modifier: Modifier = Modifier) {
@@ -377,10 +402,10 @@ private fun EmptyChat(hasProfile: Boolean, onSuggestionClick: (String) -> Unit, 
             verticalArrangement = Arrangement.spacedBy(Spacing.s),
         ) {
             suggestions.forEach { suggestion ->
+                // The chip keeps its Material height; its touch target already reaches 48 dp.
                 SuggestionChip(
                     onClick = { onSuggestionClick(suggestion) },
                     label = { Text(suggestion, modifier = Modifier.padding(vertical = Spacing.s)) },
-                    modifier = Modifier.heightIn(min = 48.dp),
                 )
             }
         }
@@ -431,6 +456,8 @@ private fun InputRow(chat: ChatState, onInputChange: (String) -> Unit, onSend: (
             onValueChange = onInputChange,
             modifier = Modifier.weight(1f),
             enabled = !chat.contextFull,
+            // The label stays while typing, so TalkBack always says which field this is.
+            label = { Text(stringResource(R.string.assistant_input_label)) },
             placeholder = { Text(stringResource(R.string.assistant_input_hint)) },
             maxLines = 4,
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Send),
