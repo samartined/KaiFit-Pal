@@ -6,7 +6,6 @@ import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.captureRoboImage
-import com.tfg.kaifit_pal.data.settings.AppSettings
 import com.tfg.kaifit_pal.ui.assistant.AssistantPreview
 import com.tfg.kaifit_pal.ui.assistant.AssistantPreviewStates
 import com.tfg.kaifit_pal.ui.calculator.CalculatorContent
@@ -20,8 +19,8 @@ import com.tfg.kaifit_pal.ui.profile.ProfilePreviewStates
 import com.tfg.kaifit_pal.ui.profile.ProfileUiState
 import com.tfg.kaifit_pal.ui.results.ResultsContent
 import com.tfg.kaifit_pal.ui.results.ResultsPreviewStates
-import com.tfg.kaifit_pal.ui.settings.SettingsContent
-import com.tfg.kaifit_pal.ui.settings.SettingsUiState
+import com.tfg.kaifit_pal.ui.settings.SettingsPreview
+import com.tfg.kaifit_pal.ui.settings.SettingsPreviewStates
 import com.tfg.kaifit_pal.ui.theme.KaiFitTheme
 import org.junit.Rule
 import org.junit.Test
@@ -200,9 +199,5 @@ private fun Profile(state: ProfileUiState) {
 
 @Composable
 private fun Settings() {
-    SettingsContent(
-        state = SettingsUiState(AppSettings.DEFAULT, dynamicColorAvailable = true),
-        onThemeModeChange = {},
-        onDynamicColorChange = {},
-    )
+    SettingsPreview(SettingsPreviewStates.modelDownloaded)
 }

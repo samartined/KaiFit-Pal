@@ -241,8 +241,28 @@
     <string name="settings_dynamic_color_description">Usa los colores de tu fondo de pantalla en lugar del verde de KaiFit-Pal</string>
     <string name="settings_dynamic_color_unavailable">Disponible a partir de Android 12</string>
     <string name="settings_section_model">Modelo de Kai-Q</string>
-    <string name="settings_model_coming_soon">Aquí podrás descargar, importar y gestionar el modelo del asistente.</string>
+    <string name="settings_model_name">Gemma 4 E2B</string>
+    <string name="settings_model_checking">Comprobando…</string>
+    <string name="settings_model_not_downloaded">No descargado</string>
+    <string name="settings_model_downloading">Descargando %1$d %%</string>
+    <string name="settings_model_waiting_wifi">Esperando Wi-Fi</string>
+    <string name="settings_model_importing">Importando…</string>
+    <string name="settings_model_delete">Borrar modelo</string>
+    <string name="settings_model_delete_title">¿Borrar el modelo?</string>
+    <!-- Size of the model, for example "2,6 GB". -->
+    <string name="settings_model_delete_message">Tendrás que volver a descargarlo (%1$s) para usar Kai-Q.</string>
+    <string name="settings_model_delete_confirm">Borrar</string>
+    <string name="settings_model_delete_cancel">Cancelar</string>
+    <string name="settings_backend">Procesador del modelo</string>
+    <string name="settings_backend_gpu">GPU (recomendado)</string>
+    <string name="settings_backend_cpu">CPU</string>
+    <string name="settings_backend_help">Si Kai-Q falla o va lento, prueba con la CPU.</string>
+    <string name="settings_wifi_only">Descargar solo con Wi-Fi</string>
+    <string name="settings_wifi_only_description">El modelo ocupa unos %1$s</string>
     <string name="settings_section_about">Acerca de</string>
     <string name="settings_version">Versión %1$s</string>
     <string name="settings_about_description">Trabajo de Fin de Grado (TFG): calculadora de gasto energético diario y de macronutrientes, con Kai-Q, un asistente de nutrición.</string>
+    <string name="settings_license_model">Modelo: Gemma 4 E2B, de Google, con licencia Apache 2.0</string>
+    <string name="settings_license_engine">Motor: LiteRT-LM, de Google, con licencia Apache 2.0</string>
+    <string name="settings_loading">Cargando los ajustes</string>
 </resources>
