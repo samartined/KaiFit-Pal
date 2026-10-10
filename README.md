@@ -1,476 +1,115 @@
-# KaiFit-Pal 🍏📱
+# KaiFit-Pal
 
-## Estado: en modernización
-La app se está reescribiendo con **Kotlin + Jetpack Compose + Material 3**, y el asistente Kai-Q pasará a usar un **modelo local que se ejecuta en el propio dispositivo** (sustituye a la API de OpenAI).
-- El trabajo se hace en la rama [`feat/ui-modernization`](https://github.com/samartined/KaiFit-Pal/tree/feat/ui-modernization) y el plan técnico está en [`docs/dev/MODERNIZATION_PLAN.md`](docs/dev/MODERNIZATION_PLAN.md).
-- La versión original en Java + XML se conserva en la rama [`backup/original-java`](https://github.com/samartined/KaiFit-Pal/tree/backup/original-java) y en el tag [`v1.0.0`](https://github.com/samartined/KaiFit-Pal/tree/v1.0.0).
-- Para compilar la rama hace falta JDK 17 o superior y el Android SDK (variable `ANDROID_HOME` o `sdk.dir` en `local.properties`); basta con `./gradlew assembleDebug`. Los tests (`./gradlew testDebugUnitTest`, con Robolectric y SDK 36) necesitan JDK 21; compilar con `assembleDebug` sigue funcionando con JDK 17. Ya no hace falta ninguna clave de API.
+KaiFit-Pal es una app Android que calcula tu gasto energético diario (TDEE) y tu porcentaje de grasa corporal, te propone un reparto de macronutrientes según tu objetivo e incluye Kai-Q, un asistente de nutrición que funciona en el propio dispositivo.
 
-## Description ℹ️
-KaiFit-Pal is your handy Android companion for nutritional tracking and advice. It offers both a nutritional calculator and an AI assistant to guide you through your dietary journey.
+## Qué hace
 
-## Features 🚀
-- **Nutritional Calculator**: Easily calculate various nutritional parameters with just a few taps.
-- **AI Assistant**: Get personalized nutritional advice and information through the power of AI.
+- **Calculadora**: pide sexo, edad, altura, peso, nivel de actividad y, de forma opcional, las circunferencias del cuello, la cintura y (en mujeres) la cadera. Con esas medidas estima el % de grasa corporal con la fórmula US Navy y calcula el metabolismo basal con Katch-McArdle; si faltan, usa Mifflin-St Jeor, que tiene en cuenta la edad. Valida los datos mientras se escriben y acepta coma o punto decimal.
+- **Resultados**: muestra el TDEE, el método usado y la grasa corporal. El objetivo se ajusta entre −20 % y +20 % sobre el TDEE en pasos de 5 %, con su etiqueta (déficit, mantenimiento o volumen) y las kcal resultantes. La proteína y la grasa se pueden ajustar; los carbohidratos son el resto, de modo que el total de los macros coincide con las calorías objetivo (salvo el redondeo a gramos enteros). Desde aquí se guarda el resultado en el perfil o se pregunta a Kai-Q.
+- **Perfil**: la última medición y el resultado guardado (TDEE, método, objetivo, calorías y macros, fecha), con opciones para recalcular o borrar los datos.
+- **Kai-Q**: chat con un modelo de lenguaje que se ejecuta en el móvil, con respuesta en streaming, botón para detener, «Nueva conversación» y preguntas sugeridas. Ver [Cómo funciona el asistente local](#cómo-funciona-el-asistente-local).
+- **Ayuda**: preguntas frecuentes desplegables (cómo medirse, qué es el TDEE, qué fórmulas se usan, cómo se reparten los macros, cómo funciona Kai-Q, dónde se guardan los datos).
+- **Ajustes**: tema (sistema, claro u oscuro), color dinámico en Android 12 o superior, y gestión del modelo de Kai-Q: descargar, importar, cancelar o borrar, procesador (GPU o CPU) y descarga solo con Wi-Fi. Incluye la versión y las licencias del modelo y del motor.
 
-## Technologies Used 🛠️
-- Android SDK
-- Java
-- XML
-- [GPT API](https://gptapi.com/) (for AI assistance)
+La interfaz está en español, usa Material 3 con tema claro y oscuro y se ha revisado para TalkBack (encabezados, descripciones y objetivos táctiles de 48 dp).
 
-## Installation 💻
-To get started with KaiFit-Pal:
-1. Clone the repository.
-2. Open the project in Android Studio.
-3. Build and run the project on your Android device or emulator.
+## Capturas
 
-## Usage 🤳
-Once installed, KaiFit-Pal offers the following main functionalities:
-- **Nutritional Calculator**: Calculate nutritional values of foods and meals effortlessly.
-- **AI Assistant**: Engage in chat-based conversations to receive personalized nutritional guidance.
+| Calculadora | Resultados | Perfil | Ayuda |
+|---|---|---|---|
+| <img src="docs/screenshots/calculator_female_light.png" alt="Calculadora en tema claro con los datos de una mujer y su grasa corporal estimada" width="200"> | <img src="docs/screenshots/results_light.png" alt="Resultados en tema claro con el TDEE, el objetivo a −15 % y los macronutrientes" width="200"> | <img src="docs/screenshots/profile_saved_light.png" alt="Perfil en tema claro con la última medición y el resultado guardado" width="200"> | <img src="docs/screenshots/help_light.png" alt="Ayuda en tema claro con las preguntas frecuentes" width="200"> |
 
-## Screenshots 📸
-(Coming soon!)
+| Ajustes | Kai-Q sin modelo | Kai-Q respondiendo | Kai-Q en tema oscuro |
+|---|---|---|---|
+| <img src="docs/screenshots/settings_light.png" alt="Ajustes en tema claro con el tema, el color dinámico y el modelo de Kai-Q" width="200"> | <img src="docs/screenshots/assistant_not_downloaded_light.png" alt="Kai-Q en tema claro antes de descargar el modelo, con las opciones de descargar o importar" width="200"> | <img src="docs/screenshots/assistant_chat_streaming_light.png" alt="Chat de Kai-Q en tema claro mientras escribe una respuesta" width="200"> | <img src="docs/screenshots/assistant_chat_streaming_dark.png" alt="Chat de Kai-Q en tema oscuro mientras escribe una respuesta" width="200"> |
 
-## Project Structure
+Las capturas se generan sin emulador con Roborazzi sobre Robolectric (ver [Cómo compilar](#cómo-compilar)).
+
+## Cómo funciona el asistente local
+
+- **Modelo**: Gemma 4 E2B en formato `.litertlm`, ejecutado con LiteRT-LM 0.18.0 dentro de la app.
+- **Obtenerlo**: se descarga una sola vez (unos 2,6 GB, 2.588.147.712 bytes) desde Hugging Face con el gestor de descargas del sistema; por defecto solo con Wi-Fi, opción que se puede cambiar en Ajustes. También se puede importar un fichero `.litertlm` elegido con el selector de archivos.
+- **Verificación**: la descarga se da por buena solo si el fichero tiene el tamaño exacto esperado y la cabecera `LITERTLM`; un fichero importado debe tener esa cabecera.
+- **Ejecución**: usa la GPU por defecto y, si la GPU falla, pasa automáticamente a la CPU. El procesador se puede elegir en Ajustes.
+- **Privacidad del chat**: las preguntas y las respuestas se procesan en el dispositivo; el chat no envía nada a ningún servidor. La conversación vive solo en memoria y se pierde al cerrar la app.
+- **Contexto**: si hay un resultado guardado en el perfil, sus datos (medidas, TDEE, objetivo y macros) se añaden como contexto de cada conversación.
+- **Límite de contexto**: tras unos 2560 tokens o 20 preguntas, Kai-Q pide empezar una «Nueva conversación»; no resume ni recorta el historial.
+- **Aviso**: Kai-Q puede equivocarse. Sus respuestas son orientativas y no sustituyen el consejo de un médico ni de un dietista-nutricionista.
+
+## Requisitos del dispositivo
+
+- **App**: Android 8.0 (API 26) o superior.
+- **Kai-Q**, además:
+  - CPU de 64 bits (arm64-v8a o x86_64);
+  - unos 3,1 GB libres para descargar o importar el modelo (2,6 GB del modelo + 500 MB de margen);
+  - 6 GB de RAM recomendados; la app avisa (sin bloquear) por debajo de 5,5 GB;
+  - GPU con OpenCL opcional: sin ella, el modelo se ejecuta en la CPU.
+- **Permisos**: solo Internet, que se usa únicamente para descargar el modelo.
+
+## Privacidad
+
+- El perfil (última medición y resultado guardado) y los ajustes se guardan con DataStore en el almacenamiento interno de la app. La app no los envía a ningún servidor.
+- El modelo de Kai-Q se excluye de la copia de seguridad y de la transferencia entre dispositivos de Android, porque supera la cuota de la copia y se puede volver a descargar.
+- El resto de los datos de la app, incluidos el perfil y los ajustes, siguen las reglas por defecto de la copia de seguridad de Android: si el usuario la tiene activada, pueden incluirse en ella.
+- Los datos del perfil se pueden borrar desde Perfil, con «Borrar datos».
+
+## Cómo compilar
+
+Requisitos:
+
+- **JDK 21** (el que usa la CI). Los tests con Robolectric y SDK 36 lo necesitan.
+- **Android SDK** con `platforms;android-37.0` y `build-tools;36.0.0`, indicado con la variable `ANDROID_HOME` o con `sdk.dir` en `local.properties` (este fichero no se versiona).
+- No hace falta ninguna clave de API.
+
+Comandos, desde la raíz del repositorio:
+
+```bash
+./gradlew assembleDebug          # APK de depuración en app/build/outputs/apk/debug/
+./gradlew testDebugUnitTest      # tests unitarios y de UI (JVM, Robolectric)
+./gradlew lintDebug              # lint de Android
+./gradlew recordRoborazziDebug   # capturas de pantalla en app/build/outputs/roborazzi/
 ```
-C:.
-│   AndroidManifest.xml
-│   
-├───java
-│   └───com
-│       └───tfg
-│           └───kaifit_pal
-│               │   MainActivity.java
-│               │
-│               ├───kaimodel
-│               │       ChatHistoryManager.java
-│               │       GPTApiCaller.java
-│               │
-│               ├───logic
-│               │       CalculatorLogic.java
-│               │       MacrosManager.java
-│               │
-│               ├───utilities
-│               │       AppBarHandler.java
-│               │       DataParser.java
-│               │
-│               └───views
-│                   └───fragments
-│                       │   CalculateListenerInterface.java
-│                       │   Calculator.java
-│                       │   Help.java
-│                       │   Profile.java
-│                       │   Settings.java
-│                       │   TdeeMacros.java
-│                       │
-│                       └───kaiq
-│                               KaiQ.java
-│                               MessageAdapter.java
-│                               MessageController.java
-│
-└───res
-    ├───drawable
-    │       baseline_info_24.xml
-    │       baseline_restore_page_24.xml
-    │       calculator_icon.xml
-    │       chat_ia.xml
-    │       edittext_borders.xml
-    │       edittext_disabled_background.xml
-    │       help_info_icon.xml
-    │       ic_back_arrow_black.xml
-    │       ic_launcher_background.xml
-    │       ic_launcher_foreground.xml
-    │       rect_button_notpressed.xml
-    │       rect_button_pressed.xml
-    │       rounded_corner.xml
-    │       rounded_shape_buttons.xml
-    │       send_message_vector.xml
-    │       settings_icon.xml
-    │       user_profile_icon.xml
-    │
-    ├───layout
-    │       activity_main.xml
-    │       chat_item.xml
-    │       fragment_calculator.xml
-    │       fragment_f_a_qs.xml
-    │       fragment_kai_q.xml
-    │       fragment_profile.xml
-    │       fragment_settings.xml
-    │       fragment_t_d_e_e__macros.xml
-    │
-    ├───menu
-    │       bottom_menu_bar.xml
-    │       kai_q_appbar.xml
-    │
-    ├───mipmap-anydpi-v26
-    │       ic_launcher.xml
-    │       ic_launcher_round.xml
-    │
-    ├───mipmap-hdpi
-    │       ic_launcher.webp
-    │       ic_launcher_round.webp
-    │
-    ├───mipmap-mdpi
-    │       ic_launcher.webp
-    │       ic_launcher_round.webp
-    │
-    ├───mipmap-xhdpi
-    │       ic_launcher.webp
-    │       ic_launcher_round.webp
-    │
-    ├───mipmap-xxhdpi
-    │       ic_launcher.webp
-    │       ic_launcher_round.webp
-    │
-    ├───mipmap-xxxhdpi
-    │       ic_launcher.webp
-    │       ic_launcher_round.webp
-    │
-    ├───values
-    │       activity_factor_values.xml
-    │       colors.xml
-    │       strings.xml
-    │       themes.xml
-    │
-    ├───values-night
-    │       themes.xml
-    │
-    └───xml
-            backup_rules.xml
-            data_extraction_rules.xml
+
+La integración continua está en [`.github/workflows/android.yml`](.github/workflows/android.yml): en cada push a `main` o `feat/**`, en cada pull request y bajo demanda, instala JDK 21 y el SDK, valida el wrapper de Gradle y ejecuta `assembleDebug`, `testDebugUnitTest` y `lintDebug`. Publica los informes y el APK de depuración como artefactos.
+
+## Estructura del proyecto
+
 ```
----
-
-## MainActivity
-
-### Setup and Initialization 🛠️
-The `onCreate` method initializes the activity, sets up the action bar, initializes the bottom navigation view, and adds the default fragment (`Calculator`) to the activity.
-
-### Fragment Management 📱
-- Fragments are managed using a `FragmentManager`.
-- Fragments are stored in a `HashMap` for easy retrieval based on their class names.
-- The `fragmentsExchangeStack` method sets up the logic for fragment navigation based on bottom navigation item selection.
-- The `addDefaultFragment` method adds the default fragment to the activity.
-- The `onBackPressed` method handles back button presses and navigates between fragments accordingly.
-
-### App Bar Handling 📝
-- The `setAppBar` method dynamically sets the app bar title based on the current fragment.
-
-### Interface Implementation 🤝
-- The `CalculateListenerInterface` is implemented to handle clicks on the "Calculate" button in the `Calculator` fragment.
-- The `onCalculateClick` method is called when the "Calculate" button is clicked, and it navigates to the `TdeeMacros` fragment with the calculated TDEE result.
-
----
-
-## Calculator Fragment
-
-The Calculator fragment is used to calculate the Total Daily Energy Expenditure (TDEE) and body fat percentage of the user.
-
-### Responsibilities 🧮
-- Perform TDEE and body fat percentage calculations based on user input.
-- Display input fields for age, weight, height, neck, waist, and hip measurements.
-- Provide options to select gender and activity level.
-
-### Methods 🛠️
-- **onAttach**: Called when the fragment is first attached to its context. Throws a ClassCastException if the context does not implement the CalculateListenerInterface.
-- **onCreateView**: Called when the fragment is created. Inflates the layout for the fragment and sets up buttons and text change listeners.
-- **calculateTDEEAndNotify**: Calculates the TDEE and notifies the parent activity of the result.
-- **setUpComponents**: Sets up buttons and info imageviews for the Calculator fragment.
-- **setUpInfoImageViews**: Sets up info imageviews for the Calculator fragment.
-- **showInfoDialog**: Displays a dialog with the given message.
-- **updateAge**: Updates the age displayed in the dynamicAge TextView.
-- **selectGender**: Selects the gender in the Calculator fragment and updates the UI accordingly.
-- **setUpTextChangeListeners**: Sets up text change listeners for input fields and calculates the body fat percentage based on user input.
-- **getActivityFactor**: Gets the activity factor selected by the user from the Spinner.
-- **onViewCreated**: Called when the fragment is created and the view is created. Sets initial values for input fields.
-
----
-
-## TdeeMacros Fragment
-
-The `TdeeMacros` fragment class handles the Total Daily Energy Expenditure (TDEE) and macronutrient calculations. It provides an interface for the user to adjust their TDEE and macronutrient ratios.
-
-### Responsibilities 🧮
-- Perform TDEE and macronutrient calculations based on user input.
-- Display TDEE, modifier TDEE, intensity modifier, and macro percentages.
-- Provide options to modify TDEE and adjust macronutrient ratios using NumberPickers.
-- Handle user interactions with buttons and UI components.
-
-### Methods 🛠️
-- **onCreateView**: Called to do the initial creation of the fragment. Inflates the layout for the fragment and initializes UI components.
-- **setUpActionBar**: Sets up the ActionBar with a custom title and back button.
-- **initializeUIComponents**: Initializes UI components including TextViews, NumberPickers, and Buttons.
-- **setUpTextViews**: Sets up TextViews for displaying macro titles and percentages.
-- **setUpNumberPickers**: Sets up NumberPickers for adjusting macronutrient ratios and adds listeners to update UI components.
-- **setUpButtons**: Sets up buttons for modifying TDEE.
-- **modifyTdee**: Modifies the TDEE based on the provided modifier and updates UI components accordingly.
-- **getMacroPercentageForPicker**: Retrieves the macro percentage for a given NumberPicker based on the modifier.
-- **updateMacroPercentages**: Updates the displayed macro percentages based on the selected values in NumberPickers.
-- **updateNumberPickers**: Updates the NumberPickers and TDEE when the user makes manual changes.
-- **getDoubleStringLabelModifiersTreeMap**: Retrieves intensity modifiers mapped to their corresponding modifier percentages.
-- **onOptionsItemSelected**: Handles the back button press in the ActionBar.
-- **onPause**: Called when the fragment is no longer visible. Updates NumberPickers to avoid losing changes.
-- **onSaveInstanceState**: Called before the fragment's state is saved. Updates NumberPickers to preserve changes.
-- **onViewStateRestored**: Called when the view's saved state has been restored. Updates NumberPickers.
-- **onStop**: Called when the fragment is no longer interacting with the user. Resets the ActionBar to its default state.
-
----
-
-## CalculateListenerInterface
-
-This interface is used to define a callback method that will be called when a calculation is completed. The method takes an integer as a parameter, which represents the result of the calculation. This interface should be implemented by any class that needs to respond to this event.
-
-### Methods 🤝
-- **onCalculateClick**: This method is called when a calculation is completed. It takes the result of the calculation (`tdeeResult`) as a parameter.
-
----
-
-## KaiQ
-
-This class represents the KaiQ fragment. It handles the user interaction with the chat interface.
-
-### Fields 📋
-- `private RecyclerView recyclerView`
-- `private EditText messageEditText`
-- `private ImageButton sendButton`
-- `private List<MessageController> messageList`
-- `private MessageAdapter messageAdapter`
-- `private final GPTApiCaller gptApiCaller`
-
-### Methods 🛠️
-- `onCreateView`: This method is called to do initial creation of the fragment.
-- `setUpComponents`: This method sets up the components of the fragment.
-- `setUpListeners`: This method sets up the listeners for the components of the fragment.
-- `onCreateOptionsMenu`: This method is called to create the options menu and clear the chat.
-- `setUpAdapter`: This method sets up the adapter for the RecyclerView.
-- `addToChat`: This method adds a message to the chat.
-- `addResponseToChat`: This method adds a response to the chat.
-- `clearChat`: This method is called to clean the chat and start a new conversation.
-
----
-
-## MessageAdapter
-
-This class represents the adapter for the RecyclerView in the KaiQ chat. It handles the creation and binding of view holders for the chat messages.
-
-### Fields 📋
-- `List<MessageController> messageList`
-
-### Methods 🛠️
-- `MessageAdapter`: Constructor for the MessageAdapter class.
-- `onCreateViewHolder`: This method is called when the RecyclerView needs a new ViewHolder of the given type to represent an item.
-- `onBindViewHolder`: This method is called by RecyclerView to display the data at the specified position.
-- `getItemCount`: This method returns the total number of items
-
- in the data set held by the adapter.
-
-#### Inner Class: MyViewHolder
-
-This class represents the view holder for each individual chat message in the RecyclerView.
-
-##### Fields 📋
-- `TextView messageTextView`
-- `LinearLayoutCompat layout`
-
-##### Methods 🛠️
-- `MyViewHolder`: Constructor for the MyViewHolder class.
-
----
-
-## MessageController
-
-This class represents a single message in the KaiQ chat. It contains information about the message such as its content and whether it is a user message or a response from the AI.
-
-### Constants 📊
-- `public static final int USER_MESSAGE`
-- `public static final int AI_MESSAGE`
-
-### Fields 📋
-- `private final String message`
-- `private final int type`
-
-### Methods 🛠️
-- `MessageController`: Constructor for the MessageController class.
-- `getMessage`: Getter method for the message field.
-- `getType`: Getter method for the type field.
-
----
-
-## CalculatorLogic 💡
-
-This class contains the logic to calculate the Total Daily Energy Expenditure (TDEE), the fat percentage, and the macros. It uses the Katch-McArdle formula to calculate the Basal Metabolic Rate (BMR) and then the TDEE. It also calculates the fat percentage using the Katch-McArdle formula. This class uses the Singleton pattern to avoid creating multiple instances of it.
-
-### Constructors 🏗️
-- `private CalculatorLogic()`: Constructs a new instance of the CalculatorLogic class. It is private to avoid creating instances of this class directly.
-
-### Methods 🛠️
-- `static CalculatorLogic createInstance(boolean sex, int age, double height, double weight, double neck, double waist, double hip) : CalculatorLogic`: Creates an instance of the CalculatorLogic class with the provided parameters. Calculates the fat percentage based on the given measurements.
-- `static double calculateFatPercentage(boolean sex, double height, double waist, double neck, double hip) : double`: Calculates the body fat percentage based on the given measurements.
-- `calculateTDEE() : int`: Calculates the Total Daily Energy Expenditure (TDEE) for the person.
-  
-### Fields 📊
-- `int age`: The age of the person in years.
-- `double weight`: The weight of the person in kilograms.
-- `double waist`: The waist measurement of the person in centimeters.
-- `double hip`: The hip measurement of the person in centimeters.
-- `double neck`: The neck measurement of the person in centimeters.
-- `double height`: The height of the person in centimeters.
-- `double fatPercentage`: The body fat percentage of the person.
-- `double activityFactor`: The activity factor used to calculate the TDEE.
-- `boolean sex`: The sex of the person. True for female, false for male.
-
-### Getters and Setters 🔍
-- `getAge() : int` / `setAge(int age) : void`: Gets or sets the age of the person.
-- `getWeight() : double` / `setWeight(double weight) : void`: Gets or sets the weight of the person.
-- `getHeight() : double` / `setHeight(int height) : void`: Gets or sets the height of the person.
-- `getWaist() : double` / `setWaist(double waist) : void`: Gets or sets the waist measurement of the person.
-- `getHip() : double` / `setHip(double hip) : void`: Gets or sets the hip measurement of the person.
-- `getNeck() : double` / `setNeck(double neck) : void`: Gets or sets the neck measurement of the person.
-- `isSex() : boolean` / `setSex(boolean sex) : void`: Gets or sets the sex of the person.
-- `getActivityFactor() : double` / `setActivityFactor(double activityFactor) : void`: Gets or sets the activity factor used to calculate the TDEE.
-- `getFatPercentage() : double`: Gets the body fat percentage of the person.
-
----
-
-## MacrosManager 📊
-
-This class manages macronutrient percentages for different modifiers.
-
-### Fields 📊
-- `private static final HashMap<String, Double[]> modifierMacrosPercentages`: HashMap to store the macronutrient percentages for different modifiers. The key is the modifier name, and the value is an array of Double values representing the percentages for Proteins, Fats, and Carbs respectively.
-
-### Methods 🛠️
-- `static Double[] getMacrosPercentagesForModifier(String modifier) : Double[]`: Retrieves the macronutrient percentages for a given modifier.
-
-### Static Initialization Block 🏗️
-- Initializes `modifierMacrosPercentages` with macronutrient percentages for different modifiers.
-
-### Static Initialization Data 📊
-- Key: "Mantenimiento", Value: {0.35, 0.25, 0.45} (Proteins, Fats, Carbs percentages)
-- Key: "Definición", Value: {0.35, 0.25, 0.40} (Proteins, Fats, Carbs percentages)
-- Key: "Volumen", Value: {0.25, 0.20, 0.55} (Proteins, Fats, Carbs percentages)
-
----
-## GPTApiCaller 📞
-
-The `GPTApiCaller` class is responsible for making requests to the GPT-3 API. It utilizes an instance of the `OkHttpClient` to perform these requests and interacts with the `ChatHistoryManager` to manage chat history. It also holds a reference to an instance of the `KaiQ` class to add responses to the chat.
-
-### Fields 📊
-- `private final ChatHistoryManager chatHistoryManager`: An instance of `ChatHistoryManager` used to manage the chat history.
-- `public static final MediaType JSON`: Media type for JSON requests.
-- `private static final Logger LOGGER`: Logger instance for logging.
-- `private final OkHttpClient client`: Instance of `OkHttpClient` for making HTTP requests.
-- `private final KaiQ kaiQ`: Instance of `KaiQ` to add responses to the chat.
-
-### Constructor 🏗️
-- `public GPTApiCaller(KaiQ kaiQ)`: Initializes the `GPTApiCaller` with a reference to a `KaiQ` instance.
-
-### Methods 🛠️
-- `public void gptApiRequest(String query)`: Makes a request to the GPT-3.5 API with the user query.
-
-### Callbacks 🔍
-- `onFailure(Call call, IOException e)`: Called when the request to the GPT-3.5 API fails.
-- `onResponse(Call call, Response response)`: Called when the request to the GPT-3.5 API is successful.
-
-### Error Handling ❌
-- Logs errors using the `LOGGER` instance.
-- Displays error messages in the chat interface via the `KaiQ` instance.
-
-### Request Building 🛠️
-- Builds and sends a POST request to the GPT-3.5 API endpoint.
-- Includes required headers and authentication token.
-- Constructs JSON payload with user query and chat history.
-- Parses the response from the GPT-3.5 API and adds the response message to the chat.
-
----
-
-## ChatHistoryManager 📜
-
-The `ChatHistoryManager` class manages the chat history between the user and the assistant. It stores the chat history as a list of JSONObjects, where each JSONObject represents a message. Each message has a role (either "user" or "assistant") and content (the text of the message).
-
-### Fields 📊
-- `private final List<JSONObject> chatHistory`: List to store the chat history.
-
-### Constructor 🏗️
-- `public ChatHistoryManager()`: Initializes the `chatHistory` list.
-
-### Methods 🛠️
-- `public List<JSONObject> getChatHistory()`: Getter for the `chatHistory` list.
-- `public void addUserMessageToHistory(String message)`: Adds a user message to the chat history.
-- `public void addAssistantMessageToHistory(String message)`: Adds an assistant message to the chat history.
-
-
-- `private JSONObject createMessage(String role, String content)`: Creates a JSONObject representing a message.
-
-### Message Representation 📝
-- Each message is represented as a JSONObject with two key-value pairs:
-  - `"role"`: The role of the message (either "user" or "assistant").
-  - `"content"`: The text of the message.
-
-### Message Addition ➕
-- User and assistant messages are added to the chat history using separate methods.
-- Messages are represented as JSONObjects and added to the `chatHistory` list.
-
----
-## AppBarHandler 🎨
-
-The `AppBarHandler` is a utility class for handling AppBar related operations.
-
-### Methods 🛠️
-
-#### `setUpActionBar(AppCompatActivity activity, String title, boolean displayHomeAsUpEnabled, boolean displayShowHomeEnabled)`
-- Sets up the ActionBar for the given activity.
-- Parameters:
-  - `activity`: The activity where the ActionBar is to be set up.
-  - `title`: The title to be displayed in the ActionBar.
-  - `displayHomeAsUpEnabled`: Whether the home button should be displayed in the ActionBar.
-  - `displayShowHomeEnabled`: Whether the home button should be enabled in the ActionBar.
-- Actions:
-  - Sets the Toolbar for the activity.
-  - Sets the title, home button display, and home button indicator for the ActionBar.
-
-#### `resetActionBar(AppCompatActivity activity)`
-- Resets the ActionBar for the given activity.
-- Parameters:
-  - `activity`: The activity where the ActionBar is to be reset.
-- Actions:
-  - Resets the display of the home button and title in the ActionBar.
-
-#### `setTitle(AppCompatActivity activity, String title)`
-- Sets the title of the ActionBar for the given activity.
-- Parameters:
-  - `activity`: The activity where the ActionBar title is to be set.
-  - `title`: The title to be displayed in the ActionBar.
-- Actions:
-  - Sets the title of the ActionBar.
-
-### Usage 🚀
-- Use `setUpActionBar` to configure the ActionBar with a title, home button display, and home button indicator.
-- Use `resetActionBar` to reset the ActionBar, hiding the home button and resetting the title to default.
-- Use `setTitle` to set the title of the ActionBar dynamically.
-
----
-
-## DataParser 📊
-
-The `DataParser` is a utility class for parsing data.
-
-### Methods 🛠️
-
-#### `parseDoubleUtility(String str)`
-- Parses a string into a double.
-- Parameters:
-  - `str`: The string to parse.
-- Returns: The parsed double, or 0 if the string cannot be parsed.
-
-#### `parseIntUtility(String str)`
-- Parses a string into an integer.
-- Parameters:
-  - `str`: The string to parse.
-- Returns: The parsed integer, or 0 if the string cannot be parsed.
-
-### Usage 🚀
-- Use `parseDoubleUtility` to parse a string into a double value.
-- Use `parseIntUtility` to parse a string into an integer value.
+app/src/main/kotlin/com/tfg/kaifit_pal/
+├── KaiFitApp.kt, AppContainer.kt, MainActivity.kt
+├── domain/        Kotlin puro: medidas, % graso (US Navy), TDEE, objetivo y macros
+├── data/
+│   ├── profile/   perfil guardado (DataStore)
+│   ├── settings/  ajustes de la app (DataStore)
+│   └── llm/       modelo de Kai-Q: descarga, importación, prompt y LiteRT-LM
+└── ui/
+    ├── theme/       colores, tipografía, formas y tema
+    ├── navigation/  rutas tipadas y NavHost
+    ├── components/  componentes compartidos
+    ├── calculator/  Calculadora
+    ├── results/     Resultados
+    ├── profile/     Perfil
+    ├── assistant/   Kai-Q
+    ├── help/        Ayuda
+    └── settings/    Ajustes
+
+app/src/test/kotlin/com/tfg/kaifit_pal/
+├── domain/        tests del dominio con valores de referencia
+├── data/          repositorios y gestor del modelo (con fakes)
+├── ui/            pantallas, ViewModels, navegación, accesibilidad y capturas
+└── testing/       fakes y utilidades compartidas
+```
+
+## Versión original
+
+La primera versión de la app, escrita en Java + XML para el Trabajo de Fin de Grado, se conserva en la rama [`backup/original-java`](https://github.com/samartined/KaiFit-Pal/tree/backup/original-java) (también marcada localmente con el tag `v1.0.0`). Su asistente usaba una API externa de OpenAI, que la versión actual ya no usa.
+
+- Cambios de la versión 2.0.0: [`CHANGELOG.md`](CHANGELOG.md).
+- Plan técnico y diagnóstico de la versión original: [`docs/dev/MODERNIZATION_PLAN.md`](docs/dev/MODERNIZATION_PLAN.md).
+
+## Licencias de terceros
+
+- **Gemma 4 E2B**, de Google: licencia Apache 2.0, según la ficha del modelo [`litert-community/gemma-4-E2B-it-litert-lm`](https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm). El modelo no se incluye en el repositorio ni en el APK; se descarga o importa en el dispositivo.
+- **LiteRT-LM**, de Google: licencia Apache 2.0 ([repositorio](https://github.com/google-ai-edge/LiteRT-LM)).
+
+El resto de dependencias y sus versiones están en [`gradle/libs.versions.toml`](gradle/libs.versions.toml); cada una tiene su propia licencia.
