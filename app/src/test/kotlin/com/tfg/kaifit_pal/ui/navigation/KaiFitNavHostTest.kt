@@ -46,7 +46,7 @@ class KaiFitNavHostTest {
         TopLevelDestination.PROFILE to (R.string.profile_title to R.string.profile_go_to_calculator),
         TopLevelDestination.CALCULATOR to (R.string.calculator_title to R.string.calculator_sex),
         TopLevelDestination.ASSISTANT to (R.string.assistant_title to R.string.assistant_placeholder),
-        TopLevelDestination.HELP to (R.string.help_title to R.string.help_placeholder),
+        TopLevelDestination.HELP to (R.string.help_title to R.string.help_q_waist),
         TopLevelDestination.SETTINGS to (R.string.settings_title to R.string.settings_section_appearance),
     )
 
@@ -106,18 +106,30 @@ class KaiFitNavHostTest {
     }
 
     @Test
-    fun calculatorFormSurvivesSwitchingToAnotherTabAndBack() {
+    fun tabsKeepTheirStateWhenSwitchingBackAndForth() {
         setShell()
         field(R.string.calculator_height).performTextInput("180")
 
         tab(TopLevelDestination.HELP).performClick()
         composeRule.waitForIdle()
         assertScreenShown(TopLevelDestination.HELP)
+        composeRule.onNodeWithText(string(R.string.help_q_waist)).performClick()
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText(string(R.string.help_a_waist)).assertIsDisplayed()
+
         tab(TopLevelDestination.CALCULATOR).performClick()
         composeRule.waitForIdle()
 
         assertScreenShown(TopLevelDestination.CALCULATOR)
         field(R.string.calculator_height).assertTextContains("180")
+
+        // The calculator, as start destination, is never popped; the help tab is, and its saved
+        // state must come back with it.
+        tab(TopLevelDestination.HELP).performClick()
+        composeRule.waitForIdle()
+
+        assertScreenShown(TopLevelDestination.HELP)
+        composeRule.onNodeWithText(string(R.string.help_a_waist)).assertIsDisplayed()
     }
 
     @Test
@@ -204,7 +216,7 @@ class KaiFitNavHostTest {
 
         assertScreenShown(TopLevelDestination.CALCULATOR)
         assertOnlySelectedTab(TopLevelDestination.CALCULATOR)
-        composeRule.onNodeWithText(string(R.string.help_placeholder)).assertDoesNotExist()
+        composeRule.onNodeWithText(string(R.string.help_q_waist)).assertDoesNotExist()
     }
 
     @Test

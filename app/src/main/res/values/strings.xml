@@ -60,6 +60,10 @@
     <!-- Share of the calorie target and calories of one macronutrient: "30 % · 844 kcal". -->
     <string name="macro_share">%1$d %% · %2$d kcal</string>
 
+    <!-- Expandable cards -->
+    <string name="expandable_expanded">Desplegada</string>
+    <string name="expandable_collapsed">Plegada</string>
+
     <!-- Profile -->
     <string name="profile_title">Perfil</string>
     <string name="profile_loading">Cargando el perfil</string>
@@ -139,7 +143,26 @@
 
     <!-- Help -->
     <string name="help_title">Ayuda</string>
-    <string name="help_placeholder">Aquí encontrarás respuestas a las preguntas frecuentes: cómo tomar tus medidas, qué es el TDEE y qué fórmulas se usan.</string>
+    <string name="help_q_waist">¿Cómo me mido la cintura?</string>
+    <string name="help_a_waist">Usa una cinta métrica flexible, de pie, relajado y al final de una espiración normal, sin apretar la cinta ni hundir la piel. Los hombres se miden en horizontal a la altura del ombligo. Las mujeres se miden en la parte más estrecha de la cintura, normalmente un poco por encima del ombligo. Así lo indica la fórmula US Navy que usa la app.</string>
+    <string name="help_q_neck">¿Cómo me mido el cuello?</string>
+    <string name="help_a_neck">Coloca la cinta justo por debajo de la laringe (la nuez), ligeramente inclinada hacia delante y sin apretar. Mantén la cabeza recta y la mirada al frente.</string>
+    <string name="help_q_hip">¿Cómo me mido la cadera? ¿Por qué solo se pide a las mujeres?</string>
+    <string name="help_a_hip">Mide la parte más ancha de los glúteos, con la cinta horizontal y los pies juntos. La fórmula US Navy solo usa la cadera en las mujeres, así que la app no la pide a los hombres. Si una mujer no la introduce, no se estima su porcentaje de grasa corporal y el TDEE se calcula con Mifflin-St Jeor.</string>
+    <string name="help_q_tdee">¿Qué es el TDEE y qué es el factor de actividad?</string>
+    <string name="help_a_tdee">El TDEE (gasto energético diario total) es una estimación de las calorías que gastas en un día. Se obtiene multiplicando tu metabolismo basal, lo que gastas en reposo, por un factor de actividad: 1,2 si eres sedentario, 1,375 con ejercicio ligero, 1,55 con ejercicio moderado, 1,725 si eres activo y 1,9 si eres muy activo. Elige el nivel que mejor describa una semana normal.</string>
+    <string name="help_q_formulas">¿Qué fórmulas usa la app? ¿Por qué me pide la edad?</string>
+    <string name="help_a_formulas">El porcentaje de grasa corporal se estima con la fórmula US Navy, a partir de la altura y de las circunferencias del cuello, la cintura y, en las mujeres, la cadera. Cuando se puede estimar, el metabolismo basal se calcula con Katch-McArdle, que usa tu masa magra. Si no introduces esas medidas, se usa Mifflin-St Jeor, que tiene en cuenta el sexo, el peso, la altura y la edad: por eso se pide la edad.</string>
+    <string name="help_q_macros">¿Cómo se reparten los macronutrientes?</string>
+    <string name="help_a_macros" formatted="false">Las calorías objetivo se reparten según tu objetivo: con déficit, 35 % de proteína, 25 % de grasa y 40 % de carbohidratos; en mantenimiento, 30 %, 25 % y 45 %; con volumen, 25 %, 20 % y 55 %. Cada gramo de proteína o de carbohidratos aporta 4 kcal, y cada gramo de grasa, 9 kcal. Puedes ajustar la proteína y la grasa; los carbohidratos son el resto, para que el total coincida con tu objetivo.</string>
+    <string name="help_q_assistant">¿Cómo funcionará Kai-Q sin conexión?</string>
+    <string name="help_a_assistant">Kai-Q usará un modelo de lenguaje que se ejecutará en tu propio dispositivo. Habrá que descargarlo una sola vez (ocupa unos 2,6 GB); después podrá responderte sin conexión a internet.</string>
+    <string name="help_q_privacy">¿Dónde se guardan mis datos?</string>
+    <!-- Describes the current backup rules only: it depends on the pending decision about
+         including the profile in Android backups, so it must not claim more than that. -->
+    <string name="help_a_privacy">Tus medidas, tu resultado guardado y tus ajustes se guardan en el almacenamiento de la app, en tu dispositivo. La app no los envía a ningún servidor. Si tienes activada la copia de seguridad de Android, pueden incluirse en ella. Puedes borrar tu medición y tu resultado desde Perfil, con «Borrar datos».</string>
+    <string name="help_q_disclaimer">¿Sustituye la app el consejo de un profesional?</string>
+    <string name="help_a_disclaimer">No. Los resultados son estimaciones orientativas y no sustituyen el consejo de un médico ni el de un dietista-nutricionista. Si tienes alguna enfermedad, estás embarazada o sigues un tratamiento, consulta a un profesional antes de cambiar tu alimentación.</string>
 
     <!-- Settings -->
     <string name="settings_title">Ajustes</string>
