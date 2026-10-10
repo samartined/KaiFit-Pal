@@ -71,6 +71,7 @@ class AssistantScreenTest {
         setContent(AssistantPreviewStates.notDownloaded)
 
         composeRule.onNodeWithText("(2,6\u00a0GB)", substring = true).assertIsDisplayed()
+        composeRule.onNodeWithText(string(R.string.model_ram_recommended)).assertExists()
         composeRule.onNodeWithText(string(R.string.model_wifi_only_note)).assertExists()
         composeRule.onNodeWithText(string(R.string.model_import)).assertIsEnabled()
         composeRule.onNodeWithText(string(R.string.model_download)).assertIsEnabled().performClick()
@@ -85,6 +86,8 @@ class AssistantScreenTest {
 
         composeRule.onNodeWithText(string(R.string.model_download)).assertIsNotEnabled()
         composeRule.onNodeWithText(string(R.string.model_import)).assertIsEnabled()
+        // The recommendation stays, with the warning under it.
+        composeRule.onNodeWithText(string(R.string.model_ram_recommended)).assertExists()
         composeRule.onNodeWithText(string(R.string.model_ram_low, "4,0\u00a0GB")).assertExists()
         composeRule.onNodeWithText(string(R.string.model_free_space_missing, "1,1\u00a0GB")).assertExists()
         composeRule.onNodeWithText(string(R.string.model_metered_note)).assertExists()

@@ -116,14 +116,17 @@ private fun NotDownloaded(
     )
     if (device != null) {
         Text(
-            text = if (device.lowRam) {
-                stringResource(R.string.model_ram_low, formatGigabytes(device.totalRamBytes, locale))
-            } else {
-                stringResource(R.string.model_ram_recommended)
-            },
+            text = stringResource(R.string.model_ram_recommended),
             style = MaterialTheme.typography.bodyMedium,
-            color = if (device.lowRam) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+        if (device.lowRam) {
+            Text(
+                text = stringResource(R.string.model_ram_low, formatGigabytes(device.totalRamBytes, locale)),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
         Text(
             text = stringResource(R.string.model_free_space, formatGigabytes(device.availableStorageBytes, locale)),
             style = MaterialTheme.typography.bodyMedium,
