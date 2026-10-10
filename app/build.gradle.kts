@@ -35,6 +35,8 @@ android {
     lint {
         abortOnError = true
         error += listOf("HardcodedText", "SpUsage", "ContentDescription")
+        // -keep enum rules already keep Sex and ActivityLevel (see mapping.txt); the domain has no Android annotations.
+        disable += "MissingKeepAnnotation"
     }
     testOptions {
         unitTests {
