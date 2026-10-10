@@ -16,9 +16,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tfg.kaifit_pal.R
 import com.tfg.kaifit_pal.data.profile.ProfileRepository
+import com.tfg.kaifit_pal.domain.ActivityLevel
+import com.tfg.kaifit_pal.domain.BodyMeasurements
 import com.tfg.kaifit_pal.domain.GoalModifier
+import com.tfg.kaifit_pal.domain.Sex
 import com.tfg.kaifit_pal.testing.ReferenceData
 import com.tfg.kaifit_pal.testing.TemporaryDataStores
+import com.tfg.kaifit_pal.ui.navigation.ResultsRoute
 import com.tfg.kaifit_pal.ui.theme.KaiFitTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -45,17 +49,12 @@ class ResultsScreenTest {
     @Before
     fun setUp() {
         profiles = ProfileRepository(dataStores.newDataStore())
-        val viewModel = ResultsViewModel(ReferenceData.manRoute, SavedStateHandle(), profiles)
-        composeRule.setContent {
-            KaiFitTheme {
-                ResultsScreen(onBack = {}, onAskAssistant = {}, viewModel = viewModel)
-            }
-        }
-        composeRule.waitForIdle()
     }
 
     @Test
     fun goalSliderAtMinus15ShowsModerateHighDeficitAndItsTarget() {
+        showResults(ReferenceData.manRoute)
+
         goalSlider().performSemanticsAction(SemanticsActions.SetProgress) { it(-15f) }
         composeRule.waitForIdle()
 
@@ -65,6 +64,8 @@ class ResultsScreenTest {
 
     @Test
     fun savingShowsASnackbarAndStoresTheProfile() {
+        showResults(ReferenceData.manRoute)
+
         goalSlider().performSemanticsAction(SemanticsActions.SetProgress) { it(-15f) }
         composeRule.waitForIdle()
 
@@ -78,6 +79,26 @@ class ResultsScreenTest {
         assertEquals(GoalModifier(-15), saved!!.goalModifier)
         assertEquals(2396, saved.macroPlan.targetKcal)
         assertEquals(2819, saved.tdee.tdeeKcal)
+    }
+
+    @Test
+    fun withoutBodyFatTheHeroCardSaysItIsNotEstimated() {
+        val manWithoutCircumferences = BodyMeasurements(Sex.MALE, ageYears = 30, heightCm = 180.0, weightKg = 80.0)
+        showResults(ResultsRoute.from(manWithoutCircumferences, ActivityLevel.MODERATE))
+
+        composeRule.onNodeWithText("2759").assertIsDisplayed()
+        composeRule.onNodeWithText("Método: Mifflin-St Jeor").assertIsDisplayed()
+        composeRule.onNodeWithText("Grasa corporal: sin estimar").assertIsDisplayed()
+    }
+
+    private fun showResults(route: ResultsRoute) {
+        val viewModel = ResultsViewModel(route, SavedStateHandle(), profiles)
+        composeRule.setContent {
+            KaiFitTheme {
+                ResultsScreen(onBack = {}, onAskAssistant = {}, viewModel = viewModel)
+            }
+        }
+        composeRule.waitForIdle()
     }
 
     private fun string(@StringRes id: Int): String = composeRule.activity.getString(id)

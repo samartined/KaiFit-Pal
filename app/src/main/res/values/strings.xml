@@ -124,6 +124,7 @@
     <string name="results_kcal_per_day">kcal/día</string>
     <string name="results_method">Método: %1$s</string>
     <string name="results_body_fat">Grasa corporal: %1$s</string>
+    <string name="results_body_fat_not_estimated">Grasa corporal: sin estimar</string>
     <string name="results_goal_title">Objetivo</string>
     <string name="results_goal_slider">Objetivo</string>
     <!-- Spoken state of the goal slider: goal name and target calories. -->

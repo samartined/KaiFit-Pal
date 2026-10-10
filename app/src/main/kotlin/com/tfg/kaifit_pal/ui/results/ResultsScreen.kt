@@ -218,7 +218,7 @@ private fun TdeeHeroCard(state: ResultsUiState.Ready) {
                 text = if (bodyFat != null) {
                     stringResource(R.string.results_body_fat, stringResource(R.string.value_body_fat_percent, bodyFat))
                 } else {
-                    stringResource(R.string.results_body_fat, stringResource(R.string.body_fat_not_estimated))
+                    stringResource(R.string.results_body_fat_not_estimated)
                 },
                 style = MaterialTheme.typography.bodyMedium,
             )
