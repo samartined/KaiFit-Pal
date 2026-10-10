@@ -431,7 +431,7 @@ private fun InputRow(chat: ChatState, onInputChange: (String) -> Unit, onSend: (
             onValueChange = onInputChange,
             modifier = Modifier.weight(1f),
             enabled = !chat.contextFull,
-            placeholder = { Text(stringResource(R.string.assistant_input_placeholder)) },
+            placeholder = { Text(stringResource(R.string.assistant_input_hint)) },
             maxLines = 4,
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = { if (chat.canSend) onSend() }),

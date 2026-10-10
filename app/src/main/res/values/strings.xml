@@ -162,7 +162,7 @@
     <string name="assistant_suggestion_training">Una rutina de fuerza para empezar</string>
     <string name="assistant_disclaimer">Kai-Q puede equivocarse. Sus respuestas son orientativas y no sustituyen el consejo de un médico ni de un dietista-nutricionista.</string>
     <string name="assistant_cpu_fallback">Se está usando la CPU porque la GPU no está disponible</string>
-    <string name="assistant_input_placeholder">Escribe tu pregunta</string>
+    <string name="assistant_input_hint">Escribe tu pregunta</string>
     <string name="assistant_send">Enviar</string>
     <string name="assistant_stop">Detener</string>
     <string name="assistant_context_full">La conversación es demasiado larga. Empieza una nueva para seguir.</string>
