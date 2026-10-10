@@ -38,3 +38,14 @@ internal class FailingDataStore(private val error: Throwable) : DataStore<Prefer
 
     override suspend fun updateData(transform: suspend (t: Preferences) -> Preferences): Preferences = throw error
 }
+
+/** A DataStore that reads what [delegate] holds but whose writes always fail with [error]. */
+internal class FailingWritesDataStore(
+    private val delegate: DataStore<Preferences>,
+    private val error: Throwable,
+) : DataStore<Preferences> {
+
+    override val data: Flow<Preferences> = delegate.data
+
+    override suspend fun updateData(transform: suspend (t: Preferences) -> Preferences): Preferences = throw error
+}

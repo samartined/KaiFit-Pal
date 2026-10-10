@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 /**
  * What the settings screen shows.
@@ -30,7 +31,7 @@ data class SettingsUiState(
 
 /**
  * Reads and changes the appearance settings. Changes are written to [settingsRepository], and
- * the whole app picks them up from there.
+ * the whole app picks them up from there. A change that cannot be written is dropped.
  */
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
@@ -46,11 +47,25 @@ class SettingsViewModel(
         )
 
     fun onThemeModeChange(mode: ThemeMode) {
-        viewModelScope.launch { settingsRepository.setThemeMode(mode) }
+        viewModelScope.launch {
+            try {
+                settingsRepository.setThemeMode(mode)
+            } catch (e: IOException) {
+                // The file could not be written: the setting stays as it was, and so does the
+                // screen, which shows the saved value.
+            }
+        }
     }
 
     fun onDynamicColorChange(enabled: Boolean) {
-        viewModelScope.launch { settingsRepository.setDynamicColor(enabled) }
+        viewModelScope.launch {
+            try {
+                settingsRepository.setDynamicColor(enabled)
+            } catch (e: IOException) {
+                // The file could not be written: the setting stays as it was, and so does the
+                // screen, which shows the saved value.
+            }
+        }
     }
 
     companion object {

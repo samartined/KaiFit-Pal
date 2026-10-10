@@ -1,5 +1,6 @@
 package com.tfg.kaifit_pal.ui.settings
 
+import com.tfg.kaifit_pal.data.FailingWritesDataStore
 import com.tfg.kaifit_pal.data.newPreferencesFile
 import com.tfg.kaifit_pal.data.preferencesDataStoreOn
 import com.tfg.kaifit_pal.data.settings.AppSettings
@@ -19,6 +20,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest {
@@ -65,6 +67,25 @@ class SettingsViewModelTest {
         advanceUntilIdle()
 
         assertTrue(repository.settings.first().dynamicColor)
+    }
+
+    @Test
+    fun failedWritesKeepTheSavedSettingsWithoutCrashing() = runTest {
+        val dataStore = backgroundScope.preferencesDataStoreOn(tmp.newPreferencesFile())
+        SettingsRepository(dataStore).apply {
+            setThemeMode(ThemeMode.LIGHT)
+            setDynamicColor(true)
+        }
+        val repository = SettingsRepository(FailingWritesDataStore(dataStore, IOException("disk full")))
+        val viewModel = SettingsViewModel(repository, dynamicColorAvailable = true)
+        backgroundScope.launch { viewModel.uiState.collect {} }
+        viewModel.uiState.first { it.settings.themeMode == ThemeMode.LIGHT }
+
+        viewModel.onThemeModeChange(ThemeMode.DARK)
+        viewModel.onDynamicColorChange(false)
+        advanceUntilIdle()
+
+        assertEquals(SettingsUiState(AppSettings(themeMode = ThemeMode.LIGHT, dynamicColor = true), true), viewModel.uiState.value)
     }
 
     @Test
