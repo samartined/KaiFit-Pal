@@ -27,13 +27,13 @@ class KaiFitNavHostTest {
     @get:Rule
     val composeRule = createAndroidComposeRule<ComponentActivity>()
 
-    /** Title and placeholder text that identify the screen of each tab. */
+    /** Title and a text that identify the screen of each tab. */
     private val screenTexts = mapOf(
         TopLevelDestination.PROFILE to (R.string.profile_title to R.string.profile_placeholder),
         TopLevelDestination.CALCULATOR to (R.string.calculator_title to R.string.calculator_placeholder),
         TopLevelDestination.ASSISTANT to (R.string.assistant_title to R.string.assistant_placeholder),
         TopLevelDestination.HELP to (R.string.help_title to R.string.help_placeholder),
-        TopLevelDestination.SETTINGS to (R.string.settings_title to R.string.settings_placeholder),
+        TopLevelDestination.SETTINGS to (R.string.settings_title to R.string.settings_section_appearance),
     )
 
     @Before
@@ -119,7 +119,7 @@ class KaiFitNavHostTest {
         assertScreenShown(TopLevelDestination.CALCULATOR)
         assertOnlySelectedTab(TopLevelDestination.CALCULATOR)
         composeRule.onNode(hasText(string(R.string.settings_title)) and !isSelectable()).assertDoesNotExist()
-        composeRule.onNodeWithText(string(R.string.settings_placeholder)).assertDoesNotExist()
+        composeRule.onNodeWithText(string(R.string.settings_section_appearance)).assertDoesNotExist()
     }
 
     private fun string(@StringRes id: Int, vararg formatArgs: Any): String =
@@ -130,10 +130,10 @@ class KaiFitNavHostTest {
         composeRule.onNode(hasText(string(destination.labelRes)) and isSelectable())
 
     private fun assertScreenShown(destination: TopLevelDestination) {
-        val (titleRes, placeholderRes) = screenTexts.getValue(destination)
+        val (titleRes, markerRes) = screenTexts.getValue(destination)
         // The top app bar title is the only non-selectable node with that text.
         composeRule.onNode(hasText(string(titleRes)) and !isSelectable()).assertIsDisplayed()
-        composeRule.onNodeWithText(string(placeholderRes)).assertIsDisplayed()
+        composeRule.onNodeWithText(string(markerRes)).assertIsDisplayed()
     }
 
     private fun assertOnlySelectedTab(selected: TopLevelDestination) {

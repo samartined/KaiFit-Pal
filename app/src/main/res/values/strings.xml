@@ -33,5 +33,17 @@
 
     <!-- Settings -->
     <string name="settings_title">Ajustes</string>
-    <string name="settings_placeholder">Aquí podrás elegir el tema de la app y gestionar el modelo del asistente.</string>
+    <string name="settings_section_appearance">Apariencia</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_theme_system">Sistema</string>
+    <string name="settings_theme_light">Claro</string>
+    <string name="settings_theme_dark">Oscuro</string>
+    <string name="settings_dynamic_color">Color dinámico</string>
+    <string name="settings_dynamic_color_description">Usa los colores de tu fondo de pantalla en lugar del verde de KaiFit-Pal</string>
+    <string name="settings_dynamic_color_unavailable">Disponible a partir de Android 12</string>
+    <string name="settings_section_model">Modelo de Kai-Q</string>
+    <string name="settings_model_coming_soon">Aquí podrás descargar, importar y gestionar el modelo del asistente.</string>
+    <string name="settings_section_about">Acerca de</string>
+    <string name="settings_version">Versión %1$s</string>
+    <string name="settings_about_description">Trabajo de Fin de Grado (TFG): calculadora de gasto energético diario y de macronutrientes, con Kai-Q, un asistente de nutrición.</string>
 </resources>
