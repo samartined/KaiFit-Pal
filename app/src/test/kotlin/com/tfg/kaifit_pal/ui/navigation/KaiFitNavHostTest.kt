@@ -19,6 +19,9 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tfg.kaifit_pal.KaiFitApp
 import com.tfg.kaifit_pal.R
@@ -29,6 +32,8 @@ import com.tfg.kaifit_pal.domain.TdeeCalculator
 import com.tfg.kaifit_pal.testing.ReferenceData
 import com.tfg.kaifit_pal.ui.theme.KaiFitTheme
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -244,6 +249,36 @@ class KaiFitNavHostTest {
         assertOnlySelectedTab(TopLevelDestination.CALCULATOR)
         composeRule.onNode(hasText(string(R.string.settings_title)) and !isTab).assertDoesNotExist()
         composeRule.onNodeWithText(string(R.string.settings_section_appearance)).assertDoesNotExist()
+    }
+
+    // NV1
+    @Test
+    fun reselectingTheCurrentTabKeepsASingleEntryForIt() {
+        lateinit var navController: NavHostController
+        composeRule.setContent {
+            navController = rememberNavController()
+            KaiFitTheme {
+                KaiFitNavHost(navController = navController)
+            }
+        }
+        composeRule.waitForIdle()
+        field(R.string.calculator_height).performTextInput("180")
+
+        tab(TopLevelDestination.CALCULATOR).performClick()
+        composeRule.waitForIdle()
+
+        // The same entry, with the same form, and nothing else on the back stack.
+        val calculatorEntries = navController.currentBackStack.value.filter { it.destination.hasRoute<CalculatorRoute>() }
+        assertEquals(1, calculatorEntries.size)
+        assertScreenShown(TopLevelDestination.CALCULATOR)
+        field(R.string.calculator_height).assertTextContains("180")
+
+        // So a single back leaves the app.
+        composeRule.runOnUiThread {
+            composeRule.activity.onBackPressedDispatcher.onBackPressed()
+        }
+        composeRule.waitForIdle()
+        assertTrue(composeRule.activity.isFinishing)
     }
 
     private fun string(@StringRes id: Int, vararg formatArgs: Any): String =
