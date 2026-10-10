@@ -2,4 +2,6 @@
 <resources>
     <!-- Splash screen background: same as the dark color scheme background. -->
     <color name="splash_background">#121410</color>
+    <!-- Circle behind the splash icon: primaryContainer of the dark color scheme. -->
+    <color name="splash_icon_background">#245F17</color>
 </resources>

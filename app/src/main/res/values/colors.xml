@@ -2,4 +2,6 @@
 <resources>
     <!-- Splash screen background: brand beige, same as the light color scheme background. -->
     <color name="splash_background">#F5F5EE</color>
+    <!-- Circle behind the splash icon: primary of the light color scheme. -->
+    <color name="splash_icon_background">#3B7D2C</color>
 </resources>

@@ -1,12 +1,17 @@
 <resources>
 
-    <!-- Base window theme. Compose draws all the UI with KaiFitTheme. -->
-    <style name="Theme.KaiFitPal" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Base window theme. Compose draws all the UI with KaiFitTheme. The window background is
+         the splash background, so closing the splash screen or rotating shows no other color. -->
+    <style name="Theme.KaiFitPal" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/splash_background</item>
+    </style>
 
-    <!-- Launch theme: splash screen on the brand background, then Theme.KaiFitPal. -->
-    <style name="Theme.KaiFitPal.Starting" parent="Theme.SplashScreen">
+    <!-- Launch theme: the icon on a brand circle over the brand background, then Theme.KaiFitPal.
+         The icon is the adaptive icon foreground, whose safe zone fits the splash circle. -->
+    <style name="Theme.KaiFitPal.Starting" parent="Theme.SplashScreen.IconBackground">
         <item name="windowSplashScreenBackground">@color/splash_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/splash_icon_background</item>
         <item name="postSplashScreenTheme">@style/Theme.KaiFitPal</item>
     </style>
 

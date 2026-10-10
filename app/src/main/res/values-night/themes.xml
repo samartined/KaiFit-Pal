@@ -1,6 +1,9 @@
 <resources>
 
-    <!-- Base window theme for dark mode. Compose draws all the UI with KaiFitTheme. -->
-    <style name="Theme.KaiFitPal" parent="android:Theme.Material.NoActionBar" />
+    <!-- Base window theme for dark mode. Compose draws all the UI with KaiFitTheme. The window
+         background is the splash background, so closing the splash screen shows no other color. -->
+    <style name="Theme.KaiFitPal" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/splash_background</item>
+    </style>
 
 </resources>
