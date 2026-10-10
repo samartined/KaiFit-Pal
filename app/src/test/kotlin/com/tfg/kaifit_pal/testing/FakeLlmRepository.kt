@@ -5,6 +5,7 @@ import com.tfg.kaifit_pal.data.llm.LlmRepository
 import com.tfg.kaifit_pal.data.llm.loadWithFallback
 import com.tfg.kaifit_pal.data.settings.InferenceBackend
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,6 +55,12 @@ class FakeLlmRepository(val calls: MutableList<String> = mutableListOf()) : LlmR
     /** What [usedTokens] returns. */
     var tokens = 0
 
+    /**
+     * When set, every [initialize] call is logged at once and then waits for it to complete, as a
+     * slow load would. Cancelling the caller meanwhile cancels the load.
+     */
+    var initializeGate: CompletableDeferred<Unit>? = null
+
     private val heldReplies = ArrayDeque<Reply>()
 
     /** A reply that streams only what the test sends and ends when the test says. */
@@ -84,6 +91,7 @@ class FakeLlmRepository(val calls: MutableList<String> = mutableListOf()) : LlmR
     override suspend fun initialize(modelFile: File, preferred: InferenceBackend): InferenceBackend {
         calls += "llm.initialize($preferred)"
         initializeCalls += modelFile to preferred
+        initializeGate?.await()
         if (unsupportedDevice) throw LlmException.UnsupportedDevice("no native library")
         val (backend, _) = loadWithFallback(preferred) { candidate ->
             val fails = if (candidate == InferenceBackend.GPU) gpuLoadFails else cpuLoadFails

@@ -19,12 +19,14 @@ import com.tfg.kaifit_pal.testing.FakeLlmRepository
 import com.tfg.kaifit_pal.testing.FakeModelManager
 import com.tfg.kaifit_pal.testing.MainDispatcherRule
 import com.tfg.kaifit_pal.testing.ReferenceData
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -375,6 +377,32 @@ class AssistantViewModelTest {
 
         assertEquals(listOf(InferenceBackend.GPU, InferenceBackend.CPU), llm.initializeCalls.map { it.second })
         assertTrue(state.chat.messages.isEmpty())
+    }
+
+    // A13b
+    @Test
+    fun changingTheBackendWhileLoadingLoadsOnTheNewBackend() = runTest {
+        val settings = newSettings()
+        val gate = CompletableDeferred<Unit>()
+        llm.initializeGate = gate
+        models.state.value = FakeModelManager.downloaded
+        val viewModel = newViewModel(settings = settings)
+        viewModel.onScreenStarted()
+        runCurrent()
+        assertEquals(listOf(FakeModelManager.downloaded.file to InferenceBackend.GPU), llm.initializeCalls)
+        assertEquals(EngineState.Loading, viewModel.uiState.value.engine)
+
+        settings.setInferenceBackend(InferenceBackend.CPU)
+        runCurrent()
+        // The GPU load has not ended yet: the change must not wait for it.
+        assertEquals(listOf(InferenceBackend.GPU, InferenceBackend.CPU), llm.initializeCalls.map { it.second })
+        assertEquals(EngineState.Loading, viewModel.uiState.value.engine)
+        gate.complete(Unit)
+        val state = viewModel.awaitState { it.engine is EngineState.Ready }
+
+        assertEquals(FakeModelManager.downloaded.file to InferenceBackend.CPU, llm.initializeCalls.last())
+        assertEquals(EngineState.Ready(InferenceBackend.CPU, fellBackToCpu = false), state.engine)
+        assertEquals(1, llm.conversationPrompts.size)
     }
 
     // A14

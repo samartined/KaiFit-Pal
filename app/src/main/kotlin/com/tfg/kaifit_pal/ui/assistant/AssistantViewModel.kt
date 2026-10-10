@@ -188,7 +188,10 @@ class AssistantViewModel(
         val previous = lastBackend
         lastBackend = settings.inferenceBackend
         _uiState.update { it.copy(downloadOnWifiOnly = settings.downloadOnWifiOnly) }
-        if (previous != null && previous != settings.inferenceBackend && _uiState.value.engine is EngineState.Ready) {
+        if (previous == null || previous == settings.inferenceBackend) return
+        // A load in progress read the old backend: it is cancelled and started again on the new one.
+        val engine = _uiState.value.engine
+        if (engine is EngineState.Ready || engine == EngineState.Loading) {
             loadEngine(preferred = settings.inferenceBackend)
         }
     }
