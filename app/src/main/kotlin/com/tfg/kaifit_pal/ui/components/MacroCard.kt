@@ -2,7 +2,7 @@ package com.tfg.kaifit_pal.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -50,13 +50,17 @@ fun MacroCard(
             modifier = Modifier.padding(Spacing.l),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
-            Row(
+            // The name and its share at the start, the grams at the end. When they do not fit on
+            // one line, as on a narrow screen with large text, the grams go below, so a long name
+            // such as "Carbohidratos" keeps the whole width and never breaks inside the word.
+            FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .semantics(mergeDescendants = true) {},
-                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = spaceBetweenWithGap(Spacing.m),
+                itemVerticalAlignment = Alignment.CenterVertically,
             ) {
-                Column(modifier = Modifier.weight(1f)) {
+                Column {
                     Text(text = name, style = MaterialTheme.typography.titleMedium)
                     Text(
                         text = stringResource(R.string.macro_share, percentOfTarget, kcal),

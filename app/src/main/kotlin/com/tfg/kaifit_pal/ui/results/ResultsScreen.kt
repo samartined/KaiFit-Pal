@@ -1,8 +1,8 @@
 package com.tfg.kaifit_pal.ui.results
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -52,6 +52,7 @@ import com.tfg.kaifit_pal.domain.MacroPlan
 import com.tfg.kaifit_pal.domain.Sex
 import com.tfg.kaifit_pal.domain.TdeeCalculator
 import com.tfg.kaifit_pal.ui.components.MacroCard
+import com.tfg.kaifit_pal.ui.components.spaceBetweenWithGap
 import com.tfg.kaifit_pal.ui.theme.KaiFitTheme
 import com.tfg.kaifit_pal.ui.theme.Spacing
 import com.tfg.kaifit_pal.ui.theme.withTabularFigures
@@ -237,15 +238,16 @@ private fun GoalSection(state: ResultsUiState.Ready, onGoalChange: (Float) -> Un
             modifier = Modifier.semantics { heading() },
             style = MaterialTheme.typography.titleMedium,
         )
-        // The target calories keep their width on one line, at the end of the row; the chip takes
-        // what is left and wraps its label if it has to.
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(Spacing.m),
-            verticalAlignment = Alignment.CenterVertically,
+        // The chip at the start and the target calories at the end. When they do not fit on one
+        // line, as on a narrow screen with large text, the calories go below, so the chip keeps
+        // the whole width and wraps its label between words, never letter by letter.
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = spaceBetweenWithGap(Spacing.m),
+            verticalArrangement = Arrangement.spacedBy(Spacing.s),
+            itemVerticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
-                GoalChip(label = goalLabel)
-            }
+            GoalChip(label = goalLabel)
             Text(
                 text = targetText,
                 style = MaterialTheme.typography.titleMedium.withTabularFigures(),

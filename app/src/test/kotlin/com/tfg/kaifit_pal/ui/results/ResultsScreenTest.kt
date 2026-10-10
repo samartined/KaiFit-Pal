@@ -13,6 +13,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.lifecycle.SavedStateHandle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tfg.kaifit_pal.R
@@ -29,11 +30,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.GraphicsMode
 
 @RunWith(AndroidJUnit4::class)
 @Config(qualifiers = "es-rES")
@@ -141,6 +144,46 @@ class ResultsScreenTest {
         assertEquals(SaveStatus.Idle, viewModel.saveStatus)
     }
 
+    // LG1: real text measurement needs the native graphics, as in the screenshots.
+    @Test
+    @GraphicsMode(GraphicsMode.Mode.NATIVE)
+    @Config(qualifiers = "es-rES-w320dp-h1600dp-xxhdpi", fontScale = 2.0f)
+    fun onANarrowPhoneWithLargeTextTheGoalAndMacroNamesOnlyWrapBetweenWords() {
+        composeRule.setContent {
+            KaiFitTheme {
+                ResultsContent(
+                    state = ResultsPreviewStates.manAtModerateHighDeficit,
+                    onBack = {},
+                    onGoalChange = {},
+                    onProteinChange = {},
+                    onFatChange = {},
+                    onSave = {},
+                    onAskAssistant = {},
+                )
+            }
+        }
+        composeRule.waitForIdle()
+
+        val texts = listOf(
+            string(R.string.goal_deficit_moderate_high),
+            string(R.string.macro_protein),
+            string(R.string.macro_fat),
+            string(R.string.macro_carbs),
+        )
+        texts.forEach { text ->
+            val layout = textLayout(text)
+            (0 until layout.lineCount - 1).forEach { line ->
+                val end = layout.getLineEnd(line, visibleEnd = true)
+                assertTrue(
+                    "\"$text\" breaks a word after \"${text.take(end)}\"",
+                    !text[end - 1].isLetterOrDigit() || !text[end].isLetterOrDigit(),
+                )
+            }
+        }
+        // The longest macro name fits on one line.
+        assertEquals(1, textLayout(string(R.string.macro_carbs)).lineCount)
+    }
+
     private fun showResults(route: ResultsRoute): ResultsViewModel {
         val viewModel = ResultsViewModel(route, SavedStateHandle(), profiles)
         composeRule.setContent {
@@ -150,6 +193,14 @@ class ResultsScreenTest {
         }
         composeRule.waitForIdle()
         return viewModel
+    }
+
+    /** Layout of the [Text] that shows exactly [text]. */
+    private fun textLayout(text: String): TextLayoutResult {
+        val node = composeRule.onNodeWithText(text, useUnmergedTree = true).fetchSemanticsNode()
+        val results = mutableListOf<TextLayoutResult>()
+        node.config[SemanticsActions.GetTextLayoutResult].action?.invoke(results)
+        return results.single()
     }
 
     private val ResultsViewModel.saveStatus: SaveStatus
