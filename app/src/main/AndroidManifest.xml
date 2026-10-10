@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- The system download manager needs it to download the on-device model. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".KaiFitApp"
         android:allowBackup="true"

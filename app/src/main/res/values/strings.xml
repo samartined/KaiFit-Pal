@@ -140,6 +140,9 @@
 
     <!-- Assistant -->
     <string name="assistant_title">Kai-Q</string>
+    <!-- System notification of the model download. -->
+    <string name="model_download_title">Modelo de Kai-Q</string>
+    <string name="model_download_description">Gemma 4 E2B, para usar Kai-Q sin conexión</string>
     <string name="assistant_placeholder">Kai-Q, tu asistente de nutrición, funcionará sin conexión con un modelo que se ejecuta en tu propio dispositivo.</string>
 
     <!-- Help -->

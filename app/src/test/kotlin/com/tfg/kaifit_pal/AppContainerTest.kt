@@ -5,6 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tfg.kaifit_pal.data.close
 import com.tfg.kaifit_pal.data.closeableScope
+import com.tfg.kaifit_pal.data.llm.ModelState
 import com.tfg.kaifit_pal.data.settings.ThemeMode
 import com.tfg.kaifit_pal.domain.ActivityLevel
 import com.tfg.kaifit_pal.domain.BodyMeasurements
@@ -30,6 +31,7 @@ class AppContainerTest {
     private val context: Context = ApplicationProvider.getApplicationContext()
 
     /** Only checks instances: writing here would leave a DataStore open on the app-wide scope. */
+    // AC1
     @Test
     fun applicationKeepsOneContainerWithOneInstanceOfEachRepository() {
         assertTrue(context is KaiFitApp)
@@ -40,6 +42,17 @@ class AppContainerTest {
         assertSame(container, app.container)
         assertSame(container.settingsRepository, container.settingsRepository)
         assertSame(container.profileRepository, container.profileRepository)
+        assertSame(container.modelManager, container.modelManager)
+    }
+
+    /** The real download manager of Robolectric has no download: there is no model yet. */
+    @Test
+    fun modelManagerOfTheAppFindsNoModelOnAFreshInstall() = runTest {
+        val modelManager = (context as KaiFitApp).container.modelManager
+
+        modelManager.refresh()
+
+        assertEquals(ModelState.NotDownloaded, modelManager.state.value)
     }
 
     @Test
