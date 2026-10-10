@@ -17,6 +17,7 @@ import com.tfg.kaifit_pal.domain.TdeeCalculator
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
@@ -43,6 +44,20 @@ class AppContainerTest {
         assertSame(container.settingsRepository, container.settingsRepository)
         assertSame(container.profileRepository, container.profileRepository)
         assertSame(container.modelManager, container.modelManager)
+        assertSame(container.llmRepository, container.llmRepository)
+    }
+
+    // AC2
+    @Test
+    fun releasingTheLanguageModelBeforeItIsUsedDoesNotCreateIt() {
+        // Nothing here opens a DataStore or starts work, so the container's own scope is fine.
+        val container = AppContainer(context)
+
+        container.releaseLanguageModel()
+        assertFalse(container.isLanguageModelCreated)
+
+        assertNotNull(container.llmRepository)
+        assertTrue(container.isLanguageModelCreated)
     }
 
     /** The real download manager of Robolectric has no download: there is no model yet. */

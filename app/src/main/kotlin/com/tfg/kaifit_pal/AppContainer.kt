@@ -6,6 +6,8 @@ import com.tfg.kaifit_pal.data.createPreferencesDataStore
 import com.tfg.kaifit_pal.data.llm.AndroidDeviceInfo
 import com.tfg.kaifit_pal.data.llm.AndroidSystemDownloads
 import com.tfg.kaifit_pal.data.llm.DownloadModelManager
+import com.tfg.kaifit_pal.data.llm.LiteRtLmRepository
+import com.tfg.kaifit_pal.data.llm.LlmRepository
 import com.tfg.kaifit_pal.data.llm.ModelManager
 import com.tfg.kaifit_pal.data.llm.ModelSpec
 import com.tfg.kaifit_pal.data.profile.ProfileRepository
@@ -13,6 +15,7 @@ import com.tfg.kaifit_pal.data.settings.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.io.File
 
 /**
@@ -24,7 +27,9 @@ import java.io.File
  * `files/datastore/`. Clearing the profile therefore never touches the settings.
  *
  * The on-device model is also app-wide: one [modelManager] tracks its download or import, so a
- * transfer goes on when the user leaves the screen that started it.
+ * transfer goes on when the user leaves the screen that started it, and one [llmRepository]
+ * holds the loaded engine, so the 2.6 GB model is never loaded twice. The engine is created on
+ * first use, when the assistant is shown, and [releaseLanguageModel] frees it when memory is low.
  *
  * @param context any context; only the application context is kept, never an activity.
  * @param scope lifetime of the DataStores and of the model transfers. The app never cancels it;
@@ -66,6 +71,25 @@ class AppContainer(
             downloadTitle = appContext.getString(R.string.model_download_title),
             downloadDescription = appContext.getString(R.string.model_download_description),
         )
+    }
+
+    private val llmRepositoryLazy: Lazy<LlmRepository> = lazy { LiteRtLmRepository(appContext.cacheDir) }
+
+    /** The on-device language model: one engine and one conversation for the whole app. */
+    val llmRepository: LlmRepository by llmRepositoryLazy
+
+    /** Whether [llmRepository] has been created; [releaseLanguageModel] never creates it. */
+    internal val isLanguageModelCreated: Boolean
+        get() = llmRepositoryLazy.isInitialized()
+
+    /**
+     * Closes the conversation and the engine, in the background, if the language model was ever
+     * used. The assistant loads it again the next time it is shown.
+     */
+    fun releaseLanguageModel() {
+        if (llmRepositoryLazy.isInitialized()) {
+            scope.launch { llmRepository.close() }
+        }
     }
 
     internal companion object {
