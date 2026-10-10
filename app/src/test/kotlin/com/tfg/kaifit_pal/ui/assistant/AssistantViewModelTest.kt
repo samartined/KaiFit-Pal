@@ -489,4 +489,41 @@ class AssistantViewModelTest {
 
         assertEquals("llm.close", calls.last())
     }
+
+    // A18
+    @Test
+    fun modelThatArrivesWhileTheScreenIsShownIsLoaded() = runTest {
+        val viewModel = newViewModel()
+        viewModel.onScreenStarted()
+        viewModel.awaitState { it.device != null }
+        assertEquals(EngineState.Idle, viewModel.uiState.value.engine)
+
+        // A download or an import ends with Kai-Q on screen.
+        models.state.value = FakeModelManager.downloaded
+        val state = viewModel.awaitState { it.engine is EngineState.Ready }
+
+        assertEquals(listOf(FakeModelManager.downloaded.file to InferenceBackend.GPU), llm.initializeCalls)
+        assertEquals(EngineState.Ready(InferenceBackend.GPU, fellBackToCpu = false), state.engine)
+    }
+
+    // A19
+    @Test
+    fun modelThatArrivesAfterTheScreenIsStoppedWaitsForTheNextStart() = runTest {
+        val viewModel = newViewModel()
+        viewModel.onScreenStarted()
+        viewModel.awaitState { it.device != null }
+        viewModel.onScreenStopped()
+
+        models.state.value = FakeModelManager.downloaded
+        val state = viewModel.awaitState { it.model is ModelState.Downloaded }
+        runCurrent()
+
+        assertEquals(EngineState.Idle, state.engine)
+        assertEquals(EngineState.Idle, viewModel.uiState.value.engine)
+        assertTrue(llm.initializeCalls.isEmpty())
+
+        viewModel.onScreenStarted()
+        viewModel.awaitState { it.engine is EngineState.Ready }
+        assertEquals(1, llm.initializeCalls.size)
+    }
 }
