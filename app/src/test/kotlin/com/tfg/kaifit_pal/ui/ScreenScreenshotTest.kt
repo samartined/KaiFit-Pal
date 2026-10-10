@@ -31,8 +31,9 @@ import org.robolectric.annotation.GraphicsMode
 /**
  * Screenshots of every screen in the light and dark themes, from fixed states, on a 411 × 891 dp
  * phone in Spanish. The `_full` variants use a 1600 dp tall screen to show whole screens that
- * scroll, `shell_w360_light` shows the navigation bar on a narrow 360 dp phone, and
- * `profile_saved_w360_light` shows the saved profile on that phone.
+ * scroll, and `shell_w360_light` shows the navigation bar on a narrow 360 dp phone. On that
+ * phone, `profile_saved_w360_light` shows the saved profile, and `results_w360_fs13_light` the
+ * results with the font scaled to 130 %.
  *
  * The PNG files are written only by `./gradlew recordRoborazziDebug`, under
  * app/build/outputs/roborazzi/; a normal test run only draws the screens.
@@ -86,6 +87,11 @@ class ScreenScreenshotTest {
     @Test
     @Config(qualifiers = TALL_PHONE)
     fun resultsFullDark() = capture("results_full", darkTheme = true) { Results() }
+
+    /** Results on a narrow phone with large text: the target calories stay on one line. */
+    @Test
+    @Config(qualifiers = NARROW_TALL_PHONE, fontScale = 1.3f)
+    fun resultsNarrowLargeTextLight() = capture("results_w360_fs13", darkTheme = false) { Results() }
 
     @Test
     fun profileEmptyLight() = capture("profile_empty", darkTheme = false) { Profile(ProfileUiState.Empty) }

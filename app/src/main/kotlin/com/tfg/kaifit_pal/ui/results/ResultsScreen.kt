@@ -1,6 +1,7 @@
 package com.tfg.kaifit_pal.ui.results
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -238,10 +239,20 @@ private fun GoalSection(state: ResultsUiState.Ready, onGoalChange: (Float) -> Un
             modifier = Modifier.semantics { heading() },
             style = MaterialTheme.typography.titleMedium,
         )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            GoalChip(label = goalLabel)
-            Spacer(modifier = Modifier.weight(1f))
-            Text(text = targetText, style = MaterialTheme.typography.titleMedium.withTabularFigures())
+        // The target calories keep their width on one line, at the end of the row; the chip takes
+        // what is left and wraps its label if it has to.
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Spacing.m),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                GoalChip(label = goalLabel)
+            }
+            Text(
+                text = targetText,
+                style = MaterialTheme.typography.titleMedium.withTabularFigures(),
+                softWrap = false,
+            )
         }
         Slider(
             value = state.goalModifier.percent.toFloat(),
