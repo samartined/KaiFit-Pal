@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.compose.dropUnlessResumed
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -24,25 +25,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.tfg.kaifit_pal.domain.ActivityLevel
-import com.tfg.kaifit_pal.domain.Sex
 import com.tfg.kaifit_pal.ui.assistant.AssistantScreen
 import com.tfg.kaifit_pal.ui.calculator.CalculatorScreen
+import com.tfg.kaifit_pal.ui.calculator.CalculatorViewModel
 import com.tfg.kaifit_pal.ui.help.HelpScreen
 import com.tfg.kaifit_pal.ui.profile.ProfileScreen
 import com.tfg.kaifit_pal.ui.results.ResultsScreen
 import com.tfg.kaifit_pal.ui.settings.SettingsScreen
-
-/** Man of 30 years, 180 cm, 80 kg, neck 38 and waist 85 cm, moderately active: 2819 kcal/day. */
-private val SampleResults = ResultsRoute(
-    sex = Sex.MALE,
-    ageYears = 30,
-    heightCm = 180.0,
-    weightKg = 80.0,
-    neckCm = 38.0,
-    waistCm = 85.0,
-    activityLevel = ActivityLevel.MODERATE,
-)
 
 /**
  * App shell: a [NavigationBar] with the five tabs around the navigation graph.
@@ -97,8 +86,13 @@ fun KaiFitNavHost(
         ) {
             composable<ProfileRoute> { ProfileScreen() }
             composable<CalculatorRoute> {
-                // Temporary entry point to the Results destination until the calculator exists.
-                CalculatorScreen(onShowResults = dropUnlessResumed { navController.navigate(SampleResults) })
+                val calculatorViewModel: CalculatorViewModel = viewModel(factory = CalculatorViewModel.Factory)
+                CalculatorScreen(
+                    onCalculate = dropUnlessResumed {
+                        calculatorViewModel.onCalculate()?.let { route -> navController.navigate(route) }
+                    },
+                    viewModel = calculatorViewModel,
+                )
             }
             composable<AssistantRoute> { AssistantScreen() }
             composable<HelpRoute> { HelpScreen() }
