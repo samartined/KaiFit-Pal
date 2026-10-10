@@ -390,6 +390,7 @@ private fun EmptyChat(hasProfile: Boolean, onSuggestionClick: (String) -> Unit, 
     ) {
         Text(
             text = stringResource(R.string.assistant_empty_title),
+            modifier = Modifier.semantics { heading() },
             style = MaterialTheme.typography.headlineSmall,
         )
         Text(text = stringResource(R.string.assistant_empty_message), style = MaterialTheme.typography.bodyLarge)

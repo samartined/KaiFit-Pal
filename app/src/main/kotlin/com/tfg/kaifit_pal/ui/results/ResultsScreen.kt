@@ -238,11 +238,13 @@ private fun GoalSection(state: ResultsUiState.Ready, onGoalChange: (Float) -> Un
             modifier = Modifier.semantics { heading() },
             style = MaterialTheme.typography.titleMedium,
         )
-        // The chip at the start and the target calories at the end. When they do not fit on one
-        // line, as on a narrow screen with large text, the calories go below, so the chip keeps
-        // the whole width and wraps its label between words, never letter by letter.
+        // The chip at the start and the target calories at the end, read together. When they do
+        // not fit on one line, as on a narrow screen with large text, the calories go below, so
+        // the chip keeps the whole width and wraps its label between words, never letter by letter.
         FlowRow(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics(mergeDescendants = true) {},
             horizontalArrangement = spaceBetweenWithGap(Spacing.m),
             verticalArrangement = Arrangement.spacedBy(Spacing.s),
             itemVerticalAlignment = Alignment.CenterVertically,
@@ -260,7 +262,9 @@ private fun GoalSection(state: ResultsUiState.Ready, onGoalChange: (Float) -> Un
             valueRange = GoalModifier.MIN_PERCENT.toFloat()..GoalModifier.MAX_PERCENT.toFloat(),
             // 9 positions: −20, −15, …, +20.
             steps = 7,
-            modifier = Modifier.semantics {
+            // Merging here gives the accessibility node the 48 dp touch target of the slider instead
+            // of the 44 dp of its track, which is what accessibility services measure.
+            modifier = Modifier.semantics(mergeDescendants = true) {
                 contentDescription = sliderDescription
                 stateDescription = sliderState
             },

@@ -78,7 +78,9 @@ fun MacroCard(
                     value = grams.toFloat().coerceIn(0f, maxGrams.toFloat()),
                     onValueChange = { onGramsChange(it.roundToInt()) },
                     valueRange = 0f..maxGrams.toFloat(),
-                    modifier = Modifier.semantics {
+                    // Merging here gives the accessibility node the 48 dp touch target of the slider
+                    // instead of the 44 dp of its track, which is what accessibility services measure.
+                    modifier = Modifier.semantics(mergeDescendants = true) {
                         contentDescription = name
                         stateDescription = gramsText
                     },

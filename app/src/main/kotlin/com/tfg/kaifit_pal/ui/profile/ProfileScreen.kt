@@ -171,6 +171,7 @@ private fun EmptyProfile(onGoToCalculator: () -> Unit, modifier: Modifier = Modi
     ) {
         Text(
             text = stringResource(R.string.profile_empty_title),
+            modifier = Modifier.semantics { heading() },
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
         )
