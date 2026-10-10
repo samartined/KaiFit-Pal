@@ -302,7 +302,11 @@ private fun ModelCard(
             modifier = Modifier.padding(Spacing.l),
             verticalArrangement = Arrangement.spacedBy(Spacing.s),
         ) {
-            Text(text = stringResource(R.string.settings_model_name), style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = stringResource(R.string.settings_model_name),
+                modifier = Modifier.semantics { heading() },
+                style = MaterialTheme.typography.titleMedium,
+            )
             Text(
                 text = model.statusText(locale),
                 modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },

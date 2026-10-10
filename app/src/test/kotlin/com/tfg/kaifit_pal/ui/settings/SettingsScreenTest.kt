@@ -2,6 +2,9 @@ package com.tfg.kaifit_pal.ui.settings
 
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -195,6 +198,15 @@ class SettingsScreenTest {
         composeRule.onNodeWithText(string(R.string.settings_backend_gpu)).assertDoesNotExist()
         composeRule.onNodeWithText(string(R.string.settings_wifi_only)).assertDoesNotExist()
         composeRule.onNodeWithText(string(R.string.settings_dynamic_color)).assertDoesNotExist()
+    }
+
+    // AX5
+    @Test
+    fun modelCardTitleIsAHeading() {
+        setContent(SettingsPreviewStates.modelDownloaded)
+
+        composeRule.onNodeWithText(string(R.string.settings_model_name))
+            .assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.Heading))
     }
 
     private fun string(@StringRes id: Int, vararg args: Any): String = composeRule.activity.getString(id, *args)
