@@ -21,6 +21,7 @@ import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -245,6 +246,35 @@ class AssistantScreenTest {
             .assertTextContains("Hola")
             .assert(hasText(label))
     }
+
+    // AX3
+    @Test
+    fun counterAppearsOnlyNearTheMessageLimit() {
+        var state by mutableStateOf(withInput(length = 950))
+        composeRule.setContent {
+            KaiFitTheme {
+                Content(state)
+            }
+        }
+
+        composeRule.onNodeWithText("950/1000", useUnmergedTree = true).assertIsDisplayed()
+
+        state = withInput(length = 10)
+        composeRule.waitForIdle()
+        composeRule.onAllNodesWithText("/1000", substring = true, useUnmergedTree = true).assertCountEquals(0)
+
+        // From 900 characters on.
+        state = withInput(length = 899)
+        composeRule.waitForIdle()
+        composeRule.onAllNodesWithText("/1000", substring = true, useUnmergedTree = true).assertCountEquals(0)
+
+        state = withInput(length = 900)
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText("900/1000", useUnmergedTree = true).assertIsDisplayed()
+    }
+
+    private fun withInput(length: Int): AssistantUiState =
+        AssistantPreviewStates.chatEmpty.let { it.copy(chat = it.chat.copy(input = "a".repeat(length))) }
 
     // AX4
     @Test

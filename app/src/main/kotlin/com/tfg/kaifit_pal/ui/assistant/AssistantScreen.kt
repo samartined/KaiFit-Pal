@@ -65,6 +65,7 @@ import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tfg.kaifit_pal.R
+import com.tfg.kaifit_pal.data.llm.LlmConfig
 import com.tfg.kaifit_pal.data.llm.ModelError
 import com.tfg.kaifit_pal.data.llm.ModelState
 import com.tfg.kaifit_pal.data.llm.UriImportSource
@@ -459,6 +460,18 @@ private fun InputRow(chat: ChatState, onInputChange: (String) -> Unit, onSend: (
             // The label stays while typing, so TalkBack always says which field this is.
             label = { Text(stringResource(R.string.assistant_input_label)) },
             placeholder = { Text(stringResource(R.string.assistant_input_hint)) },
+            // Near the limit, a counter warns that longer text, such as a long paste, is cut.
+            supportingText = if (chat.input.length >= INPUT_COUNTER_FROM_CHARS) {
+                {
+                    Text(
+                        text = stringResource(R.string.assistant_input_counter, chat.input.length, LlmConfig.MAX_INPUT_CHARS),
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End,
+                    )
+                }
+            } else {
+                null
+            },
             maxLines = 4,
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = { if (chat.canSend) onSend() }),
@@ -477,6 +490,9 @@ private fun ChatIconButton(@DrawableRes iconRes: Int, @StringRes descriptionRes:
         Icon(painter = painterResource(iconRes), contentDescription = stringResource(descriptionRes))
     }
 }
+
+/** Length of the message from which the chat field counts its characters against the limit. */
+private const val INPUT_COUNTER_FROM_CHARS = 900
 
 /** The four prompts suggested in an empty chat. */
 private val SuggestionRes = listOf(

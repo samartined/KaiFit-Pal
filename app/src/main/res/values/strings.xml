@@ -164,6 +164,8 @@
     <string name="assistant_cpu_fallback">Se está usando la CPU porque la GPU no está disponible</string>
     <string name="assistant_input_label">Mensaje para Kai-Q</string>
     <string name="assistant_input_hint">Escribe tu pregunta</string>
+    <!-- Characters typed out of the most a message can have, shown near the limit: "950/1000". -->
+    <string name="assistant_input_counter">%1$d/%2$d</string>
     <string name="assistant_send">Enviar</string>
     <string name="assistant_stop">Detener</string>
     <string name="assistant_context_full">La conversación es demasiado larga. Empieza una nueva para seguir.</string>
