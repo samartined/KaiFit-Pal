@@ -20,3 +20,10 @@
 # name. Keep both enums unrenamed, or opening Results fails with ClassNotFoundException.
 -keep enum com.tfg.kaifit_pal.domain.Sex { *; }
 -keep enum com.tfg.kaifit_pal.domain.ActivityLevel { *; }
+
+# LiteRT-LM ships no consumer rules, and its JNI code looks up classes, methods and fields of
+# com.google.ai.edge.litertlm by name (for example LiteRtLmJniException, the getters of
+# SamplerConfig and the MessageCallback methods). Keep the whole package as it is.
+-keep class com.google.ai.edge.litertlm.** { *; }
+-keep interface com.google.ai.edge.litertlm.** { *; }
+-dontwarn com.google.ai.edge.litertlm.**
