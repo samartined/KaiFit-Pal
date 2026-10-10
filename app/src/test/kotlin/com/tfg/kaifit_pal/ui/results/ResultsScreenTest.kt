@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -91,7 +92,56 @@ class ResultsScreenTest {
         composeRule.onNodeWithText("Grasa corporal: sin estimar").assertIsDisplayed()
     }
 
-    private fun showResults(route: ResultsRoute) {
+    // RS1
+    @Test
+    fun savedMessageStaysPendingWhileItsSnackbarIsShownAndIsShownOnce() {
+        val viewModel = showResults(ReferenceData.manRoute)
+
+        composeRule.onNodeWithText(string(R.string.results_save)).performScrollTo().performClick()
+        waitForSavedMessage()
+
+        // Visible, and not yet marked as shown: a rotation now would show it again.
+        assertEquals(SaveStatus.Saved, viewModel.saveStatus)
+
+        composeRule.mainClock.advanceTimeBy(SNACKBAR_END_MILLIS)
+        composeRule.waitForIdle()
+
+        composeRule.onNodeWithText(string(R.string.results_saved)).assertDoesNotExist()
+        assertEquals(SaveStatus.Idle, viewModel.saveStatus)
+
+        // Nothing brings it back.
+        composeRule.mainClock.advanceTimeBy(SNACKBAR_END_MILLIS)
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText(string(R.string.results_saved)).assertDoesNotExist()
+    }
+
+    // RS2
+    @Test
+    fun savedMessageIsShownAgainWhenTheScreenIsRecreatedWhileItIsVisible() {
+        val viewModel = ResultsViewModel(ReferenceData.manRoute, SavedStateHandle(), profiles)
+        val restorationTester = StateRestorationTester(composeRule)
+        restorationTester.setContent {
+            KaiFitTheme {
+                ResultsScreen(onBack = {}, onAskAssistant = {}, viewModel = viewModel)
+            }
+        }
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText(string(R.string.results_save)).performScrollTo().performClick()
+        waitForSavedMessage()
+
+        // Like a rotation: the screen is disposed with its snackbar and composed again with the
+        // same ViewModel.
+        restorationTester.emulateSavedInstanceStateRestore()
+
+        waitForSavedMessage()
+        assertEquals(SaveStatus.Saved, viewModel.saveStatus)
+        composeRule.mainClock.advanceTimeBy(SNACKBAR_END_MILLIS)
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText(string(R.string.results_saved)).assertDoesNotExist()
+        assertEquals(SaveStatus.Idle, viewModel.saveStatus)
+    }
+
+    private fun showResults(route: ResultsRoute): ResultsViewModel {
         val viewModel = ResultsViewModel(route, SavedStateHandle(), profiles)
         composeRule.setContent {
             KaiFitTheme {
@@ -99,6 +149,16 @@ class ResultsScreenTest {
             }
         }
         composeRule.waitForIdle()
+        return viewModel
+    }
+
+    private val ResultsViewModel.saveStatus: SaveStatus
+        get() = (uiState.value as ResultsUiState.Ready).saveStatus
+
+    private fun waitForSavedMessage() {
+        composeRule.waitUntil(TIMEOUT_MILLIS) {
+            composeRule.onAllNodesWithText(string(R.string.results_saved)).fetchSemanticsNodes().isNotEmpty()
+        }
     }
 
     private fun string(@StringRes id: Int): String = composeRule.activity.getString(id)
@@ -108,5 +168,8 @@ class ResultsScreenTest {
 
     private companion object {
         const val TIMEOUT_MILLIS = 5_000L
+
+        /** A short snackbar lasts 4 s; this also covers its exit animation. */
+        const val SNACKBAR_END_MILLIS = 6_000L
     }
 }

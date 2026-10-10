@@ -32,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -56,7 +55,6 @@ import com.tfg.kaifit_pal.ui.components.MacroCard
 import com.tfg.kaifit_pal.ui.theme.KaiFitTheme
 import com.tfg.kaifit_pal.ui.theme.Spacing
 import com.tfg.kaifit_pal.ui.theme.withTabularFigures
-import kotlinx.coroutines.launch
 
 /**
  * Results detail destination: TDEE, goal and macros of the measurements of its route.
@@ -73,13 +71,13 @@ fun ResultsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    val snackbarScope = rememberCoroutineScope()
     val savedMessage = stringResource(R.string.results_saved)
     val saveErrorMessage = stringResource(R.string.results_save_error)
     val saveStatus = (uiState as? ResultsUiState.Ready)?.saveStatus
 
-    // The outcome of saving is shown once: the snackbar runs in its own scope, so marking the
-    // status as shown, which restarts this effect, does not dismiss it.
+    // The outcome of saving is shown once, and only marked as shown when its snackbar ends. A
+    // rotation while the snackbar is visible cancels this effect before that, so the outcome is
+    // still pending and the new screen shows it again. A new outcome replaces the snackbar.
     LaunchedEffect(saveStatus) {
         val message = when (saveStatus) {
             SaveStatus.Saved -> savedMessage
@@ -87,7 +85,7 @@ fun ResultsScreen(
             else -> null
         }
         if (message != null) {
-            snackbarScope.launch { snackbarHostState.showSnackbar(message) }
+            snackbarHostState.showSnackbar(message)
             viewModel.onSaveStatusShown()
         }
     }
