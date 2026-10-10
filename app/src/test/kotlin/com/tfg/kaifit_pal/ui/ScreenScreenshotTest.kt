@@ -23,11 +23,14 @@ import com.tfg.kaifit_pal.ui.settings.SettingsPreview
 import com.tfg.kaifit_pal.ui.settings.SettingsPreviewStates
 import com.tfg.kaifit_pal.ui.settings.SettingsUiState
 import com.tfg.kaifit_pal.ui.theme.KaiFitTheme
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import java.util.TimeZone
 
 /**
  * Screenshots of every screen in the light and dark themes, from fixed states, on a 411 × 891 dp
@@ -35,6 +38,10 @@ import org.robolectric.annotation.GraphicsMode
  * scroll, and `shell_w360_light` shows the navigation bar on a narrow 360 dp phone. On that
  * phone, `profile_saved_w360_light` shows the saved profile, and `results_w360_fs13_light` and
  * `assistant_chat_w360_fs13_light` the results and the chat with the font scaled to 130 %.
+ * `results_w320_fs20_light` shows the results on a 320 dp phone with the font at 200 %.
+ *
+ * The time zone is fixed to Europe/Madrid, so the date of the saved profile is the same on any
+ * machine.
  *
  * Kai-Q is captured in each of its states: the model missing (also with warnings and on a 32-bit
  * device), downloading, waiting for Wi-Fi, importing or failed, the engine loading or failed,
@@ -51,6 +58,18 @@ class ScreenScreenshotTest {
 
     @get:Rule
     val composeRule = createAndroidComposeRule<ComponentActivity>()
+
+    private val originalTimeZone: TimeZone = TimeZone.getDefault()
+
+    @Before
+    fun fixTimeZone() {
+        TimeZone.setDefault(TimeZone.getTimeZone(SCREENSHOT_TIME_ZONE))
+    }
+
+    @After
+    fun restoreTimeZone() {
+        TimeZone.setDefault(originalTimeZone)
+    }
 
     @Test
     fun calculatorEmptyLight() = capture("calculator_empty", darkTheme = false) { Calculator(CalculatorPreviewStates.empty) }
@@ -98,6 +117,11 @@ class ScreenScreenshotTest {
     @Test
     @Config(qualifiers = NARROW_TALL_PHONE, fontScale = 1.3f)
     fun resultsNarrowLargeTextLight() = capture("results_w360_fs13", darkTheme = false) { Results() }
+
+    /** Results on a 320 dp phone with text at 200 %: the labels only wrap between words. */
+    @Test
+    @Config(qualifiers = NARROWEST_TALL_PHONE, fontScale = 2.0f)
+    fun resultsNarrowestLargestTextLight() = capture("results_w320_fs20", darkTheme = false) { Results() }
 
     @Test
     fun profileEmptyLight() = capture("profile_empty", darkTheme = false) { Profile(ProfileUiState.Empty) }
@@ -251,6 +275,7 @@ class ScreenScreenshotTest {
 
     private companion object {
         const val OUTPUT_DIR = "build/outputs/roborazzi"
+        const val SCREENSHOT_TIME_ZONE = "Europe/Madrid"
     }
 }
 
@@ -258,6 +283,7 @@ private const val PHONE = "es-rES-w411dp-h891dp-xxhdpi"
 private const val TALL_PHONE = "es-rES-w411dp-h1600dp-xxhdpi"
 private const val NARROW_PHONE = "es-rES-w360dp-h800dp-xxhdpi"
 private const val NARROW_TALL_PHONE = "es-rES-w360dp-h1600dp-xxhdpi"
+private const val NARROWEST_TALL_PHONE = "es-rES-w320dp-h1600dp-xxhdpi"
 
 @Composable
 private fun Calculator(state: CalculatorUiState) {
